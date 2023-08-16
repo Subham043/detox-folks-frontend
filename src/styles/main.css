@@ -4904,7 +4904,9 @@ tbody tr td:last-child {
 
 .cart-media a img {
     width: 100px;
-    border-radius: 8px
+    border-radius: 8px;
+    height: 100px;
+    object-fit: contain;
 }
 
 .cart-media button {
@@ -6983,5 +6985,50 @@ tbody tr td:last-child {
 @media (min-width:576px) and (max-width:991px) {
     .bottom-paginate {
         margin-bottom: 30px
+    }
+}
+
+.partner-loading{
+    width: 150px;
+    height: 150px;
+    margin-left: auto;
+    margin-right: auto;
+    border-radius: 50%;
+    background-image: linear-gradient(
+      90deg,
+      #e4e4e4 0%,
+      #f1f1f1 40%,
+      #ededed 60%,
+      #e4e4e4 100%
+    );
+    background-position: 0px 0px;
+    background-repeat: repeat;
+    animation: animatedBackground 5s linear infinite;
+}
+
+.testimonial-loading{
+    width: 60%;
+    height: 250px;
+    margin-left: auto;
+    margin-right: auto;
+    border-radius: 10px;
+    background-image: linear-gradient(
+      90deg,
+      #e4e4e4 0%,
+      #f1f1f1 40%,
+      #ededed 60%,
+      #e4e4e4 100%
+    );
+    background-position: 0px 0px;
+    background-repeat: repeat;
+    animation: animatedBackground 5s linear infinite;
+}
+
+@keyframes animatedBackground {
+    from {
+      background-position: 0 0;
+    }
+    to {
+      background-position: 1000px 0;
     }
 }

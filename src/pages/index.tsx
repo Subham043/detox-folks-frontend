@@ -1,5 +1,4 @@
 import Head from 'next/head'
-import { Inter } from 'next/font/google'
 import Banner from '@/components/Banner';
 import PartnerSlider from '@/components/PartnerSlider';
 import TestimonialSlider from '@/components/TestimonialSlider';
@@ -8,19 +7,30 @@ import Header from '@/components/Header';
 import Footer from '@/components/Footer';
 import AboutSection from '@/components/AboutSection';
 import Link from 'next/link';
+import type { InferGetServerSidePropsType, GetServerSideProps } from 'next'
+import { axiosPublic } from '../../axios';
+import { api_routes } from '@/helper/routes';
+import { AboutSectionType, BannerType } from '@/helper/types';
 
-const inter = Inter({ subsets: ['latin'] })
+type ServerSideProps = {
+  banner: BannerType[];
+  about: AboutSectionType;
+}
 
-const settings = {
-  dots: true,
-  infinite: true,
-  speed: 500,
-  slidesToShow: 1,
-  slidesToScroll: 1
-};
+export const getServerSideProps: GetServerSideProps<{
+  repo: ServerSideProps
+}> = async () => {
+  const bannerResponse = await axiosPublic.get(api_routes.home_page_banner);
+  const aboutResponse = await axiosPublic.get(api_routes.about_section);
+  return { props: { repo: {
+    banner: bannerResponse.data.banner,
+    about: aboutResponse.data.about,
+  } } }
+}
 
-
-export default function Home() {
+export default function Home({
+  repo,
+}: InferGetServerSidePropsType<typeof getServerSideProps>) {
   return (
     <>
       <Head>
@@ -30,8 +40,8 @@ export default function Home() {
         <link rel="icon" href="/images/favicon.png" />
       </Head>
     <Header />
-    <Banner />
-    <AboutSection />
+    <Banner banner={repo.banner} />
+    <AboutSection  {...repo.about} />
 
     <section className="section feature-part">
       <div className="container">

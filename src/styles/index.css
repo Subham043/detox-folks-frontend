@@ -241,8 +241,8 @@
     display: -ms-grid;
     display: grid;
     grid-gap: 20px;
-    -ms-grid-columns: 1fr 1fr;
-    grid-template-columns: 1fr 1fr;
+    /* -ms-grid-columns: 1fr 1fr;
+    grid-template-columns: 1fr 1fr; */
     margin-left: 50px
 }
 

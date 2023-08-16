@@ -9,7 +9,15 @@ import '@/styles/bootstrap.min.css'
 import '@/styles/main.css'
 import '@/styles/index.css'
 import type { AppProps } from 'next/app'
+import { SWRConfig } from 'swr';
+import {fetcher} from '../../axios';
 
 export default function App({ Component, pageProps }: AppProps) {
-  return <Component {...pageProps} />
+  return <SWRConfig
+  value={{
+   fetcher
+  }}
+ >
+   <Component {...pageProps} />
+ </SWRConfig>
 }
