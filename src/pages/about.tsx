@@ -4,9 +4,27 @@ import Header from '@/components/Header';
 import Footer from '@/components/Footer';
 import Hero from '@/components/Hero';
 import AboutSection from '@/components/AboutSection';
+import type { InferGetServerSidePropsType, GetServerSideProps } from 'next'
+import { axiosPublic } from '../../axios';
+import { api_routes } from '@/helper/routes';
+import { AboutSectionType } from '@/helper/types';
 
+type ServerSideProps = {
+  about: AboutSectionType;
+}
 
-export default function About() {
+export const getServerSideProps: GetServerSideProps<{
+  repo: ServerSideProps
+}> = async () => {
+  const aboutResponse = await axiosPublic.get(api_routes.about_section);
+  return { props: { repo: {
+    about: aboutResponse.data.about,
+  } } }
+}
+
+export default function About({
+  repo,
+}: InferGetServerSidePropsType<typeof getServerSideProps>) {
   return (
     <>
       <Head>
@@ -17,8 +35,8 @@ export default function About() {
       </Head>
       <Header />
       <Hero name='About Us' />
-      <AboutSection />
-      <section className="about-choose pb-5">
+      <AboutSection  {...repo.about} />
+      {/* <section className="about-choose pb-5">
         <div className="container">
           <div className="row">
             <div className="col-11 col-md-9 col-lg-7 col-xl-6 mx-auto">
@@ -84,7 +102,7 @@ export default function About() {
             </div>
           </div>
         </div>
-      </section>
+      </section> */}
       <Footer />
     </>
   )

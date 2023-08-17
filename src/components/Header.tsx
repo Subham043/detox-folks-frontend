@@ -1,12 +1,18 @@
 import Link from "next/link";
 import { useState } from "react";
 import Drawer from 'react-modern-drawer'
+import useSWR from 'swr'
+import { api_routes } from "@/helper/routes";
+import { CategoryResponseType } from "@/helper/types";
 
 export default function Header() {
     const [isOpen, setIsOpen] = useState(false)
     const toggleDrawer = () => {
         setIsOpen((prevState) => !prevState)
     }
+
+    const { data, isLoading } = useSWR<CategoryResponseType>(api_routes.categories + '?total=8');
+    
 
     return <>
         <div className="header-top">
@@ -66,94 +72,20 @@ export default function Header() {
                                     <div className="megamenu">
                                         <div className="container">
                                             <div className="row">
-                                                <div className="col-lg-3">
+                                                {
+                                                    data?.data.map((item, i) => <div className="col-lg-3" key={i}>
                                                     <div className="megamenu-wrap">
-                                                        <Link href='/category'><h5 className="megamenu-title">Category 1</h5></Link>
+                                                        <Link href={`/category/${item.slug}`}><h5 className="megamenu-title">{item.name}</h5></Link>
                                                         <ul className="megamenu-list">
-                                                            <li>
-                                                                <Link href="/sub-category">Sub Category 1</Link>
-                                                            </li>
-                                                            <li>
-                                                                <Link href="/sub-category">Sub Category 2</Link>
-                                                            </li>
-                                                            <li>
-                                                                <Link href="/sub-category">Sub Category 3</Link>
-                                                            </li>
-                                                            <li>
-                                                                <Link href="/sub-category">Sub Category 4</Link>
-                                                            </li>
-                                                            <li>
-                                                                <Link href="/sub-category">Sub Category 5</Link>
-                                                            </li>
+                                                            {
+                                                                item.sub_categories.map((itm, index) => <li key={index}>
+                                                                <Link href={`/sub-category/${itm.slug}`}>{itm.name}</Link>
+                                                            </li>)
+                                                            }
                                                         </ul>
                                                     </div>
-                                                </div>
-                                                <div className="col-lg-3">
-                                                    <div className="megamenu-wrap">
-                                                        <Link href='/category'><h5 className="megamenu-title">Category 2</h5></Link>
-                                                        <ul className="megamenu-list">
-                                                            <li>
-                                                                <Link href="/sub-category">Sub Category 1</Link>
-                                                            </li>
-                                                            <li>
-                                                                <Link href="/sub-category">Sub Category 2</Link>
-                                                            </li>
-                                                            <li>
-                                                                <Link href="/sub-category">Sub Category 3</Link>
-                                                            </li>
-                                                            <li>
-                                                                <Link href="/sub-category">Sub Category 4</Link>
-                                                            </li>
-                                                            <li>
-                                                                <Link href="/sub-category">Sub Category 5</Link>
-                                                            </li>
-                                                        </ul>
-                                                    </div>
-                                                </div>
-                                                <div className="col-lg-3">
-                                                    <div className="megamenu-wrap">
-                                                        <Link href='/category'><h5 className="megamenu-title">Category 3</h5></Link>
-                                                        <ul className="megamenu-list">
-                                                            <li>
-                                                                <Link href="/sub-category">Sub Category 1</Link>
-                                                            </li>
-                                                            <li>
-                                                                <Link href="/sub-category">Sub Category 2</Link>
-                                                            </li>
-                                                            <li>
-                                                                <Link href="/sub-category">Sub Category 3</Link>
-                                                            </li>
-                                                            <li>
-                                                                <Link href="/sub-category">Sub Category 4</Link>
-                                                            </li>
-                                                            <li>
-                                                                <Link href="/sub-category">Sub Category 5</Link>
-                                                            </li>
-                                                        </ul>
-                                                    </div>
-                                                </div>
-                                                <div className="col-lg-3">
-                                                    <div className="megamenu-wrap">
-                                                        <Link href='/category'><h5 className="megamenu-title">Category 4</h5></Link>
-                                                        <ul className="megamenu-list">
-                                                            <li>
-                                                                <Link href="/sub-category">Sub Category 1</Link>
-                                                            </li>
-                                                            <li>
-                                                                <Link href="/sub-category">Sub Category 2</Link>
-                                                            </li>
-                                                            <li>
-                                                                <Link href="/sub-category">Sub Category 3</Link>
-                                                            </li>
-                                                            <li>
-                                                                <Link href="/sub-category">Sub Category 4</Link>
-                                                            </li>
-                                                            <li>
-                                                                <Link href="/sub-category">Sub Category 5</Link>
-                                                            </li>
-                                                        </ul>
-                                                    </div>
-                                                </div>
+                                                </div>)
+                                                }
                                             </div>
                                         </div>
                                     </div>

@@ -1,15 +1,44 @@
 import Slider from "react-slick";
+import useSWR from 'swr'
+import { api_routes } from "@/helper/routes";
+import { BlogResponseType } from "@/helper/types";
+import Link from "next/link";
+import BlogCard from "./BlogCard";
 
 const settings = {
-    dots: true,
-    infinite: true,
-    speed: 500,
-    slidesToShow: 3,
-    slidesToScroll: 2
+  dots: true,
+  infinite: true,
+  speed: 500,
+  slidesToScroll: 2
 };
 
+const loadingArr = [1, 2, 3]
+
 export default function BlogSlider() {
+  const { data, isLoading } = useSWR<BlogResponseType>(api_routes.blog + '?total=6');
+
+  if(isLoading){
     return <section className="section blog-part">
+      <div className="container">
+        <div className="row">
+          <div className="col-12">
+            <div className="section-heading"><h2>Read our articles</h2></div>
+          </div>
+        </div>
+        <div className="row">
+          {
+            loadingArr.map( i => <div className="col-lg-4 col-md-6 col-sm-12" key={i}>
+            <div className="blog-img-loading"></div>
+            <div className="blog-heading-loading"></div>
+            <div className="blog-paragraph-loading"></div>
+          </div>)
+          }
+        </div>
+      </div>
+    </section>
+  }
+
+  return <section className="section blog-part">
     <div className="container">
       <div className="row">
         <div className="col-12">
@@ -19,123 +48,10 @@ export default function BlogSlider() {
       <div className="row">
         <div className="col-lg-12">
           <div className="blog-slider slider-arrow">
-            <Slider {...settings}>    
-                <div className="blog-card">
-                <div className="blog-media">
-                    <a className="blog-img" href="#"
-                    ><img src="/images/blog/01.jpg" alt="blog"
-                    /></a>
-                </div>
-                <div className="blog-content">
-                    <ul className="blog-meta">
-                    <li><i className="fas fa-user"></i><span>admin</span></li>
-                    <li>
-                        <i className="fas fa-calendar-alt"></i
-                        ><span>february 02, 2021</span>
-                    </li>
-                    </ul>
-                    <h4 className="blog-title">
-                    <a href="blog-details.html"
-                        >Voluptate blanditiis provident Lorem ipsum dolor sit
-                        amet</a
-                    >
-                    </h4>
-                    <p className="blog-desc">
-                    Lorem ipsum dolor sit, amet consectetur adipisicing elit.
-                    Alias autem recusandae deleniti nam dignissimos sequi ...
-                    </p>
-                    <a className="blog-btn" href="#"
-                    ><span>read more</span><i className="icofont-arrow-right"></i
-                    ></a>
-                </div>
-                </div>
-                <div className="blog-card">
-                <div className="blog-media">
-                    <a className="blog-img" href="#"
-                    ><img src="/images/blog/02.jpg" alt="blog"
-                    /></a>
-                </div>
-                <div className="blog-content">
-                    <ul className="blog-meta">
-                    <li><i className="fas fa-user"></i><span>admin</span></li>
-                    <li>
-                        <i className="fas fa-calendar-alt"></i
-                        ><span>february 02, 2021</span>
-                    </li>
-                    </ul>
-                    <h4 className="blog-title">
-                    <a href="blog-details.html"
-                        >Voluptate blanditiis provident Lorem ipsum dolor sit
-                        amet</a
-                    >
-                    </h4>
-                    <p className="blog-desc">
-                    Lorem ipsum dolor sit, amet consectetur adipisicing elit.
-                    Alias autem recusandae deleniti nam dignissimos sequi ...
-                    </p>
-                    <a className="blog-btn" href="#"
-                    ><span>read more</span><i className="icofont-arrow-right"></i
-                    ></a>
-                </div>
-                </div>
-                <div className="blog-card">
-                <div className="blog-media">
-                    <a className="blog-img" href="#"
-                    ><img src="/images/blog/03.jpg" alt="blog"
-                    /></a>
-                </div>
-                <div className="blog-content">
-                    <ul className="blog-meta">
-                    <li><i className="fas fa-user"></i><span>admin</span></li>
-                    <li>
-                        <i className="fas fa-calendar-alt"></i
-                        ><span>february 02, 2021</span>
-                    </li>
-                    </ul>
-                    <h4 className="blog-title">
-                    <a href="blog-details.html"
-                        >Voluptate blanditiis provident Lorem ipsum dolor sit
-                        amet</a
-                    >
-                    </h4>
-                    <p className="blog-desc">
-                    Lorem ipsum dolor sit, amet consectetur adipisicing elit.
-                    Alias autem recusandae deleniti nam dignissimos sequi ...
-                    </p>
-                    <a className="blog-btn" href="#"
-                    ><span>read more</span><i className="icofont-arrow-right"></i
-                    ></a>
-                </div>
-                </div>
-                <div className="blog-card">
-                <div className="blog-media">
-                    <a className="blog-img" href="#"
-                    ><img src="/images/blog/04.jpg" alt="blog"
-                    /></a>
-                </div>
-                <div className="blog-content">
-                    <ul className="blog-meta">
-                    <li><i className="fas fa-user"></i><span>admin</span></li>
-                    <li>
-                        <i className="fas fa-calendar-alt"></i
-                        ><span>february 02, 2021</span>
-                    </li>
-                    </ul>
-                    <h4 className="blog-title">
-                    <a href="blog-details.html"
-                        >Voluptate blanditiis provident Lorem ipsum dolor sit
-                        amet</a
-                    >
-                    </h4>
-                    <p className="blog-desc">
-                    Lorem ipsum dolor sit, amet consectetur adipisicing elit.
-                    Alias autem recusandae deleniti nam dignissimos sequi ...
-                    </p>
-                    <a className="blog-btn" href="#"
-                    ><span>read more</span><i className="icofont-arrow-right"></i
-                    ></a>
-                </div>
-                </div>
+            <Slider {...settings} slidesToShow={data?.data?.length !== undefined && data?.data?.length > 2 ? 3 : data?.data?.length}>
+              {
+                data?.data.map((item, i) => <BlogCard key={i} {...item} />)
+              }
             </Slider>
           </div>
         </div>
@@ -143,9 +59,9 @@ export default function BlogSlider() {
       <div className="row">
         <div className="col-lg-12">
           <div className="section-btn-25">
-            <a href="blog-grid.html" className="btn btn-outline"
-              ><i className="fas fa-eye"></i><span>view all blog</span></a
-            >
+            <Link href="/blogs" className="btn btn-outline"
+            ><i className="fas fa-eye"></i><span>view all blog</span>
+            </Link>
           </div>
         </div>
       </div>
