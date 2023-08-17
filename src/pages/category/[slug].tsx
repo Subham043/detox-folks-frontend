@@ -1,12 +1,11 @@
 import Head from 'next/head'
-import Header from '@/components/Header';
-import Footer from '@/components/Footer';
 import Hero from '@/components/Hero';
 import Link from 'next/link';
 import type { InferGetServerSidePropsType, GetServerSideProps } from 'next'
 import { axiosPublic } from '../../../axios';
 import { api_routes } from '@/helper/routes';
 import { CategoryType } from '@/helper/types';
+import Layout from '@/components/Layout';
 
 type ServerSideProps = {
   category: CategoryType;
@@ -27,7 +26,7 @@ export default function Category({
     repo,
   }: InferGetServerSidePropsType<typeof getServerSideProps>) {
     return (
-        <>
+        <Layout>
             <Head>
                 <title>DetoxFolks - {repo.category.meta_title}</title>
                 <meta name="description" content={repo.category.meta_description} />
@@ -35,7 +34,6 @@ export default function Category({
                 <meta name="viewport" content="width=device-width, initial-scale=1" />
                 <link rel="icon" href="/images/favicon.png" />
             </Head>
-            <Header />
             <Hero name={repo.category.name} />
             <section className="inner-section blog-details-part mb-5">
                 <div className="container">
@@ -491,7 +489,6 @@ export default function Category({
                     </div>
                 </div>
             </section>
-            <Footer />
-        </>
+        </Layout>
     )
 }

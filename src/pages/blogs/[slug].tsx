@@ -1,11 +1,10 @@
 import Head from 'next/head'
-import Header from '@/components/Header';
-import Footer from '@/components/Footer';
 import Hero from '@/components/Hero';
 import type { InferGetServerSidePropsType, GetServerSideProps } from 'next'
 import { axiosPublic } from '../../../axios';
 import { api_routes } from '@/helper/routes';
 import { BlogType } from '@/helper/types';
+import Layout from '@/components/Layout';
 
 type ServerSideProps = {
   blog: BlogType;
@@ -26,7 +25,7 @@ export default function BlogDetail({
   repo,
 }: InferGetServerSidePropsType<typeof getServerSideProps>) {
   return (
-    <>
+    <Layout>
       <Head>
         <title>DetoxFolks - {repo.blog.meta_title}</title>
         <meta name="description" content={repo.blog.meta_description} />
@@ -34,7 +33,6 @@ export default function BlogDetail({
         <meta name="viewport" content="width=device-width, initial-scale=1" />
         <link rel="icon" href="/images/favicon.png" />
       </Head>
-      <Header />
       <Hero name={repo.blog.name} />
 
       <section className="inner-section blog-details-part">
@@ -146,8 +144,6 @@ export default function BlogDetail({
         </div>
       </section>
 
-      <Footer />
-
-    </>
+    </Layout>
   )
 }
