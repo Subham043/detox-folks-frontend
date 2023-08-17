@@ -1,9 +1,127 @@
 import Head from 'next/head'
-import Image from 'next/image'
 import Link from 'next/link'
+import * as yup from "yup";
+import { useForm } from "react-hook-form";
+import { yupResolver } from "@hookform/resolvers/yup";
+import { useState } from 'react';
+import { ErrorMessage } from '@hookform/error-message';
+import { ToastOptions, toast } from 'react-toastify';
+import { signIn } from "next-auth/react";
+import { axiosPublic } from '../../axios';
+import { api_routes } from '@/helper/routes';
+import { useRouter, useSearchParams } from 'next/navigation';
 
+const schema = yup
+  .object({
+    email: yup.string().email().required(),
+    name: yup.string().required(),
+    password: yup.string().required(),
+    phone: yup
+      .string()
+      .required()
+      .min(10, "Must be exactly 10 digits")
+      .max(10, "Must be exactly 10 digits"),
+    confirm_password: yup.string()
+      .required('Required')
+      .min(2, 'Too Short!')
+      .max(50, 'Too Long!')
+      .oneOf([yup.ref('password')], 'Passwords must match'),
+  })
+  .required();
+
+const toastConfig:ToastOptions = {
+    position: "bottom-center",
+    autoClose: 5000,
+    hideProgressBar: false,
+    closeOnClick: true,
+    pauseOnHover: true,
+    draggable: true,
+    progress: undefined,
+    theme: "light",
+}
 
 export default function Register() {
+  const [loading, setLoading] = useState(false);
+  const router = useRouter();
+  const searchParams = useSearchParams();
+  const callbackUrl = searchParams.get("callbackUrl") || "/profile";
+
+    const {
+        handleSubmit,
+        control,
+        setValue,
+        register,
+        getValues,
+        reset,
+        setError,
+        formState: { errors },
+      } = useForm({
+        resolver: yupResolver(schema),
+    });
+
+    const onSubmit = async (data: any) => {
+        setLoading(true);
+        try {
+          const response = await axiosPublic.post(api_routes.register, {...data});
+          toast.info(response.data.message, toastConfig); 
+          const res = await signIn('credentials', {
+            redirect: false,
+            email: data.email,
+            password: data.password,
+            callbackUrl
+          }); 
+          if (!res?.error) {
+            router.push(callbackUrl);
+            reset({
+              email: "",
+              name: "",
+              password: "",
+              confirm_password: "",
+              phone: "",
+            });
+          } else {
+            toast.error("Invalid Credentials", toastConfig);
+          }                 
+        } catch (error: any) {
+          console.log(error);
+          if (error?.response?.data?.message) {
+            toast.error(error?.response?.data?.message, toastConfig);
+          }
+          if (error?.response?.data?.errors?.name) {
+            setError("name", {
+              type: "server",
+              message: error?.response?.data?.errors?.name[0],
+            });
+          }
+          if (error?.response?.data?.errors?.email) {
+            setError("email", {
+              type: "server",
+              message: error?.response?.data?.errors?.email[0],
+            });
+          }
+          if (error?.response?.data?.errors?.phone) {
+            setError("phone", {
+              type: "server",
+              message: error?.response?.data?.errors?.phone[0],
+            });
+          }
+          if (error?.response?.data?.errors?.password) {
+            setError("password", {
+              type: "server",
+              message: error?.response?.data?.errors?.password[0],
+            });
+          }
+          if (error?.response?.data?.errors?.confirm_password) {
+            setError("confirm_password", {
+              type: "server",
+              message: error?.response?.data?.errors?.confirm_password[0],
+            });
+          }
+        } finally {
+          setLoading(false);
+        }
+      };
+
   return (
     <>
       <Head>
@@ -22,12 +140,18 @@ export default function Register() {
                   <p>Setup A New Account In A Minute</p>
                 </div>
                 <div className="user-form-group">
-                  <form className="user-form">
+                  <form className="user-form" onSubmit={handleSubmit(onSubmit)}>
                     <div className="form-group">
                       <input
                         type="text"
                         className="form-control"
                         placeholder="Enter your name"
+                        {...register('name')}
+                      />
+                      <ErrorMessage
+                          errors={errors}
+                          name='name'
+                          as={<div style={{ color: 'red' }} />}
                       />
                     </div>
                     <div className="form-group">
@@ -35,6 +159,25 @@ export default function Register() {
                         type="email"
                         className="form-control"
                         placeholder="Enter your email"
+                        {...register('email')}
+                      />
+                      <ErrorMessage
+                          errors={errors}
+                          name='email'
+                          as={<div style={{ color: 'red' }} />}
+                      />
+                    </div>
+                    <div className="form-group">
+                      <input
+                        type="text"
+                        className="form-control"
+                        placeholder="Enter your phone"
+                        {...register('phone')}
+                      />
+                      <ErrorMessage
+                          errors={errors}
+                          name='phone'
+                          as={<div style={{ color: 'red' }} />}
                       />
                     </div>
                     <div className="form-group">
@@ -42,6 +185,12 @@ export default function Register() {
                         type="password"
                         className="form-control"
                         placeholder="Enter your password"
+                        {...register('password')}
+                      />
+                      <ErrorMessage
+                          errors={errors}
+                          name='password'
+                          as={<div style={{ color: 'red' }} />}
                       />
                     </div>
                     <div className="form-group">
@@ -49,6 +198,12 @@ export default function Register() {
                         type="password"
                         className="form-control"
                         placeholder="Enter repeat password"
+                        {...register('confirm_password')}
+                      />
+                      <ErrorMessage
+                          errors={errors}
+                          name='confirm_password'
+                          as={<div style={{ color: 'red' }} />}
                       />
                     </div>
                     <div className="form-check mb-3">
@@ -62,7 +217,7 @@ export default function Register() {
                       >
                     </div>
                     <div className="form-button">
-                      <button type="submit">register</button>
+                      <button type="submit" disabled={loading}>{loading ? 'registering' : 'register'}</button>
                     </div>
                   </form>
                 </div>
