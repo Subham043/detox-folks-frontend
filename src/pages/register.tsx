@@ -68,7 +68,6 @@ export default function Register() {
             redirect: false,
             email: data.email,
             password: data.password,
-            callbackUrl
           }); 
           if (!res?.error) {
             router.push(callbackUrl);

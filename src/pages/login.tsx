@@ -35,6 +35,7 @@ export default function Login() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const callbackUrl = searchParams.get("callbackUrl") || "/profile";
+  
 
     const {
         handleSubmit,
@@ -56,7 +57,6 @@ export default function Login() {
             redirect: false,
             email: data.email,
             password: data.password,
-            callbackUrl,
           }); 
           if (!res?.error) {
             router.push(callbackUrl);

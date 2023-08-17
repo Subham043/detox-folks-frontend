@@ -27,7 +27,8 @@ export default function Header() {
     const [loading, setLoading] = useState(false);
     const router = useRouter();
     const callbackUrl = "/";
-    const onLogout = async (data: any) => {
+    const onLogout = async (event: any) => {
+        event.preventDefault()
         setLoading(true);
         try {
           const res = await signOut({
@@ -83,7 +84,7 @@ export default function Header() {
                                     <a className="navbar-link header-widget" href="#"><img src="/images/user.png" alt="user" /><span>{session?.user.name}</span></a>
                                     <ul className="dropdown-position-list">
                                         <li><Link href="/profile">Profile</Link></li>
-                                        <li><a href="javascript:void(0)" style={loading ? {pointerEvents: 'none'}: {}} onClick={onLogout}>{loading ? 'Logging Out': 'Logout'}</a></li>
+                                        <li><a style={loading ? {pointerEvents: 'none', cursor: 'none'}: {cursor: 'pointer'}} onClick={(event) => onLogout(event)}>{loading ? 'Logging Out': 'Logout'}</a></li>
                                     </ul>
                                 </li>
                             </ul>
@@ -111,7 +112,7 @@ export default function Header() {
                                     <Link className="navbar-link" href="/about">about us</Link>
                                 </li>
                                 <li className="navbar-item dropdown-megamenu">
-                                    <Link className="navbar-link dropdown-arrow" href="#">categories</Link>
+                                    <a className="navbar-link dropdown-arrow" href="#">categories</a>
                                     <div className="megamenu">
                                         <div className="container">
                                             <div className="row">

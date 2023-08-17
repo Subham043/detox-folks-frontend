@@ -1,10 +1,10 @@
-import NextAuth, { Session } from "next-auth"
+import NextAuth, { NextAuthOptions, Session } from "next-auth"
 import CredentialsProvider from "next-auth/providers/credentials"
 import { axiosPublic } from "../../../../axios";
 import { api_routes } from "@/helper/routes";
 import { JWT } from "next-auth/jwt";
 
-export default NextAuth({
+export const authOptions: NextAuthOptions = {
     debug: true,
     secret: process.env.AUTHSECRET,
     providers: [
@@ -40,7 +40,7 @@ export default NextAuth({
             return true
         },
         async redirect({ url, baseUrl }) {
-            return baseUrl
+            return url
         },
         async jwt({ token, user, account, profile, isNewUser }) {    
             if(token && user){
@@ -81,6 +81,6 @@ export default NextAuth({
     session: {
         strategy: "jwt",
     },
+}
 
-
-})
+export default NextAuth(authOptions);
