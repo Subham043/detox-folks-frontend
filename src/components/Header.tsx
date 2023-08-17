@@ -4,12 +4,45 @@ import Drawer from 'react-modern-drawer'
 import useSWR from 'swr'
 import { api_routes } from "@/helper/routes";
 import { CategoryResponseType } from "@/helper/types";
+import { signOut, useSession } from 'next-auth/react';
+import { useRouter } from "next/router";
+import { ToastOptions, toast } from "react-toastify";
 
+const toastConfig:ToastOptions = {
+    position: "bottom-center",
+    autoClose: 5000,
+    hideProgressBar: false,
+    closeOnClick: true,
+    pauseOnHover: true,
+    draggable: true,
+    progress: undefined,
+    theme: "light",
+}
 export default function Header() {
     const [isOpen, setIsOpen] = useState(false)
     const toggleDrawer = () => {
         setIsOpen((prevState) => !prevState)
     }
+    const { status, data: session } = useSession();
+    const [loading, setLoading] = useState(false);
+    const router = useRouter();
+    const callbackUrl = "/";
+    const onLogout = async (data: any) => {
+        setLoading(true);
+        try {
+          const res = await signOut({
+            redirect: false,
+            callbackUrl
+          }); 
+          router.push(callbackUrl);
+          toast.success("Logged Out Successfully.", toastConfig);       
+        } catch (error: any) {
+          console.log(error);
+        } finally {
+          setLoading(false);
+        }
+    };
+    
 
     const { data, isLoading } = useSWR<CategoryResponseType>(api_routes.categories + '?total=8');
     
@@ -42,9 +75,19 @@ export default function Header() {
                         </button>
                     </form>
                     <div className="header-widget-group">
-                        <Link href="/login" className="header-widget" title="My Account"
-                        ><img src="/images/user.png" alt="user" /><span>join</span></Link
-                        >
+                        {
+                            status==='unauthenticated' ? <Link href="/login" className="header-widget" title="My Account"
+                            ><img src="/images/user.png" alt="user" /><span>join</span></Link
+                            > : <ul className="navbar-list">
+                                <li className="navbar-item dropdown">
+                                    <a className="navbar-link header-widget" href="#"><img src="/images/user.png" alt="user" /><span>{session?.user.name}</span></a>
+                                    <ul className="dropdown-position-list">
+                                        <li><Link href="/profile">Profile</Link></li>
+                                        <li><a href="javascript:void(0)" style={loading ? {pointerEvents: 'none'}: {}} onClick={onLogout}>{loading ? 'Logging Out': 'Logout'}</a></li>
+                                    </ul>
+                                </li>
+                            </ul>
+                        }
                         <Link href="/wishlist" className="header-widget" title="Wishlist"
                         ><i className="fas fa-heart"></i><sup>0</sup></Link
                         ><button className="header-widget header-cart" onClick={toggleDrawer} title="Cartlist">

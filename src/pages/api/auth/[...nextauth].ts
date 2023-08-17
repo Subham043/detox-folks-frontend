@@ -1,7 +1,8 @@
-import NextAuth from "next-auth"
+import NextAuth, { Session } from "next-auth"
 import CredentialsProvider from "next-auth/providers/credentials"
 import { axiosPublic } from "../../../../axios";
 import { api_routes } from "@/helper/routes";
+import { JWT } from "next-auth/jwt";
 
 export default NextAuth({
     debug: true,
@@ -59,6 +60,16 @@ export default NextAuth({
             }
             return session
         },
+    },
+    events: {
+        async signOut(message: {
+            session: Session;
+            token: JWT;
+        }){
+            await axiosPublic.post(api_routes.logout, {}, {
+                headers: {"Authorization" : `Bearer ${message.token.token}`}
+            });
+        }
     },
     pages: {
         signIn: "/login",
