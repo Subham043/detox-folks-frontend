@@ -120,7 +120,7 @@ export default function Header() {
             open={isOpen}
             onClose={toggleDrawer}
             direction='right'
-            className='bla bla bla'
+            className=''
             size={400}
         >
             <aside className="cart-sidebar">

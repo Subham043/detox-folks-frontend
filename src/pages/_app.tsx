@@ -14,16 +14,19 @@ import { SWRConfig } from 'swr';
 import {fetcher} from '../../axios';
 import { ToastContainer } from 'react-toastify';
 import Layout from "@/components/Layout";
+import { SessionProvider } from "next-auth/react";
 
-export default function App({ Component, pageProps }: AppProps) {
+export default function App({ Component, pageProps: { session, ...pageProps } }: AppProps) {
   return <SWRConfig
   value={{
    fetcher
   }}
  >
-  <Layout>
-    <Component {...pageProps} />
-  </Layout>
-   <ToastContainer />
+  <SessionProvider session={session}>
+    <Layout>
+      <Component {...pageProps} />
+    </Layout>
+    <ToastContainer />
+  </SessionProvider>
  </SWRConfig>
 }

@@ -79,9 +79,6 @@ export default function ForgotPassword() {
                 <div className="container">
                     <div className="row justify-content-center">
                         <div className="col-12 col-sm-10 col-md-8 col-lg-6 col-xl-5">
-                            <div className="user-form-logo">
-                                <Link href="/"><img src="/images/logo.png" alt="logo" /></Link>
-                            </div>
                             <div className="user-form-card">
                                 <div className="user-form-title">
                                     <h2>worried?</h2>
@@ -106,11 +103,8 @@ export default function ForgotPassword() {
                                     </div>
                                 </form>
                             </div>
-                            <div className="user-form-remind">
+                            <div className="user-form-remind mb-5">
                                 <p>Go Back To<Link href="/login">login here</Link></p>
-                            </div>
-                            <div className="user-form-footer">
-                                <p>Greeny | &COPY; Copyright by <a href="#">Detox-Folks</a></p>
                             </div>
                         </div>
                     </div>

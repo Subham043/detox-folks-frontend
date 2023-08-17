@@ -1,8 +1,11 @@
 import Head from 'next/head'
 import Hero from '@/components/Hero';
+import { useSession } from 'next-auth/react';
 
 
 export default function Profile() {
+  const { status, data } = useSession();
+  console.log(data)
   return (
     <>
         <Head>

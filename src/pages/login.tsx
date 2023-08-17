@@ -1,9 +1,81 @@
 import Head from 'next/head'
-import Image from 'next/image'
 import Link from 'next/link'
+import * as yup from "yup";
+import { useForm } from "react-hook-form";
+import { yupResolver } from "@hookform/resolvers/yup";
+import { useState } from 'react';
+import { ErrorMessage } from '@hookform/error-message';
+import { ToastOptions, toast } from 'react-toastify';
+import { signIn, useSession } from "next-auth/react";
+import { useSearchParams, useRouter } from "next/navigation";
+
+
+const schema = yup
+  .object({
+    email: yup.string().email().required(),
+    password: yup.string().required(),
+  })
+  .required();
+
+const toastConfig:ToastOptions = {
+    position: "bottom-center",
+    autoClose: 5000,
+    hideProgressBar: false,
+    closeOnClick: true,
+    pauseOnHover: true,
+    draggable: true,
+    progress: undefined,
+    theme: "light",
+}
 
 
 export default function Login() {
+
+  const [loading, setLoading] = useState(false);
+  const router = useRouter();
+  const searchParams = useSearchParams();
+  const callbackUrl = searchParams.get("callbackUrl") || "/profile";
+  const { status, data } = useSession();
+  console.log(data)
+
+    const {
+        handleSubmit,
+        control,
+        setValue,
+        register,
+        getValues,
+        reset,
+        setError,
+        formState: { errors },
+      } = useForm({
+        resolver: yupResolver(schema),
+    });
+
+    const onSubmit = async (data: any) => {
+        setLoading(true);
+        try {
+          const res = await signIn('credentials', {
+            redirect: false,
+            email: data.email,
+            password: data.password,
+            callbackUrl,
+          }); 
+          if (!res?.error) {
+            router.push(callbackUrl);
+            reset({
+              email: "",
+              password: "",
+            });
+          } else {
+            toast.error("Invalid Credentials", toastConfig);
+          }         
+        } catch (error: any) {
+          console.log(error);
+        } finally {
+          setLoading(false);
+        }
+      };
+
   return (
     <>
         <Head>
@@ -16,21 +88,24 @@ export default function Login() {
       <div className="container">
         <div className="row justify-content-center">
           <div className="col-12 col-sm-10 col-md-8 col-lg-6 col-xl-5">
-            <div className="user-form-logo">
-              <Link href="/"><img src="/images/logo.png" alt="logo" /></Link>
-            </div>
             <div className="user-form-card">
               <div className="user-form-title">
                 <h2>welcome!</h2>
                 <p>Use your credentials to access</p>
               </div>
               <div className="user-form-group">
-                <form className="user-form">
+                <form className="user-form" onSubmit={handleSubmit(onSubmit)}>
                   <div className="form-group">
                     <input
                       type="email"
                       className="form-control"
                       placeholder="Enter your email"
+                      {...register('email')}
+                    />
+                    <ErrorMessage
+                        errors={errors}
+                        name='email'
+                        as={<div style={{ color: 'red' }} />}
                     />
                   </div>
                   <div className="form-group">
@@ -38,6 +113,12 @@ export default function Login() {
                       type="password"
                       className="form-control"
                       placeholder="Enter your password"
+                      {...register('password')}
+                    />
+                    <ErrorMessage
+                        errors={errors}
+                        name='password'
+                        as={<div style={{ color: 'red' }} />}
                     />
                   </div>
                   <div className="form-check mb-3">
@@ -51,7 +132,7 @@ export default function Login() {
                     >
                   </div>
                   <div className="form-button">
-                    <button type="submit">login</button>
+                    <button type="submit" disabled={loading}>{loading ? 'logging in' : 'login'}</button>
                     <p>
                       Forgot your password?<Link href="/forgot-password"
                         >reset here</Link
@@ -61,13 +142,10 @@ export default function Login() {
                 </form>
               </div>
             </div>
-            <div className="user-form-remind">
+            <div className="user-form-remind mb-5">
               <p>
                 Don&apos;t have any account?<Link href="/register">register here</Link>
               </p>
-            </div>
-            <div className="user-form-footer">
-              <p>Greeny | &COPY; Copyright by <a href="#">Detox-Folks</a></p>
             </div>
           </div>
         </div>
