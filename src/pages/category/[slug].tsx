@@ -5,7 +5,6 @@ import type { InferGetServerSidePropsType, GetServerSideProps } from 'next'
 import { axiosPublic } from '../../../axios';
 import { api_routes } from '@/helper/routes';
 import { CategoryType } from '@/helper/types';
-import Layout from '@/components/Layout';
 
 type ServerSideProps = {
   category: CategoryType;
@@ -26,7 +25,7 @@ export default function Category({
     repo,
   }: InferGetServerSidePropsType<typeof getServerSideProps>) {
     return (
-        <Layout>
+        <>
             <Head>
                 <title>DetoxFolks - {repo.category.meta_title}</title>
                 <meta name="description" content={repo.category.meta_description} />
@@ -489,6 +488,6 @@ export default function Category({
                     </div>
                 </div>
             </section>
-        </Layout>
+        </>
     )
 }

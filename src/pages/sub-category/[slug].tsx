@@ -7,7 +7,6 @@ import type { InferGetServerSidePropsType, GetServerSideProps } from 'next'
 import { axiosPublic } from '../../../axios';
 import { api_routes } from '@/helper/routes';
 import { CategoryType } from '@/helper/types';
-import Layout from '@/components/Layout';
 
 type ServerSideProps = {
     subCategory: CategoryType;
@@ -28,7 +27,7 @@ export default function SubCategory({
     repo,
   }: InferGetServerSidePropsType<typeof getServerSideProps>) {
     return (
-        <Layout>
+        <>
             <Head>
                 <title>DetoxFolks - {repo.subCategory.meta_title}</title>
                 <meta name="description" content={repo.subCategory.meta_description} />
@@ -465,6 +464,6 @@ export default function SubCategory({
                     </div>
                 </div>
             </section>
-        </Layout>
+        </>
     )
 }

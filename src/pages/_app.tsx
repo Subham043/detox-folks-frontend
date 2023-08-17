@@ -13,6 +13,7 @@ import type { AppProps } from 'next/app'
 import { SWRConfig } from 'swr';
 import {fetcher} from '../../axios';
 import { ToastContainer } from 'react-toastify';
+import Layout from "@/components/Layout";
 
 export default function App({ Component, pageProps }: AppProps) {
   return <SWRConfig
@@ -20,7 +21,9 @@ export default function App({ Component, pageProps }: AppProps) {
    fetcher
   }}
  >
-   <Component {...pageProps} />
+  <Layout>
+    <Component {...pageProps} />
+  </Layout>
    <ToastContainer />
  </SWRConfig>
 }
