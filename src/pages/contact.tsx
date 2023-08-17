@@ -10,6 +10,7 @@ import { axiosPublic } from '../../axios';
 import { api_routes } from '@/helper/routes';
 import { ErrorMessage } from '@hookform/error-message';
 import { usePathname } from 'next/navigation'
+import { ToastOptions, toast } from 'react-toastify';
 
 const schema = yup
   .object({
@@ -24,11 +25,20 @@ const schema = yup
   })
   .required();
 
+const toastConfig:ToastOptions = {
+    position: "bottom-center",
+    autoClose: 5000,
+    hideProgressBar: false,
+    closeOnClick: true,
+    pauseOnHover: true,
+    draggable: true,
+    progress: undefined,
+    theme: "light",
+}
+
 
 export default function Contact() {
     const [loading, setLoading] = useState(false);
-    const [responseMessage, setResponseMessage] = useState("");
-    const [isToastOpen, setIsToastOpen] = useState(false);
     const pathname = usePathname()
     
     const {
@@ -48,8 +58,7 @@ export default function Contact() {
         setLoading(true);
         try {
           const response = await axiosPublic.post(api_routes.enquiry, {...data, page_url: 'http://localhost'+pathname});
-          setResponseMessage(response.data.message);
-          setIsToastOpen(true);
+          toast.success(response.data.message, toastConfig);            
           reset({
             name: "",
             phone: "",
@@ -59,8 +68,7 @@ export default function Contact() {
         } catch (error: any) {
           console.log(error);
           if (error?.response?.data?.message) {
-            setResponseMessage(error?.response?.data?.message);
-            setIsToastOpen(true);
+            toast.error(error?.response?.data?.message, toastConfig);
           }
           if (error?.response?.data?.errors?.name) {
             setError("name", {
