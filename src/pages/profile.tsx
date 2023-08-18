@@ -1,10 +1,9 @@
 import Head from 'next/head'
 import Hero from '@/components/Hero';
-import { useSession } from 'next-auth/react';
+import ProfileCard from '@/components/ProfileCard';
+import PasswordCard from '@/components/PasswordCard';
 
 export default function Profile() {
-  const { status, data } = useSession();
-  console.log(data)
 
   return (
     <>
@@ -20,96 +19,10 @@ export default function Profile() {
         <div className="container">
           <div className="row">
             <div className="col-lg-12">
-              <div className="account-card">
-                <div className="account-title">
-                  <h4>Your Profile</h4>
-                </div>
-                <div className="account-content">
-                  <div className="row">
-                    <div className="col-md-6 col-lg-3">
-                      <div className="form-group">
-                        <label className="form-label">name</label
-                        ><input
-                          className="form-control"
-                          type="text"
-                          defaultValue="Miron Mahmud"
-                        />
-                      </div>
-                    </div>
-                    <div className="col-md-6 col-lg-3">
-                      <div className="form-group">
-                        <label className="form-label">Email</label
-                        ><input
-                          className="form-control"
-                          type="email"
-                          defaultValue="mironcoder@gmail.com"
-                        />
-                      </div>
-                    </div>
-                    <div className="col-md-6 col-lg-3">
-                      <div className="form-group">
-                        <label className="form-label">Phone</label
-                        ><input
-                          className="form-control"
-                          type="text"
-                          defaultValue="7892156160"
-                        />
-                      </div>
-                    </div>
-                    <div className="col-md-6 col-lg-3">
-                      <div className="profile-btn">
-                        <a href="change-password.html">Update Profile</a>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </div>
+              <ProfileCard />
             </div>
             <div className="col-lg-12">
-              <div className="account-card">
-                <div className="account-title">
-                  <h4>Password Setting</h4>
-                </div>
-                <div className="account-content">
-                  <div className="row">
-                    <div className="col-md-6 col-lg-3">
-                      <div className="form-group">
-                        <label className="form-label">Current Password</label
-                        ><input
-                          className="form-control"
-                          type="password"
-                          defaultValue="Miron Mahmud"
-                        />
-                      </div>
-                    </div>
-                    <div className="col-md-6 col-lg-3">
-                      <div className="form-group">
-                        <label className="form-label">New Password</label
-                        ><input
-                          className="form-control"
-                          type="password"
-                          defaultValue="mironcoder@gmail.com"
-                        />
-                      </div>
-                    </div>
-                    <div className="col-md-6 col-lg-3">
-                      <div className="form-group">
-                        <label className="form-label">Confirm Password</label
-                        ><input
-                          className="form-control"
-                          type="password"
-                          defaultValue="7892156160"
-                        />
-                      </div>
-                    </div>
-                    <div className="col-md-6 col-lg-3">
-                      <div className="profile-btn">
-                        <a href="change-password.html">Update Password</a>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </div>
+              <PasswordCard />
             </div>
             <div className="col-lg-12">
               <div className="account-card">

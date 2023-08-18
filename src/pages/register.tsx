@@ -119,7 +119,7 @@ export default function Register() {
         } finally {
           setLoading(false);
         }
-      };
+    };
 
   return (
     <>
