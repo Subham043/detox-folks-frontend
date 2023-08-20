@@ -78,14 +78,14 @@ export interface MetaLinkType<> {
 }
 
 export interface MetaType<> {
-    current_page: number;
-    from: number;
-    last_page: number;
-    per_page: number;
-    to: number;
-    total: number;
-    path: string;
-    links: MetaLinkType[];
+    current_page?: number | undefined;
+    from?: number | undefined;
+    last_page?: number | undefined;
+    per_page?: number | undefined;
+    to?: number | undefined;
+    total?: number | undefined;
+    path?: string | undefined;
+    links?: MetaLinkType[] | undefined;
 }
 
 export interface BlogResponseType<> {
@@ -134,4 +134,48 @@ export interface SubCategoryType<> {
 export interface SubCategoryResponseType<> {
     meta: MetaType;
     data: SubCategoryType[];
+}
+
+export interface ProductSpecificationType<> {
+    id: number;
+    title: string;
+    description: string;
+    created_at: string;
+    updated_at: string;
+}
+
+export interface ProductPriceType<> {
+    id: number;
+    discount: number;
+    min_quantity: number;
+    price: number;
+    created_at: string;
+    updated_at: string;
+}
+
+export interface ProductType<> {
+    id: number;
+    slug: string
+    description: string | TrustedHTML;
+    brief_description: string;
+    name: string;
+    description_unfiltered: string;
+    image: string;
+    meta_description: string;
+    meta_keywords: string;
+    meta_title: string;
+    is_draft: boolean;
+    is_new: boolean;
+    is_on_sale: boolean;
+    created_at: string;
+    updated_at: string;
+    sub_categories: SubCategoryType[];
+    categories: CategoryType[];
+    product_specifications: ProductSpecificationType[];
+    product_prices: ProductPriceType[];
+}
+
+export interface ProductResponseType<> {
+    meta: MetaType;
+    data: ProductType[];
 }

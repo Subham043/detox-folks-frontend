@@ -7083,6 +7083,24 @@ tbody tr td:last-child {
     animation: animatedBackground 5s linear infinite;
 }
 
+.product-img-loading{
+    width: 100%;
+    height: 380px;
+    margin-left: auto;
+    margin-right: auto;
+    border-radius: 10px;
+    background-image: linear-gradient(
+      90deg,
+      #e4e4e4 0%,
+      #f1f1f1 40%,
+      #ededed 60%,
+      #e4e4e4 100%
+    );
+    background-position: 0px 0px;
+    background-repeat: repeat;
+    animation: animatedBackground 5s linear infinite;
+}
+
 @keyframes animatedBackground {
     from {
       background-position: 0 0;

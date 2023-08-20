@@ -4,12 +4,17 @@ import useSWR from 'swr'
 import { api_routes } from "@/helper/routes";
 import { BlogResponseType } from "@/helper/types";
 import BlogCard from '@/components/BlogCard';
+import Pagination from '@/components/Pagination';
+import { useState } from 'react';
 
 const loadingArr = [1, 2, 3, 4]
 
 export default function Blogs() {
 
-  const { data, isLoading } = useSWR<BlogResponseType>(api_routes.blog + '?total=8');
+  const [sort, setSort] = useState('-id')
+  const [total, setTotal] = useState("10")
+  const [page, setPage] = useState("1")
+  const { data, isLoading } = useSWR<BlogResponseType>(api_routes.blog + `?total=${total}&page=${page}&sort=${sort}`);
 
   return (
     <>
@@ -30,19 +35,21 @@ export default function Blogs() {
                   <div className="top-filter">
                     <div className="filter-show">
                       <label className="filter-label">Show :</label
-                      ><select className="form-select filter-select">
-                        <option value="1">12</option>
-                        <option value="2">24</option>
-                        <option value="3">36</option>
+                      ><select className="form-select filter-select" value={total} onChange={(e)=>setTotal(e.target.value)}>
+                        <option value="10">10</option>
+                        <option value="30">30</option>
+                        <option value="60">60</option>
+                        <option value="90">90</option>
+                        <option value="100">100</option>
                       </select>
                     </div>
                     <div className="filter-short">
                       <label className="filter-label">Sort by :</label
-                      ><select className="form-select filter-select">
-                        <option selected>default</option>
-                        <option value="3">recent</option>
-                        <option value="1">featured</option>
-                        <option value="2">recommend</option>
+                      ><select className="form-select filter-select" value={sort} onChange={(e)=>setSort(e.target.value)}>
+                        <option value="-id">Latest</option>
+                        <option value="id">Oldest</option>
+                        <option value="name">A-Z</option>
+                        <option value="-name">Z-A</option>
                       </select>
                     </div>
                   </div>
@@ -62,38 +69,7 @@ export default function Blogs() {
                   </div>)
                 }
               </div>
-              <div className="row">
-                <div className="col-lg-12">
-                  <div className="bottom-paginate">
-                    <p className="page-info">Showing 12 of 60 Results</p>
-                    <ul className="pagination">
-                      <li className="page-item">
-                        <a className="page-link" href="#"
-                        ><i className="fas fa-long-arrow-alt-left"></i
-                        ></a>
-                      </li>
-                      <li className="page-item">
-                        <a className="page-link active" href="#">1</a>
-                      </li>
-                      <li className="page-item">
-                        <a className="page-link" href="#">2</a>
-                      </li>
-                      <li className="page-item">
-                        <a className="page-link" href="#">3</a>
-                      </li>
-                      <li className="page-item">...</li>
-                      <li className="page-item">
-                        <a className="page-link" href="#">60</a>
-                      </li>
-                      <li className="page-item">
-                        <a className="page-link" href="#"
-                        ><i className="fas fa-long-arrow-alt-right"></i
-                        ></a>
-                      </li>
-                    </ul>
-                  </div>
-                </div>
-              </div>
+              <Pagination {...data?.meta} paginationHandler={setPage} />
             </div>
             <div className="col-md-7 col-lg-4">
               <div className="blog-widget">
