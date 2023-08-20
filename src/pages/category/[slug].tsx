@@ -62,7 +62,7 @@ export default function Category({
 
     const filterSearchHandler = (data:string) => {
         if(data.length>0){
-            const filteredArr = repo.category.sub_categories.filter(item => item.name.includes(data))
+            const filteredArr = repo.category.sub_categories.filter(item => item.name.toLowerCase().includes(data.toLowerCase()))
             setMainSubCategoryArr([...filteredArr])
         }else{
             setMainSubCategoryArr([...repo.category.sub_categories])

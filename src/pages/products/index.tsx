@@ -2,10 +2,10 @@ import Head from 'next/head'
 import Hero from '@/components/Hero';
 import useSWR from 'swr'
 import { api_routes } from "@/helper/routes";
-import { ProductResponseType } from "@/helper/types";
+import { CategoryResponseType, CategoryType, ProductResponseType } from "@/helper/types";
 import ProductCard from '@/components/ProductCard';
 import Pagination from '@/components/Pagination';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 
 const loadingArr = [1, 2, 3, 4, 5, 6]
 
@@ -13,7 +13,65 @@ export default function Products() {
     const [sort, setSort] = useState('-id')
     const [total, setTotal] = useState("10")
     const [page, setPage] = useState("1")
-    const { data, isLoading } = useSWR<ProductResponseType>(api_routes.products + `?total=${total}&page=${page}&sort=${sort}`);
+    const [filterSearch, setFilterSearch] = useState("")
+    const [subCategory, setSubCategory] = useState("")
+    const [subCategoryArr, setSubCategoryArr] = useState<string[]>([])
+    const [category, setCategory] = useState("")
+    const [categoryArr, setCategoryArr] = useState<string[]>([])
+    const { data:categoryData, isLoading: isCategoryLoading } = useSWR<CategoryResponseType>(api_routes.categories + '?total=1000');
+    const [mainCategoryArr, setMainCategoryArr] = useState<CategoryType[] | undefined>(categoryData?.data)
+    const { data, isLoading } = useSWR<ProductResponseType>(api_routes.products + `?total=${total}&page=${page}&sort=${sort}&filter[has_categories]=${category}&filter[has_sub_categories]=${subCategory}`);
+
+    useEffect(() => {
+        setMainCategoryArr(categoryData?.data)
+    
+      return () => {}
+    }, [categoryData?.data])
+
+    const filterCategoryHandler = (data:EventTarget & HTMLInputElement) => {
+        let arrData = [...categoryArr];
+        if(data.checked){
+            arrData = [...arrData, data.value]
+        }else{
+            arrData = arrData.filter(item => item!==data.value)
+        }
+        setCategoryArr([...arrData])
+        const categoryStr = arrData.join('_');
+        setCategory(categoryStr)
+    }
+    
+    const filterSubCategoryHandler = (data:EventTarget & HTMLInputElement) => {
+        let arrData = [...subCategoryArr];
+        if(data.checked){
+            arrData = [...arrData, data.value]
+        }else{
+            arrData = arrData.filter(item => item!==data.value)
+        }
+        setSubCategoryArr([...arrData])
+        const subCategoryStr = arrData.join('_');
+        setSubCategory(subCategoryStr)
+    }
+
+    const clearFilterHandler = () => {
+        setCategoryArr([])
+        setCategory('')
+        setSubCategoryArr([])
+        setSubCategory('')
+    }
+    
+
+    const filterSearchHandler = (data:string) => {
+        if(data.length>0){
+            const filteredArr = categoryData?.data.filter((item) => {
+                return item.name.toLowerCase().includes(data.toLowerCase()) || (item.sub_categories.filter(i => i.name.toLowerCase().includes(data.toLowerCase())).length>0 && true)
+            })
+            console.log(filteredArr);
+            setMainCategoryArr(filteredArr)
+        }else{
+            setMainCategoryArr(categoryData?.data)
+        }
+        setFilterSearch(data);
+    }
 
     return (
         <>
@@ -30,115 +88,46 @@ export default function Products() {
                     <div className="row content-reverse">
                         <div className="col-lg-3">
                             <div className="shop-widget">
-                                <h6 className="shop-widget-title">Filter by Category</h6>
-                                <form>
+                                <h6 className="shop-widget-title">Filter By Category</h6>
+                                <div>
                                     <input
                                         className="shop-widget-search"
                                         type="text"
                                         placeholder="Search..."
+                                        value={filterSearch}
+                                        onChange={(e) => filterSearchHandler(e.target.value)}
                                     />
-                                    <ul className="shop-widget-list shop-widget-scroll">
-                                        <li>
-                                            <div className="shop-widget-content">
-                                                <input type="checkbox" id="cate1" /><label htmlFor="cate1"
-                                                >vegetables</label
-                                                >
-                                            </div>
-                                            <span className="shop-widget-number">(13)</span>
-                                        </li>
-                                        <li>
-                                            <div className="shop-widget-content">
-                                                <input type="checkbox" id="cate2" /><label htmlFor="cate2"
-                                                >groceries</label
-                                                >
-                                            </div>
-                                            <span className="shop-widget-number">(28)</span>
-                                        </li>
-                                        <li>
-                                            <div className="shop-widget-content">
-                                                <input type="checkbox" id="cate3" /><label htmlFor="cate3"
-                                                >fruits</label
-                                                >
-                                            </div>
-                                            <span className="shop-widget-number">(35)</span>
-                                        </li>
-                                        <li>
-                                            <div className="shop-widget-content">
-                                                <input type="checkbox" id="cate4" /><label htmlFor="cate4"
-                                                >dairy farm</label
-                                                >
-                                            </div>
-                                            <span className="shop-widget-number">(47)</span>
-                                        </li>
-                                        <li>
-                                            <div className="shop-widget-content">
-                                                <input type="checkbox" id="cate5" /><label htmlFor="cate5"
-                                                >sea foods</label
-                                                >
-                                            </div>
-                                            <span className="shop-widget-number">(59)</span>
-                                        </li>
-                                        <li>
-                                            <div className="shop-widget-content">
-                                                <input type="checkbox" id="cate6" /><label htmlFor="cate6"
-                                                >diet foods</label
-                                                >
-                                            </div>
-                                            <span className="shop-widget-number">(64)</span>
-                                        </li>
-                                        <li>
-                                            <div className="shop-widget-content">
-                                                <input type="checkbox" id="cate7" /><label htmlFor="cate7"
-                                                >dry foods</label
-                                                >
-                                            </div>
-                                            <span className="shop-widget-number">(77)</span>
-                                        </li>
-                                        <li>
-                                            <div className="shop-widget-content">
-                                                <input type="checkbox" id="cate8" /><label htmlFor="cate8"
-                                                >fast foods</label
-                                                >
-                                            </div>
-                                            <span className="shop-widget-number">(85)</span>
-                                        </li>
-                                        <li>
-                                            <div className="shop-widget-content">
-                                                <input type="checkbox" id="cate9" /><label htmlFor="cate9"
-                                                >drinks</label
-                                                >
-                                            </div>
-                                            <span className="shop-widget-number">(92)</span>
-                                        </li>
-                                        <li>
-                                            <div className="shop-widget-content">
-                                                <input type="checkbox" id="cate10" /><label htmlFor="cate10"
-                                                >coffee</label
-                                                >
-                                            </div>
-                                            <span className="shop-widget-number">(21)</span>
-                                        </li>
-                                        <li>
-                                            <div className="shop-widget-content">
-                                                <input type="checkbox" id="cate11" /><label htmlFor="cate11"
-                                                >meats</label
-                                                >
-                                            </div>
-                                            <span className="shop-widget-number">(14)</span>
-                                        </li>
-                                        <li>
-                                            <div className="shop-widget-content">
-                                                <input type="checkbox" id="cate12" /><label htmlFor="cate12"
-                                                >fishes</label
-                                                >
-                                            </div>
-                                            <span className="shop-widget-number">(56)</span>
-                                        </li>
+                                    {
+                                        isCategoryLoading && loadingArr.map( i => <div className="blog-heading-loading" key={i}></div>)
+                                    }
+                                    <ul className="shop-widget-list shop-widget-scroll w-100">
+                                        {
+                                            mainCategoryArr?.map((item, i) => <li key={i}>
+                                                <div className='w-100'>
+                                                    <div className="shop-widget-content">
+                                                        <input type="checkbox" id={`category${i + 1}`} value={item.id} checked={categoryArr.includes(item.id.toString())} onChange={(e) => filterCategoryHandler(e.target)} /><label htmlFor={`category${i + 1}`}
+                                                        >{item.name}</label>
+                                                    </div>
+                                                    {item.sub_categories.length>0 && <ul className="shop-widget-list mx-4">
+                                                        {
+                                                            item.sub_categories?.map((itm, index) => <li key={index}>
+                                                                <div className="shop-widget-content">
+                                                                    <input type="checkbox" id={`sub_category${index + 1}`} value={itm.id} checked={subCategoryArr.includes(itm.id.toString())} onChange={(e) => filterSubCategoryHandler(e.target)} /><label htmlFor={`sub_category${index + 1}`}
+                                                                    >{itm.name}</label
+                                                                    >
+                                                                </div>
+                                                            </li>)
+                                                        }
+                                                    </ul>}
+                                                    <hr />
+                                                </div>
+                                            </li>)
+                                        }
                                     </ul>
-                                    <button className="shop-widget-btn">
+                                    <button className="shop-widget-btn" onClick={clearFilterHandler}>
                                         <i className="far fa-trash-alt"></i><span>clear filter</span>
                                     </button>
-                                </form>
+                                </div>
                             </div>
                         </div>
                         <div className="col-lg-9">

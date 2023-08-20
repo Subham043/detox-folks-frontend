@@ -45,7 +45,7 @@ export default function Header() {
     };
     
 
-    const { data, isLoading } = useSWR<CategoryResponseType>(api_routes.categories + '?total=8');
+    const { data, isLoading } = useSWR<CategoryResponseType>(api_routes.categories + '?total=1000');
     
 
     return <>
