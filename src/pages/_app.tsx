@@ -16,6 +16,7 @@ import { ToastContainer } from 'react-toastify';
 import Layout from "@/components/Layout";
 import { SessionProvider } from "next-auth/react";
 import WishlistProvider from "@/context/WishlistProvider";
+import CartProvider from "@/context/CartProvider";
 
 export default function App({ Component, pageProps: { session, ...pageProps } }: AppProps) {
   return <SWRConfig
@@ -24,12 +25,14 @@ export default function App({ Component, pageProps: { session, ...pageProps } }:
   }}
  >
   <SessionProvider session={session}>
-    <WishlistProvider>
-      <Layout>
-        <Component {...pageProps} />
-      </Layout>
-      <ToastContainer />
-    </WishlistProvider>
+    <CartProvider>
+      <WishlistProvider>
+        <Layout>
+          <Component {...pageProps} />
+        </Layout>
+        <ToastContainer />
+      </WishlistProvider>
+    </CartProvider>
   </SessionProvider>
  </SWRConfig>
 }

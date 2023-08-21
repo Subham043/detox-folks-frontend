@@ -193,3 +193,13 @@ export interface WishlistType<> {
     updated_at: string;
     id: number;
 }
+
+export interface CartType<> {
+    product: ProductType;
+    product_price: ProductPriceType;
+    created_at: string;
+    updated_at: string;
+    id: number;
+    quantity: number;
+    amount: number;
+}
