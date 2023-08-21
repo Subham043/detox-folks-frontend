@@ -7101,6 +7101,12 @@ tbody tr td:last-child {
     animation: animatedBackground 5s linear infinite;
 }
 
+.orderlist-deliver {
+    border-radius: 8px;
+    margin-bottom: 25px;
+    background: var(--chalk)
+}
+
 @keyframes animatedBackground {
     from {
       background-position: 0 0;

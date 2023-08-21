@@ -1,3 +1,5 @@
+import { ReactNode } from "react";
+
 export interface BannerType<> {
     id: number;
     title: string
@@ -147,6 +149,7 @@ export interface ProductSpecificationType<> {
 export interface ProductPriceType<> {
     id: number;
     discount: number;
+    discount_in_price: number;
     min_quantity: number;
     price: number;
     created_at: string;
@@ -178,4 +181,15 @@ export interface ProductType<> {
 export interface ProductResponseType<> {
     meta: MetaType;
     data: ProductType[];
+}
+
+export interface ChildrenType<> {
+    children: ReactNode
+}
+
+export interface WishlistType<> {
+    product: ProductType;
+    created_at: string;
+    updated_at: string;
+    id: number;
 }

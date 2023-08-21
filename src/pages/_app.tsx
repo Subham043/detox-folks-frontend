@@ -15,6 +15,7 @@ import {fetcher} from '../../axios';
 import { ToastContainer } from 'react-toastify';
 import Layout from "@/components/Layout";
 import { SessionProvider } from "next-auth/react";
+import WishlistProvider from "@/context/WishlistProvider";
 
 export default function App({ Component, pageProps: { session, ...pageProps } }: AppProps) {
   return <SWRConfig
@@ -23,10 +24,12 @@ export default function App({ Component, pageProps: { session, ...pageProps } }:
   }}
  >
   <SessionProvider session={session}>
-    <Layout>
-      <Component {...pageProps} />
-    </Layout>
-    <ToastContainer />
+    <WishlistProvider>
+      <Layout>
+        <Component {...pageProps} />
+      </Layout>
+      <ToastContainer />
+    </WishlistProvider>
   </SessionProvider>
  </SWRConfig>
 }

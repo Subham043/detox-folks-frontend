@@ -532,7 +532,7 @@
 
 .details-price del {
     color: var(--red);
-    margin-right: 25px
+    margin-right: 10px
 }
 
 .details-price span {
