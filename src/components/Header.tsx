@@ -3,11 +3,12 @@ import { useContext, useState } from "react";
 import Drawer from 'react-modern-drawer'
 import useSWR from 'swr'
 import { api_routes } from "@/helper/routes";
-import { CategoryResponseType } from "@/helper/types";
+import { CartType, CategoryResponseType } from "@/helper/types";
 import { signOut, useSession } from 'next-auth/react';
 import { useRouter } from "next/router";
 import { ToastOptions, toast } from "react-toastify";
 import { WishlistContext } from "@/context/WishlistProvider";
+import { CartContext } from "@/context/CartProvider";
 
 const toastConfig:ToastOptions = {
     position: "bottom-center",
@@ -20,11 +21,15 @@ const toastConfig:ToastOptions = {
     theme: "light",
 }
 export default function Header() {
+    const { status, data: session } = useSession();
     const [isOpen, setIsOpen] = useState(false)
     const toggleDrawer = () => {
-        setIsOpen((prevState) => !prevState)
+        if(status==='authenticated'){
+            setIsOpen((prevState) => !prevState)
+        }else{
+            toast.error("Please log in to view cart.", toastConfig);
+        }
     }
-    const { status, data: session } = useSession();
     const [loading, setLoading] = useState(false);
     const router = useRouter();
     const callbackUrl = "/";
@@ -48,6 +53,33 @@ export default function Header() {
 
     const { data, isLoading } = useSWR<CategoryResponseType>(api_routes.categories + '?total=1000');
     const { wishlist } = useContext(WishlistContext);
+    const { cart, updateItemCart, deleteItemCart, cartLoading } = useContext(CartContext);
+
+    const incrementQuantity = (item:CartType) => {
+        const price = item.product.product_prices.filter(i=>(item.quantity+50)<=i.min_quantity).length>0 ? item.product.product_prices.filter(i=>(item.quantity+50)<=i.min_quantity)[0] : item.product.product_prices[item.product.product_prices.length-1];
+        updateItemCart({
+            cartItemId: item.id,
+            product_id: item.product.id,
+            product_price_id: price.id,
+            quantity: item.quantity+50,
+            amount: (item.quantity+50)*price.discount_in_price,
+        })
+    };
+    
+    const decrementQuantity = (item:CartType) => {
+        const price = item.product.product_prices.filter(i=>(Math.max(0, item.quantity-50))<=i.min_quantity).length>0 ? item.product.product_prices.filter(i=>(Math.max(0, item.quantity-50))<=i.min_quantity)[0] : item.product.product_prices[item.product.product_prices.length-1];
+        if(Math.max(0, item.quantity-50)!==0){
+            updateItemCart({
+                cartItemId: item.id,
+                product_id: item.product.id,
+                product_price_id: price.id,
+                quantity: Math.max(0, item.quantity-50),
+                amount: (Math.max(0, item.quantity-50))*price.discount_in_price,
+            })
+        }else{
+            deleteItemCart(item.id)
+        }
+    };
     
 
     return <>
@@ -94,7 +126,7 @@ export default function Header() {
                         <Link href="/wishlist" className="header-widget" title="Wishlist"
                         ><i className="fas fa-heart"></i><sup>{wishlist.wishlist.length}</sup></Link
                         ><button className="header-widget header-cart" onClick={toggleDrawer} title="Cartlist">
-                            <i className="fas fa-shopping-basket"></i><sup>9+</sup
+                            <i className="fas fa-shopping-basket"></i><sup>{cart.cart.length}</sup
                             ><span>total price<small>$345.00</small></span>
                         </button>
                     </div>
@@ -172,171 +204,59 @@ export default function Header() {
             <aside className="cart-sidebar">
                 <div className="cart-header">
                     <div className="cart-total">
-                        <i className="fas fa-shopping-basket"></i><span>total item (5)</span>
+                        <i className="fas fa-shopping-basket"></i><span>total item ({cart.cart.length})</span>
                     </div>
                     <button onClick={toggleDrawer} className="cart-close"><i className="icofont-close"></i></button>
                 </div>
                 <ul className="cart-list">
-                    <li className="cart-item">
+                    {
+                        cart.cart.map((item, i) => <li className="cart-item" key={i}>
                         <div className="cart-media">
-                            <a href="#"><img src="https://static.vecteezy.com/system/resources/previews/016/694/735/original/tissue-with-transparent-background-png.png" alt="product" /></a
-                            ><button className="cart-delete">
+                            <a href="#"><img src={item.product.image} alt="product" /></a
+                            ><button className="cart-delete" disabled={cartLoading} onClick={()=>deleteItemCart(item.id)}>
                                 <i className="far fa-trash-alt"></i>
                             </button>
                         </div>
                         <div className="cart-info-group">
                             <div className="cart-info">
-                                <h6><a href="product-single.html">existing product name</a></h6>
-                                <p>Unit Price - $8.75</p>
+                                <h6><a href="product-single.html">{item.product.name}</a></h6>
+                                {
+                                    item.product.product_prices.length>0 && <p>
+                                        Unit Price - <span>&#8377;{item.product.product_prices[item.product.product_prices.length-1].discount_in_price}<small>/pieces</small></span>
+                                    </p>
+                                }
                             </div>
                             <div className="cart-action-group">
                                 <div className="product-action">
-                                    <button className="action-minus" title="Quantity Minus">
+                                    <button className="action-minus" title="Quantity Minus" disabled={cartLoading} onClick={()=>decrementQuantity(item)}>
                                         <i className="icofont-minus"></i></button
                                     ><input
                                         className="action-input"
                                         title="Quantity Number"
                                         type="text"
                                         name="quantity"
-                                        defaultValue="1"
-                                    /><button className="action-plus" title="Quantity Plus">
+                                        disabled={cartLoading}
+                                        readOnly={cartLoading}
+                                        value={item.quantity}
+                                    /><button className="action-plus" title="Quantity Plus" disabled={cartLoading} onClick={()=>incrementQuantity(item)}>
                                         <i className="icofont-plus"></i>
                                     </button>
                                 </div>
-                                <h6>$56.98</h6>
+                                <h6>&#8377;{item.amount}</h6>
                             </div>
                         </div>
-                    </li>
-                    <li className="cart-item">
-                        <div className="cart-media">
-                            <a href="#"><img src="https://m.media-amazon.com/images/I/51pILIz20gL._SL1200_.jpg" alt="product" /></a
-                            ><button className="cart-delete">
-                                <i className="far fa-trash-alt"></i>
-                            </button>
-                        </div>
-                        <div className="cart-info-group">
-                            <div className="cart-info">
-                                <h6><a href="product-single.html">existing product name</a></h6>
-                                <p>Unit Price - $8.75</p>
-                            </div>
-                            <div className="cart-action-group">
-                                <div className="product-action">
-                                    <button className="action-minus" title="Quantity Minus">
-                                        <i className="icofont-minus"></i></button
-                                    ><input
-                                        className="action-input"
-                                        title="Quantity Number"
-                                        type="text"
-                                        name="quantity"
-                                        defaultValue="1"
-                                    /><button className="action-plus" title="Quantity Plus">
-                                        <i className="icofont-plus"></i>
-                                    </button>
-                                </div>
-                                <h6>$56.98</h6>
-                            </div>
-                        </div>
-                    </li>
-                    <li className="cart-item">
-                        <div className="cart-media">
-                            <a href="#"><img src="https://img.freepik.com/premium-photo/toothpicks-box-isolated-white_179068-1760.jpg?w=2000" alt="product" /></a
-                            ><button className="cart-delete">
-                                <i className="far fa-trash-alt"></i>
-                            </button>
-                        </div>
-                        <div className="cart-info-group">
-                            <div className="cart-info">
-                                <h6><a href="product-single.html">existing product name</a></h6>
-                                <p>Unit Price - $8.75</p>
-                            </div>
-                            <div className="cart-action-group">
-                                <div className="product-action">
-                                    <button className="action-minus" title="Quantity Minus">
-                                        <i className="icofont-minus"></i></button
-                                    ><input
-                                        className="action-input"
-                                        title="Quantity Number"
-                                        type="text"
-                                        name="quantity"
-                                        defaultValue="1"
-                                    /><button className="action-plus" title="Quantity Plus">
-                                        <i className="icofont-plus"></i>
-                                    </button>
-                                </div>
-                                <h6>$56.98</h6>
-                            </div>
-                        </div>
-                    </li>
-                    <li className="cart-item">
-                        <div className="cart-media">
-                            <a href="#"><img src="https://3.imimg.com/data3/RY/JL/MY-11348186/aluminium-foil-pouch-1000x1000.jpg" alt="product" /></a
-                            ><button className="cart-delete">
-                                <i className="far fa-trash-alt"></i>
-                            </button>
-                        </div>
-                        <div className="cart-info-group">
-                            <div className="cart-info">
-                                <h6><a href="product-single.html">existing product name</a></h6>
-                                <p>Unit Price - $8.75</p>
-                            </div>
-                            <div className="cart-action-group">
-                                <div className="product-action">
-                                    <button className="action-minus" title="Quantity Minus">
-                                        <i className="icofont-minus"></i></button
-                                    ><input
-                                        className="action-input"
-                                        title="Quantity Number"
-                                        type="text"
-                                        name="quantity"
-                                        defaultValue="1"
-                                    /><button className="action-plus" title="Quantity Plus">
-                                        <i className="icofont-plus"></i>
-                                    </button>
-                                </div>
-                                <h6>$56.98</h6>
-                            </div>
-                        </div>
-                    </li>
-                    <li className="cart-item">
-                        <div className="cart-media">
-                            <a href="#"><img src="https://5.imimg.com/data5/ANDROID/Default/2022/11/NH/SS/MO/4041306/product-jpeg-500x500.jpg" alt="product" /></a
-                            ><button className="cart-delete">
-                                <i className="far fa-trash-alt"></i>
-                            </button>
-                        </div>
-                        <div className="cart-info-group">
-                            <div className="cart-info">
-                                <h6><a href="product-single.html">existing product name</a></h6>
-                                <p>Unit Price - $8.75</p>
-                            </div>
-                            <div className="cart-action-group">
-                                <div className="product-action">
-                                    <button className="action-minus" title="Quantity Minus">
-                                        <i className="icofont-minus"></i></button
-                                    ><input
-                                        className="action-input"
-                                        title="Quantity Number"
-                                        type="text"
-                                        name="quantity"
-                                        defaultValue="1"
-                                    /><button className="action-plus" title="Quantity Plus">
-                                        <i className="icofont-plus"></i>
-                                    </button>
-                                </div>
-                                <h6>$56.98</h6>
-                            </div>
-                        </div>
-                    </li>
+                    </li>)
+                    }
                 </ul>
                 <div className="cart-footer">
-                    <button className="coupon-btn">Do you have a coupon code?</button>
+                    {/* <button className="coupon-btn">Do you have a coupon code?</button>
                     <form className="coupon-form">
                         <input type="text" placeholder="Enter your coupon code" /><button
                             type="submit"
                         >
                             <span>apply</span>
                         </button>
-                    </form>
+                    </form> */}
                     <Link className="cart-checkout-btn" href="/checkout"
                     ><span className="checkout-label">Proceed to Checkout</span
                     ><span className="checkout-price">$369.78</span></Link
