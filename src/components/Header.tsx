@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { useState } from "react";
+import { useContext, useState } from "react";
 import Drawer from 'react-modern-drawer'
 import useSWR from 'swr'
 import { api_routes } from "@/helper/routes";
@@ -7,6 +7,7 @@ import { CategoryResponseType } from "@/helper/types";
 import { signOut, useSession } from 'next-auth/react';
 import { useRouter } from "next/router";
 import { ToastOptions, toast } from "react-toastify";
+import { WishlistContext } from "@/context/WishlistProvider";
 
 const toastConfig:ToastOptions = {
     position: "bottom-center",
@@ -46,6 +47,7 @@ export default function Header() {
     
 
     const { data, isLoading } = useSWR<CategoryResponseType>(api_routes.categories + '?total=1000');
+    const { wishlist } = useContext(WishlistContext);
     
 
     return <>
@@ -90,7 +92,7 @@ export default function Header() {
                             </ul>
                         }
                         <Link href="/wishlist" className="header-widget" title="Wishlist"
-                        ><i className="fas fa-heart"></i><sup>0</sup></Link
+                        ><i className="fas fa-heart"></i><sup>{wishlist.wishlist.length}</sup></Link
                         ><button className="header-widget header-cart" onClick={toggleDrawer} title="Cartlist">
                             <i className="fas fa-shopping-basket"></i><sup>9+</sup
                             ><span>total price<small>$345.00</small></span>

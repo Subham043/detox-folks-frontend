@@ -1,11 +1,60 @@
 import { WishlistContext } from "@/context/WishlistProvider";
 import { ProductType } from "@/helper/types";
 import Link from "next/link";
-import { useContext } from "react";
+import { useContext, useEffect, useState } from "react";
+import CartQuantity from "./CartQuantity";
+import { CartContext } from "@/context/CartProvider";
 
 export default function ProductCard({ id, name, image, slug, created_at, description_unfiltered, product_prices }: ProductType) {
 
     const { wishlist, addItemWishlist, deleteItemWishlist, wishlistLoading } = useContext(WishlistContext);
+    const [quantity, setQuantity] = useState<number>(0);
+    
+    const { cart, addItemCart, updateItemCart, deleteItemCart, cartLoading } = useContext(CartContext);
+
+    useEffect(() => {
+      setQuantity(cart.cart.filter(item=>item.product.id===id).length===0 ? 0 : cart.cart.filter(item=>item.product.id===id)[0].quantity)
+    
+      return () => {}
+    }, [cart.cart, id])
+
+    const incrementQuantity = () => {
+        const cart_product = cart.cart.filter(item=>item.product.id===id)
+        const price = product_prices.filter(item=>(quantity+50)<=item.min_quantity).length>0 ? product_prices.filter(item=>(quantity+50)<=item.min_quantity)[0] : product_prices[product_prices.length-1];
+        if(cart_product.length===0){
+            addItemCart({
+                product_id: id,
+                product_price_id: price.id,
+                quantity: quantity+50,
+                amount: (quantity+50)*price.discount_in_price,
+            })
+        }else{
+            updateItemCart({
+                cartItemId: cart_product[0].id,
+                product_id: id,
+                product_price_id: price.id,
+                quantity: quantity+50,
+                amount: (quantity+50)*price.discount_in_price,
+            })
+        }
+    };
+    
+    const decrementQuantity = () => {
+        const cart_product = cart.cart.filter(item=>item.product.id===id)
+        const price = product_prices.filter(item=>(Math.max(0, quantity-50))<=item.min_quantity).length>0 ? product_prices.filter(item=>(Math.max(0, quantity-50))<=item.min_quantity)[0] : product_prices[product_prices.length-1];
+        if(cart_product.length!==0 && Math.max(0, quantity-50)!==0){
+            updateItemCart({
+                cartItemId: cart_product[0].id,
+                product_id: id,
+                product_price_id: price.id,
+                quantity: Math.max(0, quantity-50),
+                amount: (Math.max(0, quantity-50))*price.discount_in_price,
+            })
+        }else{
+            deleteItemCart(cart_product[0].id)
+        }
+    };
+
     return <div className="col">
         <div className="product-card">
             <div className="product-media">
@@ -28,22 +77,7 @@ export default function ProductCard({ id, name, image, slug, created_at, descrip
                         {product_prices[product_prices.length - 1].discount !== 0 && <del>&#8377;{product_prices[product_prices.length - 1].price}</del>}<span>&#8377;{product_prices[product_prices.length - 1].discount_in_price}<small>/pieces</small></span>
                     </h6>
                 }
-                <button className="product-add" title="Add to Cart">
-                    <i className="fas fa-shopping-basket"></i><span>add</span>
-                </button>
-                <div className="product-action">
-                    <button className="action-minus" title="Quantity Minus">
-                        <i className="icofont-minus"></i></button
-                    ><input
-                        className="action-input"
-                        title="Quantity Number"
-                        type="text"
-                        name="quantity"
-                        defaultValue="1"
-                    /><button className="action-plus" title="Quantity Plus">
-                        <i className="icofont-plus"></i>
-                    </button>
-                </div>
+                <CartQuantity quantity={quantity} incrementQuantity={incrementQuantity} decrementQuantity={decrementQuantity} loading={cartLoading} />
             </div>
         </div>
     </div>

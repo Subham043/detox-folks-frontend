@@ -6,7 +6,7 @@ import { useSession } from "next-auth/react";
 import { ToastOptions, toast } from 'react-toastify';
 
 const toastConfig:ToastOptions = {
-    position: "bottom-center",
+    position: "top-right",
     autoClose: 5000,
     hideProgressBar: false,
     closeOnClick: true,
@@ -19,17 +19,26 @@ const toastConfig:ToastOptions = {
 export type CartType = {
     cart: CartDataType[];
 }
+
+type CartInput = {
+  product_id: number;
+  product_price_id: number;
+  quantity: number;
+  amount: number;
+}
   
 export type CartContextType = {
     cart: CartType;
     cartLoading: boolean;
-    addItemCart: (data: number) => void;
+    addItemCart: (data: CartInput) => void;
+    updateItemCart: ({cartItemId, ...data}: CartInput & {cartItemId:number}) => void;
     deleteItemCart: (data: number) => void;
 }
 
 const cartDefaultValues: CartContextType = {
     cart: {cart:[]},
-    addItemCart: (data: number) => {},
+    addItemCart: (data: CartInput) => {},
+    updateItemCart: ({cartItemId, ...data}: CartInput & {cartItemId:number}) => {},
     deleteItemCart: (data: number) => {},
     cartLoading: false
 };
@@ -47,17 +56,39 @@ const CartProvider: React.FC<ChildrenType> = ({children}) => {
     }, [status])
     
 
-    const addItemCart = async (data: number) => {
+    const addItemCart = async (data: CartInput) => {
         if(status==='authenticated'){
             setCartLoading(true);
             try {
-              const response = await axiosPublic.post(api_routes.cart_create, {product_id:data}, {
+              const response = await axiosPublic.post(api_routes.cart_create, data, {
                 headers: {"Authorization" : `Bearer ${session?.user.token}`}
               });
               setCartDetails({cart: [...cart.cart, response.data.cart]});
               toast.success("Item added to cart.", toastConfig);
             } catch (error: any) {
               console.log(error);
+              toast.error("Something went wrong. Please try again later!", toastConfig);
+            }finally{
+              setCartLoading(false);
+            }
+        }else{
+            toast.error("Please log in to add the item to cart.", toastConfig);
+        }
+    }
+    
+    const updateItemCart = async ({cartItemId, ...data}: CartInput & {cartItemId:number}) => {
+        if(status==='authenticated'){
+            setCartLoading(true);
+            try {
+              const response = await axiosPublic.post(api_routes.cart_update + `/${cartItemId}`, data, {
+                headers: {"Authorization" : `Bearer ${session?.user.token}`}
+              });
+              const remove_cart_product = cart.cart.filter(item=>item.id!==cartItemId);
+              setCartDetails({cart: [...remove_cart_product, response.data.cart]});
+              toast.success("Item quantity updated in cart.", toastConfig);
+            } catch (error: any) {
+              console.log(error);
+              toast.error("Something went wrong. Please try again later!", toastConfig);
             }finally{
               setCartLoading(false);
             }
@@ -78,6 +109,7 @@ const CartProvider: React.FC<ChildrenType> = ({children}) => {
                 toast.success("Item removed from cart.", toastConfig);
             } catch (error: any) {
               console.log(error);
+              toast.error("Something went wrong. Please try again later!", toastConfig);
             }finally{
               setCartLoading(false);
             }
@@ -103,7 +135,7 @@ const CartProvider: React.FC<ChildrenType> = ({children}) => {
     }
 
     return (
-      <CartContext.Provider value={{cart, addItemCart, deleteItemCart, cartLoading}}>
+      <CartContext.Provider value={{cart, addItemCart, updateItemCart, deleteItemCart, cartLoading}}>
           {children}
       </CartContext.Provider>
     );

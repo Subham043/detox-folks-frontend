@@ -11,8 +11,10 @@ import Pagination from '@/components/Pagination';
 import useSWR from 'swr'
 import { CategoryResponseType, CategoryType, ProductResponseType } from "@/helper/types";
 import ProductCard from '@/components/ProductCard';
-import { useContext, useState } from 'react';
+import { useContext, useEffect, useState } from 'react';
 import { WishlistContext } from '@/context/WishlistProvider';
+import CartQuantity from '@/components/CartQuantity';
+import { CartContext } from '@/context/CartProvider';
 
 const loadingArr = [1, 2, 3, 4, 5, 6, 7, 8]
 
@@ -52,8 +54,54 @@ export default function ProductDetail({
     }
 
     const [page, setPage] = useState("1")
+    const [quantity, setQuantity] = useState<number>(0);
     const { data, isLoading } = useSWR<ProductResponseType>(api_routes.products + `?total=8&page=${page}&filter[has_categories]=${getCategoryStr()}&filter[has_sub_categories]=${getSubCategoryStr()}`);
     const { wishlist, addItemWishlist, deleteItemWishlist, wishlistLoading } = useContext(WishlistContext);
+    const { cart, addItemCart, updateItemCart, deleteItemCart, cartLoading } = useContext(CartContext);
+
+    useEffect(() => {
+      setQuantity(cart.cart.filter(item=>item.product.id===repo.product.id).length===0 ? 0 : cart.cart.filter(item=>item.product.id===repo.product.id)[0].quantity)
+    
+      return () => {}
+    }, [cart.cart])
+
+    const incrementQuantity = () => {
+        const cart_product = cart.cart.filter(item=>item.product.id===repo.product.id)
+        const price = repo.product.product_prices.filter(item=>(quantity+50)<=item.min_quantity).length>0 ? repo.product.product_prices.filter(item=>(quantity+50)<=item.min_quantity)[0] : repo.product.product_prices[repo.product.product_prices.length-1];
+        if(cart_product.length===0){
+            addItemCart({
+                product_id: repo.product.id,
+                product_price_id: price.id,
+                quantity: quantity+50,
+                amount: (quantity+50)*price.discount_in_price,
+            })
+        }else{
+            updateItemCart({
+                cartItemId: cart_product[0].id,
+                product_id: repo.product.id,
+                product_price_id: price.id,
+                quantity: quantity+50,
+                amount: (quantity+50)*price.discount_in_price,
+            })
+        }
+    };
+    
+    const decrementQuantity = () => {
+        const cart_product = cart.cart.filter(item=>item.product.id===repo.product.id)
+        const price = repo.product.product_prices.filter(item=>(Math.max(0, quantity-50))<=item.min_quantity).length>0 ? repo.product.product_prices.filter(item=>(Math.max(0, quantity-50))<=item.min_quantity)[0] : repo.product.product_prices[repo.product.product_prices.length-1];
+        if(cart_product.length!==0 && Math.max(0, quantity-50)!==0){
+            updateItemCart({
+                cartItemId: cart_product[0].id,
+                product_id: repo.product.id,
+                product_price_id: price.id,
+                quantity: Math.max(0, quantity-50),
+                amount: (Math.max(0, quantity-50))*price.discount_in_price,
+            })
+        }else{
+            deleteItemCart(cart_product[0].id)
+        }
+    };
+    
 
     return (
         <>
@@ -88,10 +136,6 @@ export default function ProductDetail({
                                 <h3 className="details-name">
                                     <Link href={`/products/${repo.product.slug}`}>{repo.product.name}</Link>
                                 </h3>
-                                {/* <div className="details-meta">
-                                    <p>SKU:<span>1234567</span></p>
-                                    <p>BRAND:<a href="#">radhuni</a></p>
-                                </div> */}
                                 {
                                     repo.product.product_prices.length>0 && <h3 className="details-price">
                                         {repo.product.product_prices[repo.product.product_prices.length-1].discount!==0 && <del>&#8377;{repo.product.product_prices[repo.product.product_prices.length-1].price}</del>}<span>&#8377;{repo.product.product_prices[repo.product.product_prices.length-1].discount_in_price}<small>/pieces</small></span>
@@ -144,29 +188,11 @@ export default function ProductDetail({
                                         </li>
                                     </ul>
                                 </div>
-                                {/* <div className="details-add-group">
-                                    <button className="product-add" title="Add to Cart">
-                                        <i className="fas fa-shopping-basket"></i><span>add to cart</span>
-                                    </button>
-                                    <div className="product-action">
-                                        <button className="action-minus" title="Quantity Minus">
-                                            <i className="icofont-minus"></i></button
-                                        ><input
-                                            className="action-input"
-                                            title="Quantity Number"
-                                            type="text"
-                                            name="quantity"
-                                            defaultValue="1"
-                                        /><button className="action-plus" title="Quantity Plus">
-                                            <i className="icofont-plus"></i>
-                                        </button>
-                                    </div>
-                                </div> */}
                                 <div className="details-action-group">
-                                    <button className="product-add" title="Add to Cart">
-                                        <i className="fas fa-shopping-basket"></i><span>add to cart</span>
-                                    </button>
-                                    <button className={`details-wish wish active`} disabled={wishlistLoading} onClick={()=> wishlist.wishlist.length>0 && wishlist.wishlist.filter(item=>item.product.id===repo.product.id).length>0 ? deleteItemWishlist(wishlist.wishlist.filter(item=>item.product.id===repo.product.id)[0].id) : addItemWishlist(repo.product.id)}
+                                    <div className="details-add-group m-0">
+                                        <CartQuantity quantity={quantity} incrementQuantity={incrementQuantity} decrementQuantity={decrementQuantity} loading={cartLoading} />
+                                    </div>
+                                    <button className={`product-add`} disabled={wishlistLoading} onClick={()=> wishlist.wishlist.length>0 && wishlist.wishlist.filter(item=>item.product.id===repo.product.id).length>0 ? deleteItemWishlist(wishlist.wishlist.filter(item=>item.product.id===repo.product.id)[0].id) : addItemWishlist(repo.product.id)}
                                     ><i className="icofont-heart"></i><span className='mx-1'>{wishlist.wishlist.length>0 && wishlist.wishlist.filter(item=>item.product.id===repo.product.id).length>0 ? 'Remove From Wishlist' : 'Add To Wishlist'}</span></button
                                     >
                                 </div>

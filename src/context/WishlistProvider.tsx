@@ -58,6 +58,7 @@ const WishlistProvider: React.FC<ChildrenType> = ({children}) => {
               toast.success("Item added to wishlist.", toastConfig);
             } catch (error: any) {
               console.log(error);
+              toast.error("Something went wrong. Please try again later!", toastConfig);
             }finally{
               setWishlistLoading(false);
             }
@@ -78,6 +79,7 @@ const WishlistProvider: React.FC<ChildrenType> = ({children}) => {
                 toast.success("Item removed from wishlist.", toastConfig);
             } catch (error: any) {
               console.log(error);
+              toast.error("Something went wrong. Please try again later!", toastConfig);
             }finally{
               setWishlistLoading(false);
             }
