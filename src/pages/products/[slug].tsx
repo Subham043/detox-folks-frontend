@@ -144,7 +144,7 @@ export default function ProductDetail({
                                 {repo.product.product_prices.length>0 && <div className="orderlist-deliver">
                                     <h6 className='px-2 pt-3'>Bulk Offer :</h6>
                                     <hr />
-                                    <ul>
+                                    <ul className='pb-2'>
                                         {
                                             repo.product.product_prices.map((item, i) => <li className='px-2 pb-1' key={i}>
                                             <code><i className='icofont-info-circle'></i> Buy {item.min_quantity} Pieces or more at &#8377;{item.discount_in_price}/Pieces</code>

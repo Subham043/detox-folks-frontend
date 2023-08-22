@@ -18,6 +18,7 @@ const toastConfig:ToastOptions = {
 
 export type CartType = {
     cart: CartDataType[];
+    cart_subtotal: number;
 }
 
 type CartInput = {
@@ -36,7 +37,7 @@ export type CartContextType = {
 }
 
 const cartDefaultValues: CartContextType = {
-    cart: {cart:[]},
+    cart: {cart:[], cart_subtotal: 0},
     addItemCart: (data: CartInput) => {},
     updateItemCart: ({cartItemId, ...data}: CartInput & {cartItemId:number}) => {},
     deleteItemCart: (data: number) => {},
@@ -46,7 +47,7 @@ const cartDefaultValues: CartContextType = {
 export const CartContext = createContext<CartContextType>(cartDefaultValues);
 
 const CartProvider: React.FC<ChildrenType> = ({children}) => {
-    const [cart, setCartDetails] = useState<CartType>({cart:[]});
+    const [cart, setCartDetails] = useState<CartType>({cart:[], cart_subtotal:0});
     const [cartLoading, setCartLoading] = useState<boolean>(false);
     const { status, data: session } = useSession();
   
@@ -63,7 +64,7 @@ const CartProvider: React.FC<ChildrenType> = ({children}) => {
               const response = await axiosPublic.post(api_routes.cart_create, data, {
                 headers: {"Authorization" : `Bearer ${session?.user.token}`}
               });
-              setCartDetails({cart: [...cart.cart, response.data.cart]});
+              setCartDetails({cart: [...cart.cart, response.data.cart], cart_subtotal:response.data.cart_subtotal});
               toast.success("Item added to cart.", toastConfig);
             } catch (error: any) {
               console.log(error);
@@ -83,8 +84,12 @@ const CartProvider: React.FC<ChildrenType> = ({children}) => {
               const response = await axiosPublic.post(api_routes.cart_update + `/${cartItemId}`, data, {
                 headers: {"Authorization" : `Bearer ${session?.user.token}`}
               });
-              const remove_cart_product = cart.cart.filter(item=>item.id!==cartItemId);
-              setCartDetails({cart: [...remove_cart_product, response.data.cart]});
+              var cartItemIndex = cart.cart.findIndex(function(c) { 
+                return c.id == cartItemId; 
+              });
+              const old_cart = cart.cart;
+              old_cart[cartItemIndex] = response.data.cart;
+              setCartDetails({cart: [...old_cart], cart_subtotal:response.data.cart_subtotal});
               toast.success("Item quantity updated in cart.", toastConfig);
             } catch (error: any) {
               console.log(error);
@@ -105,7 +110,7 @@ const CartProvider: React.FC<ChildrenType> = ({children}) => {
                 headers: {"Authorization" : `Bearer ${session?.user.token}`}
               });
                 const removedItemArray = cart.cart.filter(item => item.id !== data);
-                setCartDetails({cart: [...removedItemArray]});
+                setCartDetails({cart: [...removedItemArray], cart_subtotal:response.data.cart_subtotal});
                 toast.success("Item removed from cart.", toastConfig);
             } catch (error: any) {
               console.log(error);
@@ -125,7 +130,7 @@ const CartProvider: React.FC<ChildrenType> = ({children}) => {
                 const response = await axiosPublic.get(api_routes.cart_all, {
                     headers: {"Authorization" : `Bearer ${session?.user.token}`}
                 });
-                setCartDetails({cart: [...response.data.data]});
+                setCartDetails({cart: [...response.data.cart], cart_subtotal:response.data.cart_subtotal});
             } catch (error: any) {
               console.log(error);
             }finally{

@@ -127,7 +127,7 @@ export default function Header() {
                         ><i className="fas fa-heart"></i><sup>{wishlist.wishlist.length}</sup></Link
                         ><button className="header-widget header-cart" onClick={toggleDrawer} title="Cartlist">
                             <i className="fas fa-shopping-basket"></i><sup>{cart.cart.length}</sup
-                            ><span>total price<small>$345.00</small></span>
+                            ><span>total price<small>&#8377;{cart.cart_subtotal}</small></span>
                         </button>
                     </div>
                 </div>
@@ -259,7 +259,7 @@ export default function Header() {
                     </form> */}
                     <Link className="cart-checkout-btn" href="/checkout"
                     ><span className="checkout-label">Proceed to Checkout</span
-                    ><span className="checkout-price">$369.78</span></Link
+                    ><span className="checkout-price">&#8377;{cart.cart_subtotal}</span></Link
                     >
                 </div>
             </aside>

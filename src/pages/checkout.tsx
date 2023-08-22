@@ -1,9 +1,13 @@
 import Head from 'next/head'
 import Hero from '@/components/Hero';
+import { useContext } from 'react';
+import { CartContext } from '@/context/CartProvider';
 import Link from 'next/link';
 
 
 export default function Checkout() {
+  const { cart, updateItemCart, deleteItemCart, cartLoading } = useContext(CartContext);
+
   return (
     <>
       <Head>
@@ -18,13 +22,6 @@ export default function Checkout() {
         <div className="container">
           <div className="row">
             <div className="col-lg-12">
-              <div className="alert-info">
-                <p>
-                  Returning customer? <Link href="/login">Click here to login</Link>
-                </p>
-              </div>
-            </div>
-            <div className="col-lg-12">
               <div className="account-card">
                 <div className="account-title"><h4>Your order</h4></div>
                 <div className="account-content">
@@ -36,132 +33,42 @@ export default function Checkout() {
                           <th scope="col">Product</th>
                           <th scope="col">Name</th>
                           <th scope="col">Price</th>
-                          <th scope="col">brand</th>
                           <th scope="col">quantity</th>
+                          <th scope="col">Total</th>
                           <th scope="col">action</th>
                         </tr>
                       </thead>
                       <tbody>
-                        <tr>
-                          <td className="table-serial"><h6>01</h6></td>
+                        {
+                          cart.cart.map((item, i)=><tr key={i}>
+                          <td className="table-serial"><h6>{i+1}</h6></td>
                           <td className="table-image">
-                            <img src="https://static.vecteezy.com/system/resources/previews/016/694/735/original/tissue-with-transparent-background-png.png" alt="product" />
+                            <img src={item.product.image} alt="product" />
                           </td>
-                          <td className="table-name"><h6>product name</h6></td>
+                          <td className="table-name"><h6>{item.product.name}</h6></td>
                           <td className="table-price">
-                            <h6>$19<small>/kilo</small></h6>
+                            {
+                              item.product.product_prices.length>0 && <h6>
+                                  <span>&#8377;{item.product.product_prices[item.product.product_prices.length-1].discount_in_price}<small>/pieces</small></span>
+                              </h6>
+                            }
                           </td>
-                          <td className="table-brand"><h6>Fresh Company</h6></td>
-                          <td className="table-quantity"><h6>3</h6></td>
+                          <td className="table-quantity"><h6>{item.quantity}</h6></td>
+                          <td className="table-brand"><h6>&#8377;{item.amount}</h6></td>
                           <td className="table-action">
-                            <a
+                            <Link
                               className="view"
-                              href="#"
+                              href={`/products/${item.product.slug}`}
                               title="Quick View"
                               data-bs-toggle="modal"
                               data-bs-target="#product-view"
-                            ><i className="fas fa-eye"></i></a
-                            ><a className="trash" href="#" title="Remove Wishlist"
+                            ><i className="fas fa-eye"></i></Link
+                            ><button className="trash" title="Remove Wishlist" disabled={cartLoading} onClick={()=>deleteItemCart(item.id)}
                             ><i className="icofont-trash"></i
-                            ></a>
+                            ></button>
                           </td>
-                        </tr>
-                        <tr>
-                          <td className="table-serial"><h6>02</h6></td>
-                          <td className="table-image">
-                            <img src="https://m.media-amazon.com/images/I/51pILIz20gL._SL1200_.jpg" alt="product" />
-                          </td>
-                          <td className="table-name"><h6>product name</h6></td>
-                          <td className="table-price">
-                            <h6>$19<small>/kilo</small></h6>
-                          </td>
-                          <td className="table-brand"><h6>Radhuni Masala</h6></td>
-                          <td className="table-quantity"><h6>5</h6></td>
-                          <td className="table-action">
-                            <a
-                              className="view"
-                              href="#"
-                              title="Quick View"
-                              data-bs-toggle="modal"
-                              data-bs-target="#product-view"
-                            ><i className="fas fa-eye"></i></a
-                            ><a className="trash" href="#" title="Remove Wishlist"
-                            ><i className="icofont-trash"></i
-                            ></a>
-                          </td>
-                        </tr>
-                        <tr>
-                          <td className="table-serial"><h6>03</h6></td>
-                          <td className="table-image">
-                            <img src="https://img.freepik.com/premium-photo/toothpicks-box-isolated-white_179068-1760.jpg?w=2000" alt="product" />
-                          </td>
-                          <td className="table-name"><h6>product name</h6></td>
-                          <td className="table-price">
-                            <h6>$19<small>/kilo</small></h6>
-                          </td>
-                          <td className="table-brand"><h6>Pran Prio</h6></td>
-                          <td className="table-quantity"><h6>2</h6></td>
-                          <td className="table-action">
-                            <a
-                              className="view"
-                              href="#"
-                              title="Quick View"
-                              data-bs-toggle="modal"
-                              data-bs-target="#product-view"
-                            ><i className="fas fa-eye"></i></a
-                            ><a className="trash" href="#" title="Remove Wishlist"
-                            ><i className="icofont-trash"></i
-                            ></a>
-                          </td>
-                        </tr>
-                        <tr>
-                          <td className="table-serial"><h6>04</h6></td>
-                          <td className="table-image">
-                            <img src="https://3.imimg.com/data3/RY/JL/MY-11348186/aluminium-foil-pouch-1000x1000.jpg" alt="product" />
-                          </td>
-                          <td className="table-name"><h6>product name</h6></td>
-                          <td className="table-price">
-                            <h6>$19<small>/kilo</small></h6>
-                          </td>
-                          <td className="table-brand"><h6>Real Food</h6></td>
-                          <td className="table-quantity"><h6>3</h6></td>
-                          <td className="table-action">
-                            <a
-                              className="view"
-                              href="#"
-                              title="Quick View"
-                              data-bs-toggle="modal"
-                              data-bs-target="#product-view"
-                            ><i className="fas fa-eye"></i></a
-                            ><a className="trash" href="#" title="Remove Wishlist"
-                            ><i className="icofont-trash"></i
-                            ></a>
-                          </td>
-                        </tr>
-                        <tr>
-                          <td className="table-serial"><h6>05</h6></td>
-                          <td className="table-image">
-                            <img src="https://5.imimg.com/data5/ANDROID/Default/2022/11/NH/SS/MO/4041306/product-jpeg-500x500.jpg" alt="product" />
-                          </td>
-                          <td className="table-name"><h6>product name</h6></td>
-                          <td className="table-price">
-                            <h6>$19<small>/kilo</small></h6>
-                          </td>
-                          <td className="table-brand"><h6>Rdhuni Company</h6></td>
-                          <td className="table-quantity"><h6>7</h6></td>
-                          <td className="table-action">
-                            <a
-                              className="view"
-                              href="#"
-                              title="Quick View"
-                              data-bs-toggle="modal"
-                              data-bs-target="#product-view"
-                            ><i className="fas fa-eye"></i></a
-                            ><a className="trash" href="#" title="Remove Wishlist"
-                            ><i className="icofont-trash"></i
-                            ></a>
-                          </td>
-                        </tr>
+                        </tr>)
+                        }
                       </tbody>
                     </table>
                   </div>
@@ -176,7 +83,7 @@ export default function Checkout() {
                   </div>
                   <div className="checkout-charge">
                     <ul>
-                      <li><span>Sub total</span><span>$267.45</span></li>
+                      <li><span>Sub total</span><span>&#8377;{cart.cart_subtotal}</span></li>
                       <li><span>delivery fee</span><span>$10.00</span></li>
                       <li><span>discount</span><span>$00.00</span></li>
                       <li>
