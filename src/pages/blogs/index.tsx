@@ -13,9 +13,10 @@ const loadingArr = [1, 2, 3, 4]
 export default function Blogs() {
 
   const [sort, setSort] = useState('-id')
+  const [search, setSearch] = useState('')
   const [total, setTotal] = useState("10")
   const [page, setPage] = useState("1")
-  const { data, isLoading } = useSWR<BlogResponseType>(api_routes.blog + `?total=${total}&page=${page}&sort=${sort}`);
+  const { data, isLoading } = useSWR<BlogResponseType>(api_routes.blog + `?total=${total}&page=${page}&sort=${sort}&filter[search]=${search}`);
 
   return (
     <>
@@ -75,11 +76,11 @@ export default function Blogs() {
             <div className="col-md-7 col-lg-4">
               <div className="blog-widget">
                 <h3 className="blog-widget-title">Find blogs</h3>
-                <form className="blog-widget-form">
-                  <input type="text" placeholder="Search blogs" /><button
+                <div className="blog-widget-form">
+                  <input type="text" placeholder="Search blogs" value={search} onChange={(e)=>setSearch(e.target.value)} /><button
                     className="icofont-search-1"
                   ></button>
-                </form>
+                </div>
               </div>
               <PopularBlogs />
               <div className="blog-widget">
