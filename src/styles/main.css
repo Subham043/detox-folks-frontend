@@ -2078,6 +2078,31 @@ tbody tr td:last-child {
     -o-transition: all linear .3s
 }
 
+.search-list-holder .feature-card {
+    width: 100%;
+    overflow: hidden;
+    position: relative;
+    margin-bottom: 5px;
+    padding: 5px 8px;
+    border-radius: 8px;
+    background: var(--white);
+    border: 1px solid var(--white);
+    display: -webkit-box;
+    display: -ms-flexbox;
+    display: flex;
+    -webkit-box-align: start;
+    -ms-flex-align: start;
+    align-items: flex-start;
+    -webkit-box-pack: start;
+    -ms-flex-pack: start;
+    justify-content: flex-start;
+    transition: all linear .3s;
+    -webkit-transition: all linear .3s;
+    -moz-transition: all linear .3s;
+    -ms-transition: all linear .3s;
+    -o-transition: all linear .3s
+}
+
 .feature-card:hover {
     border-color: var(--primary);
     -webkit-box-shadow: 0 8px 15px 0 rgba(0, 0, 0, .1);
@@ -2160,6 +2185,11 @@ tbody tr td:last-child {
 
 .feature-image img {
     height: 200px;
+    object-fit: contain;
+}
+
+.search-list-holder .feature-image img {
+    height: 100px;
     object-fit: contain;
 }
 
@@ -4238,8 +4268,10 @@ tbody tr td:last-child {
 }
 
 .header-form:focus-within {
-    background: var(--white);
-    border-color: var(--primary)
+    /* background: var(--white);
+    border-color: var(--primary) */
+    /* border-bottom-left-radius: 0;
+    border-bottom-right-radius: 0; */
 }
 
 .header-form input {
@@ -7126,6 +7158,22 @@ tbody tr td:last-child {
     border-radius: 8px;
     margin-bottom: 25px;
     background: var(--chalk)
+}
+
+.p-relative{
+    position: relative;
+}
+
+.search-list-holder{
+    position: absolute;
+    top: 0px;
+    left: 0;
+    width: 100%;
+    z-index: 999;
+    background: var(--chalk);
+    padding: 10px 5px;
+    border-bottom-left-radius: 8px;
+    border-bottom-right-radius: 8px;
 }
 
 @keyframes animatedBackground {

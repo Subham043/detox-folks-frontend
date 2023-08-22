@@ -9,8 +9,9 @@ import { useRouter } from "next/router";
 import { ToastOptions, toast } from "react-toastify";
 import { WishlistContext } from "@/context/WishlistProvider";
 import { CartContext } from "@/context/CartProvider";
+import ProductSearch from "./ProductSearch";
 
-const toastConfig:ToastOptions = {
+const toastConfig: ToastOptions = {
     position: "bottom-center",
     autoClose: 5000,
     hideProgressBar: false,
@@ -24,9 +25,9 @@ export default function Header() {
     const { status, data: session } = useSession();
     const [isOpen, setIsOpen] = useState(false)
     const toggleDrawer = () => {
-        if(status==='authenticated'){
+        if (status === 'authenticated') {
             setIsOpen((prevState) => !prevState)
-        }else{
+        } else {
             toast.error("Please log in to view cart.", toastConfig);
         }
     }
@@ -37,50 +38,50 @@ export default function Header() {
         event.preventDefault()
         setLoading(true);
         try {
-          const res = await signOut({
-            redirect: false,
-            callbackUrl
-          }); 
-          router.push(callbackUrl);
-          toast.success("Logged Out Successfully.", toastConfig);       
+            const res = await signOut({
+                redirect: false,
+                callbackUrl
+            });
+            router.push(callbackUrl);
+            toast.success("Logged Out Successfully.", toastConfig);
         } catch (error: any) {
-          console.log(error);
+            console.log(error);
         } finally {
-          setLoading(false);
+            setLoading(false);
         }
     };
-    
+
 
     const { data, isLoading } = useSWR<CategoryResponseType>(api_routes.categories + '?total=1000');
     const { wishlist } = useContext(WishlistContext);
     const { cart, updateItemCart, deleteItemCart, cartLoading } = useContext(CartContext);
 
-    const incrementQuantity = (item:CartType) => {
-        const price = item.product.product_prices.filter(i=>(item.quantity+50)<=i.min_quantity).length>0 ? item.product.product_prices.filter(i=>(item.quantity+50)<=i.min_quantity)[0] : item.product.product_prices[item.product.product_prices.length-1];
+    const incrementQuantity = (item: CartType) => {
+        const price = item.product.product_prices.filter(i => (item.quantity + 50) <= i.min_quantity).length > 0 ? item.product.product_prices.filter(i => (item.quantity + 50) <= i.min_quantity)[0] : item.product.product_prices[item.product.product_prices.length - 1];
         updateItemCart({
             cartItemId: item.id,
             product_id: item.product.id,
             product_price_id: price.id,
-            quantity: item.quantity+50,
-            amount: (item.quantity+50)*price.discount_in_price,
+            quantity: item.quantity + 50,
+            amount: (item.quantity + 50) * price.discount_in_price,
         })
     };
-    
-    const decrementQuantity = (item:CartType) => {
-        const price = item.product.product_prices.filter(i=>(Math.max(0, item.quantity-50))<=i.min_quantity).length>0 ? item.product.product_prices.filter(i=>(Math.max(0, item.quantity-50))<=i.min_quantity)[0] : item.product.product_prices[item.product.product_prices.length-1];
-        if(Math.max(0, item.quantity-50)!==0){
+
+    const decrementQuantity = (item: CartType) => {
+        const price = item.product.product_prices.filter(i => (Math.max(0, item.quantity - 50)) <= i.min_quantity).length > 0 ? item.product.product_prices.filter(i => (Math.max(0, item.quantity - 50)) <= i.min_quantity)[0] : item.product.product_prices[item.product.product_prices.length - 1];
+        if (Math.max(0, item.quantity - 50) !== 0) {
             updateItemCart({
                 cartItemId: item.id,
                 product_id: item.product.id,
                 product_price_id: price.id,
-                quantity: Math.max(0, item.quantity-50),
-                amount: (Math.max(0, item.quantity-50))*price.discount_in_price,
+                quantity: Math.max(0, item.quantity - 50),
+                amount: (Math.max(0, item.quantity - 50)) * price.discount_in_price,
             })
-        }else{
+        } else {
             deleteItemCart(item.id)
         }
     };
-    
+
 
     return <>
         <div className="header-top">
@@ -104,21 +105,17 @@ export default function Header() {
                     <Link href="/" className="header-logo"
                     ><img src="/images/logo.png" alt="logo" /></Link
                     >
-                    <form className="header-form">
-                        <input type="text" placeholder="Search anything..." /><button>
-                            <i className="fas fa-search"></i>
-                        </button>
-                    </form>
+                    <ProductSearch />
                     <div className="header-widget-group">
                         {
-                            status==='unauthenticated' ? <Link href="/login" className="header-widget" title="My Account"
+                            status === 'unauthenticated' ? <Link href="/login" className="header-widget" title="My Account"
                             ><img src="/images/user.png" alt="user" /><span>join</span></Link
                             > : <ul className="navbar-list">
                                 <li className="navbar-item dropdown">
                                     <a className="navbar-link header-widget" href="#"><img src="/images/user.png" alt="user" /><span>{session?.user.name}</span></a>
                                     <ul className="dropdown-position-list">
                                         <li><Link href="/profile">Profile</Link></li>
-                                        <li><a style={loading ? {pointerEvents: 'none', cursor: 'none'}: {cursor: 'pointer'}} onClick={(event) => onLogout(event)}>{loading ? 'Logging Out': 'Logout'}</a></li>
+                                        <li><a style={loading ? { pointerEvents: 'none', cursor: 'none' } : { cursor: 'pointer' }} onClick={(event) => onLogout(event)}>{loading ? 'Logging Out' : 'Logout'}</a></li>
                                     </ul>
                                 </li>
                             </ul>
@@ -152,17 +149,17 @@ export default function Header() {
                                             <div className="row">
                                                 {
                                                     data?.data.map((item, i) => <div className="col-lg-3" key={i}>
-                                                    <div className="megamenu-wrap">
-                                                        <Link href={`/category/${item.slug}`}><h5 className="megamenu-title">{item.name}</h5></Link>
-                                                        <ul className="megamenu-list">
-                                                            {
-                                                                item.sub_categories.map((itm, index) => <li key={index}>
-                                                                <Link href={`/sub-category/${itm.slug}`}>{itm.name}</Link>
-                                                            </li>)
-                                                            }
-                                                        </ul>
-                                                    </div>
-                                                </div>)
+                                                        <div className="megamenu-wrap">
+                                                            <Link href={`/category/${item.slug}`}><h5 className="megamenu-title">{item.name}</h5></Link>
+                                                            <ul className="megamenu-list">
+                                                                {
+                                                                    item.sub_categories.map((itm, index) => <li key={index}>
+                                                                        <Link href={`/sub-category/${itm.slug}`}>{itm.name}</Link>
+                                                                    </li>)
+                                                                }
+                                                            </ul>
+                                                        </div>
+                                                    </div>)
                                                 }
                                             </div>
                                         </div>
@@ -211,41 +208,41 @@ export default function Header() {
                 <ul className="cart-list">
                     {
                         cart.cart.map((item, i) => <li className="cart-item" key={i}>
-                        <div className="cart-media">
-                            <a href="#"><img src={item.product.image} alt="product" /></a
-                            ><button className="cart-delete" disabled={cartLoading} onClick={()=>deleteItemCart(item.id)}>
-                                <i className="far fa-trash-alt"></i>
-                            </button>
-                        </div>
-                        <div className="cart-info-group">
-                            <div className="cart-info">
-                                <h6><a href="product-single.html">{item.product.name}</a></h6>
-                                {
-                                    item.product.product_prices.length>0 && <p>
-                                        Unit Price - <span>&#8377;{item.product.product_prices[item.product.product_prices.length-1].discount_in_price}<small>/pieces</small></span>
-                                    </p>
-                                }
+                            <div className="cart-media">
+                                <a href="#"><img src={item.product.image} alt="product" /></a
+                                ><button className="cart-delete" disabled={cartLoading} onClick={() => deleteItemCart(item.id)}>
+                                    <i className="far fa-trash-alt"></i>
+                                </button>
                             </div>
-                            <div className="cart-action-group">
-                                <div className="product-action">
-                                    <button className="action-minus" title="Quantity Minus" disabled={cartLoading} onClick={()=>decrementQuantity(item)}>
-                                        <i className="icofont-minus"></i></button
-                                    ><input
-                                        className="action-input"
-                                        title="Quantity Number"
-                                        type="text"
-                                        name="quantity"
-                                        disabled={cartLoading}
-                                        readOnly={cartLoading}
-                                        value={item.quantity}
-                                    /><button className="action-plus" title="Quantity Plus" disabled={cartLoading} onClick={()=>incrementQuantity(item)}>
-                                        <i className="icofont-plus"></i>
-                                    </button>
+                            <div className="cart-info-group">
+                                <div className="cart-info">
+                                    <h6><a href="product-single.html">{item.product.name}</a></h6>
+                                    {
+                                        item.product.product_prices.length > 0 && <p>
+                                            Unit Price - <span>&#8377;{item.product.product_prices[item.product.product_prices.length - 1].discount_in_price}<small>/pieces</small></span>
+                                        </p>
+                                    }
                                 </div>
-                                <h6>&#8377;{item.amount}</h6>
+                                <div className="cart-action-group">
+                                    <div className="product-action">
+                                        <button className="action-minus" title="Quantity Minus" disabled={cartLoading} onClick={() => decrementQuantity(item)}>
+                                            <i className="icofont-minus"></i></button
+                                        ><input
+                                            className="action-input"
+                                            title="Quantity Number"
+                                            type="text"
+                                            name="quantity"
+                                            disabled={cartLoading}
+                                            readOnly={cartLoading}
+                                            value={item.quantity}
+                                        /><button className="action-plus" title="Quantity Plus" disabled={cartLoading} onClick={() => incrementQuantity(item)}>
+                                            <i className="icofont-plus"></i>
+                                        </button>
+                                    </div>
+                                    <h6>&#8377;{item.amount}</h6>
+                                </div>
                             </div>
-                        </div>
-                    </li>)
+                        </li>)
                     }
                 </ul>
                 <div className="cart-footer">
