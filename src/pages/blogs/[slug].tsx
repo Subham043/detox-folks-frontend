@@ -4,6 +4,7 @@ import type { InferGetServerSidePropsType, GetServerSideProps } from 'next'
 import { axiosPublic } from '../../../axios';
 import { api_routes } from '@/helper/routes';
 import { BlogType } from '@/helper/types';
+import PopularBlogs from '@/components/PopularBlogs';
 
 type ServerSideProps = {
   blog: BlogType;
@@ -70,64 +71,7 @@ export default function BlogDetail({
               </article>
             </div>
             <div className="col-xl-4 col-lg-4">
-              <div className="blog-widget">
-                <h3 className="blog-widget-title">Find blogs</h3>
-                <form className="blog-widget-form">
-                  <input type="text" placeholder="Search blogs" /><button
-                    className="icofont-search-1"
-                  ></button>
-                </form>
-              </div>
-              <div className="blog-widget">
-                <h3 className="blog-widget-title">popular feeds</h3>
-                <ul className="blog-widget-feed">
-                  <li>
-                    <a className="blog-widget-media" href="#"
-                    ><img src="/images/blog-widget/01.jpg" alt="blog-widget"
-                      /></a>
-                    <h6 className="blog-widget-text">
-                      <a href="#">Lorem ipsum dolor sit amet consectetur</a
-                      ><span>february 02, 2021</span>
-                    </h6>
-                  </li>
-                  <li>
-                    <a className="blog-widget-media" href="#"
-                    ><img src="/images/blog-widget/02.jpg" alt="blog-widget"
-                      /></a>
-                    <h6 className="blog-widget-text">
-                      <a href="#">Lorem ipsum dolor sit amet consectetur</a
-                      ><span>february 02, 2021</span>
-                    </h6>
-                  </li>
-                  <li>
-                    <a className="blog-widget-media" href="#"
-                    ><img src="/images/blog-widget/03.jpg" alt="blog-widget"
-                      /></a>
-                    <h6 className="blog-widget-text">
-                      <a href="#">Lorem ipsum dolor sit amet consectetur</a
-                      ><span>february 02, 2021</span>
-                    </h6>
-                  </li>
-                  <li>
-                    <a className="blog-widget-media" href="#"
-                    ><img src="/images/blog-widget/04.jpg" alt="blog-widget"
-                      /></a>
-                    <h6 className="blog-widget-text">
-                      <a href="#">Lorem ipsum dolor sit amet consectetur</a
-                      ><span>february 02, 2021</span>
-                    </h6>
-                  </li>
-                  <li>
-                    <a className="blog-widget-media" href="#"
-                    ><img src="/images/blog-widget/05.jpg" alt="blog-widget"
-                      /></a>
-                    <h6 className="blog-widget-text">
-                      <a href="#">Lorem ipsum dolor sit amet consectetur</a
-                      ><span>february 02, 2021</span>
-                    </h6>
-                  </li>
-                </ul>
-              </div>
+              <PopularBlogs />
               <div className="blog-widget">
                 <h3 className="blog-widget-title">follow us</h3>
                 <ul className="blog-widget-social">
