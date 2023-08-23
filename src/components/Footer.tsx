@@ -1,61 +1,23 @@
+import Link from "next/link";
 import { FC } from "react";
+import useSWR from 'swr'
+import { api_routes } from "@/helper/routes";
+import { LegalResponseType } from "@/helper/types";
+import Policy from "./Policy";
 
 const Footer: FC = () => {
+  const { data, isLoading } = useSWR<LegalResponseType>(api_routes.legal);
+
   return <>
-    <section className="intro-part">
-      <div className="container">
-        <div className="row intro-content">
-          <div className="col-sm-6 col-lg-3">
-            <div className="intro-wrap">
-              <div className="intro-icon"><i className="fas fa-truck"></i></div>
-              <div className="intro-content">
-                <h5>free home delivery</h5>
-                <p>Lorem ipsum dolor sit amet adipisicing elit nobis.</p>
-              </div>
-            </div>
-          </div>
-          <div className="col-sm-6 col-lg-3">
-            <div className="intro-wrap">
-              <div className="intro-icon"><i className="fas fa-sync-alt"></i></div>
-              <div className="intro-content">
-                <h5>instant return policy</h5>
-                <p>Lorem ipsum dolor sit amet adipisicing elit nobis.</p>
-              </div>
-            </div>
-          </div>
-          <div className="col-sm-6 col-lg-3">
-            <div className="intro-wrap">
-              <div className="intro-icon"><i className="fas fa-headset"></i></div>
-              <div className="intro-content">
-                <h5>quick support system</h5>
-                <p>Lorem ipsum dolor sit amet adipisicing elit nobis.</p>
-              </div>
-            </div>
-          </div>
-          <div className="col-sm-6 col-lg-3">
-            <div className="intro-wrap">
-              <div className="intro-icon"><i className="fas fa-lock"></i></div>
-              <div className="intro-content">
-                <h5>secure payment way</h5>
-                <p>Lorem ipsum dolor sit amet adipisicing elit nobis.</p>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-    </section>
+    <Policy />
     <footer className="footer-part">
       <div className="container">
         <div className="row">
           <div className="col-sm-6 col-xl-3">
             <div className="footer-widget">
-              <a className="footer-logo" href="#"
+              <Link className="footer-logo" href="/"
               ><img src="/images/logo.png" alt="logo"
-                /></a>
-              <p className="footer-desc">
-                Adipisci asperiores ipsum ipsa repellat consequatur repudiandae
-                quisquam assumenda dolor perspiciatis sit ipsum dolor amet.
-              </p>
+                /></Link>
               <ul className="footer-social">
                 <li><a className="icofont-facebook" href="#"></a></li>
                 <li><a className="icofont-twitter" href="#"></a></li>
@@ -72,14 +34,13 @@ const Footer: FC = () => {
                 <li>
                   <i className="icofont-ui-email"></i>
                   <p>
-                    <span>support@example.com</span
-                    ><span>carrer@example.com</span>
+                    <span>support@example.com</span>
                   </p>
                 </li>
                 <li>
                   <i className="icofont-ui-touch-phone"></i>
                   <p>
-                    <span>+120 279 532 13</span><span>+120 279 532 14</span>
+                    <span>+120 279 532 13</span>
                   </p>
                 </li>
                 <li>
@@ -89,28 +50,26 @@ const Footer: FC = () => {
               </ul>
             </div>
           </div>
-          <div className="col-sm-6 col-xl-3">
+          <div className="col-sm-6 col-xl-4">
             <div className="footer-widget">
               <h3 className="footer-title">quick Links</h3>
               <div className="footer-links">
                 <ul>
-                  <li><a href="#">My Account</a></li>
-                  <li><a href="#">Order History</a></li>
-                  <li><a href="#">Order Tracking</a></li>
-                  <li><a href="#">Best Seller</a></li>
-                  <li><a href="#">New Arrivals</a></li>
+                  <li><Link href="/">Home</Link></li>
+                  <li><Link href="/about">About Us</Link></li>
+                  <li><Link href="/products">Products</Link></li>
+                  <li><Link href="/blogs">Blogs</Link></li>
+                  <li><Link href="/contact">Contact Us</Link></li>
                 </ul>
                 <ul>
-                  <li><a href="#">Location</a></li>
-                  <li><a href="#">Affiliates</a></li>
-                  <li><a href="#">Contact</a></li>
-                  <li><a href="#">Carrer</a></li>
-                  <li><a href="#">Faq</a></li>
+                  {
+                    data?.legal.map((item, i)=><li key={i}><Link href={`/legal/${item.slug}`}>{item.page_name}</Link></li>)
+                  }
                 </ul>
               </div>
             </div>
           </div>
-          <div className="col-sm-6 col-xl-3">
+          <div className="col-sm-6 col-xl-2">
             <div className="footer-widget">
               <h3 className="footer-title">Download App</h3>
               <p className="footer-desc">
@@ -128,11 +87,11 @@ const Footer: FC = () => {
         </div>
         <div className="row">
           <div className="col-12">
-            <div className="footer-bottom">
+            <div className="footer-bottom justify-content-center">
               <p className="footer-copytext">
-                &copy; All Copyrights Reserved by <a href="#">Detox-Folks</a>
+                &copy; All Copyrights Reserved by <Link href="/">DetoxFolks</Link>
               </p>
-              <div className="footer-card">
+              {/* <div className="footer-card">
                 <a href="#"
                 ><img src="/images/payment/jpg/01.jpg" alt="payment" /></a
                 ><a href="#"
@@ -142,7 +101,7 @@ const Footer: FC = () => {
                 ><a href="#"
                 ><img src="/images/payment/jpg/04.jpg" alt="payment"
                   /></a>
-              </div>
+              </div> */}
             </div>
           </div>
         </div>

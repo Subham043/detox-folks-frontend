@@ -33,24 +33,28 @@ type ServerSideProps = {
 
 export const getServerSideProps: GetServerSideProps<{
     repo: ServerSideProps
-  }> = async (ctx: any) => {
+}> = async (ctx: any) => {
     const productResponse = await axiosPublic.get(api_routes.products + `/${ctx?.params.slug}`);
-  
-    return { props: { repo: {
-      product: productResponse.data.product,
-    } } }
+
+    return {
+        props: {
+            repo: {
+                product: productResponse.data.product,
+            }
+        }
+    }
 }
 
 export default function ProductDetail({
     repo,
-  }: InferGetServerSidePropsType<typeof getServerSideProps>) {
+}: InferGetServerSidePropsType<typeof getServerSideProps>) {
 
     const getCategoryStr = () => {
-        return repo.product.categories.map(item=> item.id).join('_');
+        return repo.product.categories.map(item => item.id).join('_');
     }
-    
+
     const getSubCategoryStr = () => {
-        return repo.product.sub_categories.map(item=> item.id).join('_');
+        return repo.product.sub_categories.map(item => item.id).join('_');
     }
 
     const [page, setPage] = useState("1")
@@ -60,48 +64,48 @@ export default function ProductDetail({
     const { cart, addItemCart, updateItemCart, deleteItemCart, cartLoading } = useContext(CartContext);
 
     useEffect(() => {
-      setQuantity(cart.cart.filter(item=>item.product.id===repo.product.id).length===0 ? 0 : cart.cart.filter(item=>item.product.id===repo.product.id)[0].quantity)
-    
-      return () => {}
+        setQuantity(cart.cart.filter(item => item.product.id === repo.product.id).length === 0 ? 0 : cart.cart.filter(item => item.product.id === repo.product.id)[0].quantity)
+
+        return () => { }
     }, [cart.cart])
 
     const incrementQuantity = () => {
-        const cart_product = cart.cart.filter(item=>item.product.id===repo.product.id)
-        const price = repo.product.product_prices.filter(item=>(quantity+50)<=item.min_quantity).length>0 ? repo.product.product_prices.filter(item=>(quantity+50)<=item.min_quantity)[0] : repo.product.product_prices[repo.product.product_prices.length-1];
-        if(cart_product.length===0){
+        const cart_product = cart.cart.filter(item => item.product.id === repo.product.id)
+        const price = repo.product.product_prices.filter(item => (quantity + 50) <= item.min_quantity).length > 0 ? repo.product.product_prices.filter(item => (quantity + 50) <= item.min_quantity)[0] : repo.product.product_prices[repo.product.product_prices.length - 1];
+        if (cart_product.length === 0) {
             addItemCart({
                 product_id: repo.product.id,
                 product_price_id: price.id,
-                quantity: quantity+50,
-                amount: (quantity+50)*price.discount_in_price,
+                quantity: quantity + 50,
+                amount: (quantity + 50) * price.discount_in_price,
             })
-        }else{
+        } else {
             updateItemCart({
                 cartItemId: cart_product[0].id,
                 product_id: repo.product.id,
                 product_price_id: price.id,
-                quantity: quantity+50,
-                amount: (quantity+50)*price.discount_in_price,
+                quantity: quantity + 50,
+                amount: (quantity + 50) * price.discount_in_price,
             })
         }
     };
-    
+
     const decrementQuantity = () => {
-        const cart_product = cart.cart.filter(item=>item.product.id===repo.product.id)
-        const price = repo.product.product_prices.filter(item=>(Math.max(0, quantity-50))<=item.min_quantity).length>0 ? repo.product.product_prices.filter(item=>(Math.max(0, quantity-50))<=item.min_quantity)[0] : repo.product.product_prices[repo.product.product_prices.length-1];
-        if(cart_product.length!==0 && Math.max(0, quantity-50)!==0){
+        const cart_product = cart.cart.filter(item => item.product.id === repo.product.id)
+        const price = repo.product.product_prices.filter(item => (Math.max(0, quantity - 50)) <= item.min_quantity).length > 0 ? repo.product.product_prices.filter(item => (Math.max(0, quantity - 50)) <= item.min_quantity)[0] : repo.product.product_prices[repo.product.product_prices.length - 1];
+        if (cart_product.length !== 0 && Math.max(0, quantity - 50) !== 0) {
             updateItemCart({
                 cartItemId: cart_product[0].id,
                 product_id: repo.product.id,
                 product_price_id: price.id,
-                quantity: Math.max(0, quantity-50),
-                amount: (Math.max(0, quantity-50))*price.discount_in_price,
+                quantity: Math.max(0, quantity - 50),
+                amount: (Math.max(0, quantity - 50)) * price.discount_in_price,
             })
-        }else{
+        } else {
             deleteItemCart(cart_product[0].id)
         }
     };
-    
+
 
     return (
         <>
@@ -117,43 +121,84 @@ export default function ProductDetail({
                 <div className="container">
                     <div className="row">
                         <div className="col-lg-6">
-                            <div className="details-gallery">
+                            <div className="details-gallery mb-5">
                                 <div className="details-label-group">
-                                    <label className="details-label new">new</label
-                                    ><label className="details-label off">-10%</label>
+                                    {
+                                        repo.product.is_new && <label className="details-label new">new</label>
+                                    }
+                                    {
+                                        repo.product.is_featured && <label className="label-text feat">feature</label>
+                                    }
+                                    {
+                                        repo.product.is_on_sale && <label className="label-text sale">sale</label>
+                                    }
                                 </div>
                                 <ul className="details-preview">
                                     <Slider {...settings}>
-                                        <li><img src="https://5.imimg.com/data5/ANDROID/Default/2022/11/NH/SS/MO/4041306/product-jpeg-500x500.jpg" alt="product" /></li>
-                                        <li><img src="https://m.media-amazon.com/images/I/51NfoHE61QL.jpg" alt="product" /></li>
-                                        <li><img src="https://www.ikea.com/in/en/images/products/gamman-24-piece-cutlery-set-stainless-steel__0713267_pe729383_s5.jpg?f=s" alt="product" /></li>
+                                        {
+                                            repo.product.product_images.map((item, i) => <li key={i}><img src={item.image} alt={item.image_alt} title={item.image_title} /></li>)
+                                        }
                                     </Slider>
                                 </ul>
                             </div>
+                            <Tabs selectedTabClassName="active">
+                                <TabList className="nav nav-tabs">
+                                    <Tab className="tab-link">Description</Tab>
+                                    <Tab className="tab-link">Specifications</Tab>
+                                </TabList>
+
+                                <TabPanel>
+                                    <div className="row">
+                                        <div className="col-lg-12">
+                                            <div className="product-details-frame">
+                                                <div className="tab-descrip" dangerouslySetInnerHTML={{ __html: repo.product.description }} />
+                                            </div>
+                                        </div>
+                                    </div>
+                                </TabPanel>
+                                <TabPanel>
+                                    <div className="row">
+                                        <div className="col-lg-12">
+                                            <div className="product-details-frame">
+                                                <table className="table table-bordered">
+                                                    <tbody>
+                                                        {
+                                                            repo.product.product_specifications.map((item, i) => <tr key={i}>
+                                                                <th scope="row">{item.title}</th>
+                                                                <td>{item.description}</td>
+                                                            </tr>)
+                                                        }
+                                                    </tbody>
+                                                </table>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </TabPanel>
+                            </Tabs>
                         </div>
                         <div className="col-lg-6">
-                            <div className="details-content">
+                            <div className="details-content p-sticky-product">
                                 <h3 className="details-name">
                                     <Link href={`/products/${repo.product.slug}`}>{repo.product.name}</Link>
                                 </h3>
                                 {
-                                    repo.product.product_prices.length>0 && <h3 className="details-price">
-                                        {repo.product.product_prices[repo.product.product_prices.length-1].discount!==0 && <del>&#8377;{repo.product.product_prices[repo.product.product_prices.length-1].price}</del>}<span>&#8377;{repo.product.product_prices[repo.product.product_prices.length-1].discount_in_price}<small>/pieces</small></span>
+                                    repo.product.product_prices.length > 0 && <h3 className="details-price">
+                                        {repo.product.product_prices[repo.product.product_prices.length - 1].discount !== 0 && <del>&#8377;{repo.product.product_prices[repo.product.product_prices.length - 1].price}</del>}<span>&#8377;{repo.product.product_prices[repo.product.product_prices.length - 1].discount_in_price}<small>/pieces</small></span>
                                     </h3>
                                 }
-                                {repo.product.product_prices.length>0 && <div className="orderlist-deliver">
+                                {repo.product.product_prices.length > 0 && <div className="orderlist-deliver">
                                     <h6 className='px-2 pt-3'>Bulk Offer :</h6>
                                     <hr />
                                     <ul className='pb-2'>
                                         {
                                             repo.product.product_prices.map((item, i) => <li className='px-2 pb-1' key={i}>
-                                            <code><i className='icofont-info-circle'></i> Buy {item.min_quantity} Pieces or more at &#8377;{item.discount_in_price}/Pieces</code>
-                                        </li>)
+                                                <code><i className='icofont-info-circle'></i> Buy {item.min_quantity} Pieces or more at &#8377;{item.discount_in_price}/Pieces</code>
+                                            </li>)
                                         }
                                     </ul>
                                 </div>}
                                 <p className="details-desc">
-                                   {repo.product.brief_description}
+                                    {repo.product.brief_description}
                                 </p>
                                 <div className="details-list-group">
                                     <label className="details-list-title">Categories:</label>
@@ -192,8 +237,8 @@ export default function ProductDetail({
                                     <div className="details-add-group m-0">
                                         <CartQuantity quantity={quantity} incrementQuantity={incrementQuantity} decrementQuantity={decrementQuantity} loading={cartLoading} />
                                     </div>
-                                    <button className={`product-add`} disabled={wishlistLoading} onClick={()=> wishlist.wishlist.length>0 && wishlist.wishlist.filter(item=>item.product.id===repo.product.id).length>0 ? deleteItemWishlist(wishlist.wishlist.filter(item=>item.product.id===repo.product.id)[0].id) : addItemWishlist(repo.product.id)}
-                                    ><i className="icofont-heart"></i><span className='mx-1'>{wishlist.wishlist.length>0 && wishlist.wishlist.filter(item=>item.product.id===repo.product.id).length>0 ? 'Remove From Wishlist' : 'Add To Wishlist'}</span></button
+                                    <button className={`product-add`} disabled={wishlistLoading} onClick={() => wishlist.wishlist.length > 0 && wishlist.wishlist.filter(item => item.product.id === repo.product.id).length > 0 ? deleteItemWishlist(wishlist.wishlist.filter(item => item.product.id === repo.product.id)[0].id) : addItemWishlist(repo.product.id)}
+                                    ><i className="icofont-heart"></i><span className='mx-1'>{wishlist.wishlist.length > 0 && wishlist.wishlist.filter(item => item.product.id === repo.product.id).length > 0 ? 'Remove From Wishlist' : 'Add To Wishlist'}</span></button
                                     >
                                 </div>
                             </div>
@@ -201,7 +246,7 @@ export default function ProductDetail({
                     </div>
                 </div>
             </section>
-            <section className="inner-section">
+            {/* <section className="inner-section">
                 <div className="container">
                     <Tabs selectedTabClassName="active">
                         <TabList className="nav nav-tabs">
@@ -213,7 +258,7 @@ export default function ProductDetail({
                             <div className="row">
                                 <div className="col-lg-12">
                                     <div className="product-details-frame">
-                                        <div className="tab-descrip"  dangerouslySetInnerHTML={{__html:repo.product.description}} />
+                                        <div className="tab-descrip" dangerouslySetInnerHTML={{ __html: repo.product.description }} />
                                     </div>
                                 </div>
                             </div>
@@ -226,9 +271,9 @@ export default function ProductDetail({
                                             <tbody>
                                                 {
                                                     repo.product.product_specifications.map((item, i) => <tr key={i}>
-                                                    <th scope="row">{item.title}</th>
-                                                    <td>{item.description}</td>
-                                                </tr>)
+                                                        <th scope="row">{item.title}</th>
+                                                        <td>{item.description}</td>
+                                                    </tr>)
                                                 }
                                             </tbody>
                                         </table>
@@ -238,7 +283,7 @@ export default function ProductDetail({
                         </TabPanel>
                     </Tabs>
                 </div>
-            </section>
+            </section> */}
             <section className="section recent-part">
                 <div className="container">
                     <div className="row">

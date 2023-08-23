@@ -2,15 +2,14 @@ import Link from "next/link";
 import useSWR from 'swr'
 import { api_routes } from "@/helper/routes";
 import { ProductResponseType } from "@/helper/types";
-import Pagination from '@/components/Pagination';
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 
 const loadingArr = [1, 2, 3, 4]
 
 export default function ProductSearch() {
     const [page, setPage] = useState("1")
     const [search, setSearch] = useState("")
-    const { data, isLoading } = useSWR<ProductResponseType>(api_routes.products + `?total=5&page=${page}&sort=-id&filter[search]=${search}`);
+    const { data, isLoading } = useSWR<ProductResponseType>(api_routes.products + `?total=100&page=${page}&sort=-id&filter[search]=${search}`);
 
     return <form className="header-form flex-wrap">
         <div className="d-flex col-12">

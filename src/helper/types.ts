@@ -69,6 +69,7 @@ export interface BlogType<> {
     meta_keywords: string;
     meta_title: string;
     is_draft: boolean;
+    is_popular: boolean;
     created_at: string;
     updated_at: string;
 }
@@ -146,6 +147,15 @@ export interface ProductSpecificationType<> {
     updated_at: string;
 }
 
+export interface ProductImageType<> {
+    id: number;
+    image: string;
+    image_title: string;
+    image_alt: string;
+    created_at: string;
+    updated_at: string;
+}
+
 export interface ProductPriceType<> {
     id: number;
     discount: number;
@@ -170,12 +180,14 @@ export interface ProductType<> {
     is_draft: boolean;
     is_new: boolean;
     is_on_sale: boolean;
+    is_featured: boolean;
     created_at: string;
     updated_at: string;
     sub_categories: SubCategoryType[];
     categories: CategoryType[];
     product_specifications: ProductSpecificationType[];
     product_prices: ProductPriceType[];
+    product_images: ProductImageType[];
 }
 
 export interface ProductResponseType<> {
@@ -202,4 +214,54 @@ export interface CartType<> {
     id: number;
     quantity: number;
     amount: number;
+}
+
+
+export interface LegalType<> {
+    id: number;
+    heading: string;
+    description: string | TrustedHTML;
+    description_unfiltered: string;
+    page_name: string;
+    slug: string;
+    is_draft: boolean;
+    created_at: string;
+    updated_at: string;
+    meta_description: string;
+    meta_keywords: string;
+    meta_title: string;
+}
+
+export interface LegalResponseType<> {
+    message: string;
+    legal: LegalType[];
+}
+
+export interface FeatureType<> {
+    id: number;
+    title: string;
+    description: string;
+    image: string;
+    is_draft: boolean;
+    created_at: string;
+    updated_at: string;
+}
+
+export interface FeatureResponseType<> {
+    message: string;
+    feature: FeatureType[];
+}
+
+export interface CounterType<> {
+    id: number;
+    title: string;
+    counter: number;
+    is_draft: boolean;
+    created_at: string;
+    updated_at: string;
+}
+
+export interface CounterResponseType<> {
+    message: string;
+    counter: CounterType[];
 }

@@ -31,6 +31,9 @@ type api_routes = {
     place_order: string,
     place_order_paginate: string,
     place_order_detail: string,
+    legal: string,
+    feature: string,
+    counter: string,
 }
 
 export const api_routes: api_routes = {
@@ -66,4 +69,7 @@ export const api_routes: api_routes = {
     place_order: '/api/v1/order/place',
     place_order_paginate: '/api/v1/order/placed/paginate',
     place_order_detail: '/api/v1/order/placed/detail',
+    legal: '/api/v1/legal',
+    feature: '/api/v1/feature',
+    counter: '/api/v1/counter',
 }

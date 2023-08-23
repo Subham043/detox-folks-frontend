@@ -5,7 +5,7 @@ import { useContext, useEffect, useState } from "react";
 import CartQuantity from "./CartQuantity";
 import { CartContext } from "@/context/CartProvider";
 
-export default function ProductCard({ id, name, image, slug, created_at, description_unfiltered, product_prices }: ProductType) {
+export default function ProductCard({ id, name, image, slug, created_at, description_unfiltered, product_prices, is_featured, is_new, is_on_sale }: ProductType) {
 
     const { wishlist, addItemWishlist, deleteItemWishlist, wishlistLoading } = useContext(WishlistContext);
     const [quantity, setQuantity] = useState<number>(0);
@@ -59,7 +59,15 @@ export default function ProductCard({ id, name, image, slug, created_at, descrip
         <div className="product-card">
             <div className="product-media">
                 <div className="product-label">
-                    <label className="label-text new">new</label>
+                    {
+                        is_new && <label className="details-label new">new</label>
+                    }
+                    {
+                        is_featured && <label className="label-text feat">feature</label>
+                    }
+                    {
+                        is_on_sale && <label className="label-text sale">sale</label>
+                    }
                 </div>
                 <button disabled={wishlistLoading} className={`product-wish wish ${wishlist.wishlist.length>0 && wishlist.wishlist.filter(item=>item.product.id===id).length>0 ? 'active' : ''}`} onClick={()=> wishlist.wishlist.length>0 && wishlist.wishlist.filter(item=>item.product.id===id).length>0 ? deleteItemWishlist(wishlist.wishlist.filter(item=>item.product.id===id)[0].id) : addItemWishlist(id)}>
                     <i className="fas fa-heart"></i>
