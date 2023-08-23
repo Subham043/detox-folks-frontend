@@ -11,7 +11,7 @@ import Pagination from '@/components/Pagination';
 import useSWR from 'swr'
 import { CategoryResponseType, CategoryType, ProductResponseType } from "@/helper/types";
 import ProductCard from '@/components/ProductCard';
-import { useContext, useEffect, useState } from 'react';
+import { useCallback, useContext, useEffect, useState } from 'react';
 import { WishlistContext } from '@/context/WishlistProvider';
 import CartQuantity from '@/components/CartQuantity';
 import { CartContext } from '@/context/CartProvider';
@@ -63,6 +63,11 @@ export default function ProductDetail({
     const { wishlist, addItemWishlist, deleteItemWishlist, wishlistLoading } = useContext(WishlistContext);
     const { cart, addItemCart, updateItemCart, deleteItemCart, cartLoading } = useContext(CartContext);
 
+    const cart_product_item = useCallback(
+        () => cart.cart.filter(item=>item.product.id===repo.product.id),
+        [repo.product.id, cart.cart],
+    )
+
     useEffect(() => {
         setQuantity(cart.cart.filter(item => item.product.id === repo.product.id).length === 0 ? 0 : cart.cart.filter(item => item.product.id === repo.product.id)[0].quantity)
 
@@ -105,6 +110,38 @@ export default function ProductDetail({
             deleteItemCart(cart_product[0].id)
         }
     };
+
+    const PriceFactor = () => {
+        if(cart_product_item().length>0){
+            return (<h3 className="details-price">
+                {cart_product_item()[0].product_price.discount !== 0 && <del>&#8377;{cart_product_item()[0].product_price.price}</del>}<span>&#8377;{cart_product_item()[0].product_price.discount_in_price}<small>/pieces</small></span>
+            </h3>);
+        }
+        if(repo.product.product_prices.length > 0){
+            return (<h3 className="details-price">
+                {repo.product.product_prices[repo.product.product_prices.length - 1].discount !== 0 && <del>&#8377;{repo.product.product_prices[repo.product.product_prices.length - 1].price}</del>}<span>&#8377;{repo.product.product_prices[repo.product.product_prices.length - 1].discount_in_price}<small>/pieces</small></span>
+            </h3>);
+        }
+        return <></>;
+    }
+
+    const BulkOfferFactor = () => {
+        return repo.product.product_prices.length > 0 && <div className="orderlist-deliver">
+            <h6 className='px-2 pt-3'>Bulk Offer :</h6>
+            <hr />
+            <ul className='pb-2'>
+                {
+                    repo.product.product_prices.map((item, i) => <li className='px-2 pb-1' key={i}>
+                        {
+                            (cart_product_item().length>0 && item.min_quantity===cart_product_item()[0].product_price.min_quantity) ? 
+                            <code><i className='icofont-info-circle'></i> Buy {item.min_quantity} Pieces or more at &#8377;{item.discount_in_price}/Pieces</code> : 
+                            <code className='text-dark'><i className='icofont-info-circle'></i> Buy {item.min_quantity} Pieces or more at &#8377;{item.discount_in_price}/Pieces</code>
+                        }
+                    </li>)
+                }
+            </ul>
+        </div>
+    }
 
 
     return (
@@ -181,22 +218,8 @@ export default function ProductDetail({
                                 <h3 className="details-name">
                                     <Link href={`/products/${repo.product.slug}`}>{repo.product.name}</Link>
                                 </h3>
-                                {
-                                    repo.product.product_prices.length > 0 && <h3 className="details-price">
-                                        {repo.product.product_prices[repo.product.product_prices.length - 1].discount !== 0 && <del>&#8377;{repo.product.product_prices[repo.product.product_prices.length - 1].price}</del>}<span>&#8377;{repo.product.product_prices[repo.product.product_prices.length - 1].discount_in_price}<small>/pieces</small></span>
-                                    </h3>
-                                }
-                                {repo.product.product_prices.length > 0 && <div className="orderlist-deliver">
-                                    <h6 className='px-2 pt-3'>Bulk Offer :</h6>
-                                    <hr />
-                                    <ul className='pb-2'>
-                                        {
-                                            repo.product.product_prices.map((item, i) => <li className='px-2 pb-1' key={i}>
-                                                <code><i className='icofont-info-circle'></i> Buy {item.min_quantity} Pieces or more at &#8377;{item.discount_in_price}/Pieces</code>
-                                            </li>)
-                                        }
-                                    </ul>
-                                </div>}
+                                <PriceFactor />
+                                <BulkOfferFactor />
                                 <p className="details-desc">
                                     {repo.product.brief_description}
                                 </p>
