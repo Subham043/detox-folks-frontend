@@ -50,7 +50,7 @@ export default function Wishlist() {
                       </td>
                       <td className="table-desc">
                         <p>
-                          {item.product.brief_description}<Link href={`/products/${item.product.slug}`}>read more</Link>
+                          {item.product.short_description}<Link href={`/products/${item.product.slug}`}>read more</Link>
                         </p>
                       </td>
                       <td className="table-shop">

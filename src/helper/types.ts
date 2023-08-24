@@ -170,6 +170,7 @@ export interface ProductType<> {
     id: number;
     slug: string
     description: string | TrustedHTML;
+    short_description: string;
     brief_description: string;
     name: string;
     description_unfiltered: string;

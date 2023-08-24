@@ -46,7 +46,7 @@ export default function ProductSearch() {
                                             </h6>
                                         }
                                         <p className="feature-desc m-0 text-dark">
-                                            {item.brief_description}
+                                            {item.short_description}
                                         </p>
                                     </div>
                                 </Link>
