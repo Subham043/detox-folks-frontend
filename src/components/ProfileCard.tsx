@@ -8,6 +8,7 @@ import { ToastOptions, toast } from 'react-toastify';
 import { axiosPublic } from '../../axios';
 import { api_routes } from '@/helper/routes';
 import { AxiosResponse } from "axios";
+import Spinner from "./Spinner";
 
 const schema = yup
   .object({
@@ -161,7 +162,13 @@ export default function ProfileCard() {
                     </div>
                     <div className="col-md-6 col-lg-3">
                         <div className="profile-btn text-center">
-                            <button className="btn btn-success btn-sm px-2 py-2" type="submit" disabled={loading}>{loading? 'Updating' : 'Update'} Profile</button>
+                            <button className="btn btn-success btn-sm px-2 py-2" type="submit" disabled={loading}>
+                              {
+                                loading ? <Spinner/> : <>
+                                  Update Profile
+                                </>
+                              }
+                            </button>
                         </div>
                     </div>
                 </div>

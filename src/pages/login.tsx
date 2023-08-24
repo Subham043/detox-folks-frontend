@@ -8,6 +8,7 @@ import { ErrorMessage } from '@hookform/error-message';
 import { ToastOptions, toast } from 'react-toastify';
 import { signIn } from "next-auth/react";
 import { useSearchParams, useRouter } from "next/navigation";
+import Spinner from '@/components/Spinner';
 
 
 const schema = yup
@@ -130,7 +131,13 @@ export default function Login() {
                     >
                   </div>
                   <div className="form-button">
-                    <button type="submit" disabled={loading}>{loading ? 'logging in' : 'login'}</button>
+                    <button type="submit" disabled={loading}>
+                      {
+                        loading ? <Spinner/> : <>
+                          login
+                        </>
+                      }
+                    </button>
                     <p>
                       Forgot your password?<Link href="/forgot-password"
                         >reset here</Link

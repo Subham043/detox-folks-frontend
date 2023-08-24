@@ -15,6 +15,7 @@ import { useCallback, useContext, useEffect, useState } from 'react';
 import { WishlistContext } from '@/context/WishlistProvider';
 import CartQuantity from '@/components/CartQuantity';
 import { CartContext } from '@/context/CartProvider';
+import Spinner from '@/components/Spinner';
 
 const loadingArr = [1, 2, 3, 4, 5, 6, 7, 8]
 
@@ -268,7 +269,9 @@ export default function ProductDetail({
                                         <CartQuantity quantity={quantity} incrementQuantity={incrementQuantity} decrementQuantity={decrementQuantity} loading={cartLoading} />
                                     </div>
                                     <button className={`product-add`} disabled={wishlistLoading} onClick={() => wishlist.wishlist.length > 0 && wishlist.wishlist.filter(item => item.product.id === repo.product.id).length > 0 ? deleteItemWishlist(wishlist.wishlist.filter(item => item.product.id === repo.product.id)[0].id) : addItemWishlist(repo.product.id)}
-                                    ><i className="icofont-heart"></i><span className='mx-1'>{wishlist.wishlist.length > 0 && wishlist.wishlist.filter(item => item.product.id === repo.product.id).length > 0 ? 'Remove From Wishlist' : 'Add To Wishlist'}</span></button
+                                    >{wishlistLoading ? <Spinner /> :<><i className="icofont-heart"></i><span className='mx-1'>
+                                        {wishlist.wishlist.length > 0 && wishlist.wishlist.filter(item => item.product.id === repo.product.id).length > 0 ? 'Remove From Wishlist' : 'Add To Wishlist'}
+                                    </span></>}</button
                                     >
                                 </div>
                             </div>
@@ -276,44 +279,6 @@ export default function ProductDetail({
                     </div>
                 </div>
             </section>
-            {/* <section className="inner-section">
-                <div className="container">
-                    <Tabs selectedTabClassName="active">
-                        <TabList className="nav nav-tabs">
-                            <Tab className="tab-link">Description</Tab>
-                            <Tab className="tab-link">Specifications</Tab>
-                        </TabList>
-
-                        <TabPanel>
-                            <div className="row">
-                                <div className="col-lg-12">
-                                    <div className="product-details-frame">
-                                        <div className="tab-descrip" dangerouslySetInnerHTML={{ __html: repo.product.description }} />
-                                    </div>
-                                </div>
-                            </div>
-                        </TabPanel>
-                        <TabPanel>
-                            <div className="row">
-                                <div className="col-lg-12">
-                                    <div className="product-details-frame">
-                                        <table className="table table-bordered">
-                                            <tbody>
-                                                {
-                                                    repo.product.product_specifications.map((item, i) => <tr key={i}>
-                                                        <th scope="row">{item.title}</th>
-                                                        <td>{item.description}</td>
-                                                    </tr>)
-                                                }
-                                            </tbody>
-                                        </table>
-                                    </div>
-                                </div>
-                            </div>
-                        </TabPanel>
-                    </Tabs>
-                </div>
-            </section> */}
             <section className="section recent-part">
                 <div className="container">
                     <div className="row">

@@ -4,6 +4,7 @@ import Link from "next/link";
 import { useCallback, useContext, useEffect, useState } from "react";
 import CartQuantity from "./CartQuantity";
 import { CartContext } from "@/context/CartProvider";
+import Spinner from "./Spinner";
 
 export default function ProductCard({ id, name, image, slug, product_prices, is_featured, is_new, is_on_sale }: ProductType) {
 
@@ -137,7 +138,7 @@ export default function ProductCard({ id, name, image, slug, product_prices, is_
                     }
                 </div>
                 <button disabled={wishlistLoading} className={`product-wish wish ${wishlist.wishlist.length>0 && wishlist.wishlist.filter(item=>item.product.id===id).length>0 ? 'active' : ''}`} onClick={()=> wishlist.wishlist.length>0 && wishlist.wishlist.filter(item=>item.product.id===id).length>0 ? deleteItemWishlist(wishlist.wishlist.filter(item=>item.product.id===id)[0].id) : addItemWishlist(id)}>
-                    <i className="fas fa-heart"></i>
+                    {wishlistLoading ? <Spinner />:<i className="fas fa-heart"></i>}
                 </button>
                 <Link className="product-image text-center w-100" href={`/products/${slug}`}
                 ><img src={image} alt="product"

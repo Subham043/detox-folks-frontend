@@ -10,6 +10,7 @@ import { signIn } from "next-auth/react";
 import { axiosPublic } from '../../axios';
 import { api_routes } from '@/helper/routes';
 import { useRouter, useSearchParams } from 'next/navigation';
+import Spinner from '@/components/Spinner';
 
 const schema = yup
   .object({
@@ -216,7 +217,13 @@ export default function Register() {
                       >
                     </div>
                     <div className="form-button">
-                      <button type="submit" disabled={loading}>{loading ? 'registering' : 'register'}</button>
+                      <button type="submit" disabled={loading}>
+                        {
+                          loading ? <Spinner/> : <>
+                            register
+                          </>
+                        }
+                      </button>
                     </div>
                   </form>
                 </div>

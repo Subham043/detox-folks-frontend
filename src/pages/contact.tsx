@@ -10,6 +10,7 @@ import { api_routes } from '@/helper/routes';
 import { ErrorMessage } from '@hookform/error-message';
 import { usePathname } from 'next/navigation'
 import { ToastOptions, toast } from 'react-toastify';
+import Spinner from '@/components/Spinner';
 
 const schema = yup
   .object({
@@ -166,8 +167,12 @@ export default function Contact() {
                                         />
                             </div>
                             <button type="submit" className="form-btn-group" disabled={loading}>
-                                <i className="fas fa-envelope"></i>
-                                <span>{loading ? 'sending message' : 'send message'}</span>
+                              {
+                                loading ? <Spinner/> : <>
+                                  <i className="fas fa-envelope"></i>
+                                  <span>send message</span>
+                                </>
+                              }
                             </button>
                         </form>
                     </div>

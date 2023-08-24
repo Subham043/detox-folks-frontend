@@ -8,6 +8,7 @@ import { axiosPublic } from '../../axios';
 import { api_routes } from '@/helper/routes';
 import { ErrorMessage } from '@hookform/error-message';
 import { ToastOptions, toast } from 'react-toastify';
+import Spinner from '@/components/Spinner';
 
 
 const schema = yup
@@ -99,7 +100,13 @@ export default function ForgotPassword() {
                                         />
                                     </div>
                                     <div className="form-button">
-                                        <button type="submit" disabled={loading}>{loading ? 'sending reset link' : 'send reset link'}</button>
+                                        <button type="submit" disabled={loading}>
+                                          {
+                                            loading ? <Spinner/> : <>
+                                              send reset link
+                                            </>
+                                          }
+                                        </button>
                                     </div>
                                 </form>
                             </div>
