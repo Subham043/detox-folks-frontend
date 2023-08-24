@@ -76,7 +76,10 @@ export default function ProductDetail({
 
     const incrementQuantity = () => {
         const cart_product = cart.cart.filter(item => item.product.id === repo.product.id)
-        const price = repo.product.product_prices.filter(item => (quantity + 50) <= item.min_quantity).length > 0 ? repo.product.product_prices.filter(item => (quantity + 50) <= item.min_quantity)[0] : repo.product.product_prices[repo.product.product_prices.length - 1];
+        const priceArr = [...repo.product.product_prices];
+        const price_des_quantity = priceArr.sort(function(a, b){return b.min_quantity - a.min_quantity});
+        
+        const price = price_des_quantity.filter(item => (quantity + 50) >= item.min_quantity).length > 0 ? price_des_quantity.filter(item => (quantity + 50) >= item.min_quantity)[0] : price_des_quantity[price_des_quantity.length - 1];
         if (cart_product.length === 0) {
             addItemCart({
                 product_id: repo.product.id,
@@ -97,7 +100,9 @@ export default function ProductDetail({
 
     const decrementQuantity = () => {
         const cart_product = cart.cart.filter(item => item.product.id === repo.product.id)
-        const price = repo.product.product_prices.filter(item => (Math.max(0, quantity - 50)) <= item.min_quantity).length > 0 ? repo.product.product_prices.filter(item => (Math.max(0, quantity - 50)) <= item.min_quantity)[0] : repo.product.product_prices[repo.product.product_prices.length - 1];
+        const priceArr = [...repo.product.product_prices];
+        const price_des_quantity = priceArr.sort(function(a, b){return b.min_quantity - a.min_quantity});
+        const price = price_des_quantity.filter(item => (Math.max(0, quantity - 50)) >= item.min_quantity).length > 0 ? price_des_quantity.filter(item => (Math.max(0, quantity - 50)) >= item.min_quantity)[0] : price_des_quantity[price_des_quantity.length - 1];
         if (cart_product.length !== 0 && Math.max(0, quantity - 50) !== 0) {
             updateItemCart({
                 cartItemId: cart_product[0].id,
@@ -118,8 +123,10 @@ export default function ProductDetail({
             </h3>);
         }
         if(repo.product.product_prices.length > 0){
+            const priceArr = [...repo.product.product_prices];
+            const price = priceArr.sort(function(a, b){return a.discount_in_price - b.discount_in_price});
             return (<h3 className="details-price">
-                {repo.product.product_prices[repo.product.product_prices.length - 1].discount !== 0 && <del>&#8377;{repo.product.product_prices[repo.product.product_prices.length - 1].price}</del>}<span>&#8377;{repo.product.product_prices[repo.product.product_prices.length - 1].discount_in_price}<small>/pieces</small></span>
+                {price[0].discount !== 0 && <del>&#8377;{price[0].price}</del>}<span>&#8377;{price[0].discount_in_price}<small>/pieces</small></span>
             </h3>);
         }
         return <></>;

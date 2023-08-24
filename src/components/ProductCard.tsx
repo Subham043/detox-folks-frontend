@@ -25,7 +25,9 @@ export default function ProductCard({ id, name, image, slug, product_prices, is_
 
     const incrementQuantity = () => {
         const cart_product = cart_product_item();
-        const price = product_prices.filter(item=>(quantity+50)<=item.min_quantity).length>0 ? product_prices.filter(item=>(quantity+50)<=item.min_quantity)[0] : product_prices[product_prices.length-1];
+        const priceArr = [...product_prices];
+        const price_des_quantity = priceArr.sort(function(a, b){return b.min_quantity - a.min_quantity});
+        const price = price_des_quantity.filter(item=>(quantity+50)>=item.min_quantity).length>0 ? price_des_quantity.filter(item=>(quantity+50)>=item.min_quantity)[0] : price_des_quantity[price_des_quantity.length-1];
         if(cart_product.length===0){
             addItemCart({
                 product_id: id,
@@ -46,7 +48,9 @@ export default function ProductCard({ id, name, image, slug, product_prices, is_
     
     const decrementQuantity = () => {
         const cart_product = cart_product_item();
-        const price = product_prices.filter(item=>(Math.max(0, quantity-50))<=item.min_quantity).length>0 ? product_prices.filter(item=>(Math.max(0, quantity-50))<=item.min_quantity)[0] : product_prices[product_prices.length-1];
+        const priceArr = [...product_prices];
+        const price_des_quantity = priceArr.sort(function(a, b){return b.min_quantity - a.min_quantity});
+        const price = price_des_quantity.filter(item=>(Math.max(0, quantity-50))>=item.min_quantity).length>0 ? price_des_quantity.filter(item=>(Math.max(0, quantity-50))>=item.min_quantity)[0] : price_des_quantity[price_des_quantity.length-1];
         if(cart_product.length!==0 && Math.max(0, quantity-50)!==0){
             updateItemCart({
                 cartItemId: cart_product[0].id,
@@ -97,8 +101,10 @@ export default function ProductCard({ id, name, image, slug, product_prices, is_
             </h6>);
         }
         if(product_prices.length > 0){
+            const priceArr = [...product_prices];
+            const price = priceArr.sort(function(a, b){return a.discount_in_price - b.discount_in_price});
             return (<h6 className="product-price">
-                {product_prices[product_prices.length - 1].discount !== 0 && <del>&#8377;{product_prices[product_prices.length - 1].price}</del>}<span>&#8377;{product_prices[product_prices.length - 1].discount_in_price}<small>/pieces</small></span>
+                {price[0].discount !== 0 && <del>&#8377;{price[0].price}</del>}<span>&#8377;{price[0].discount_in_price}<small>/pieces</small></span>
                 <div className="p-relative">
                     <ul className="navbar-list">
                         <li className="navbar-item dropdown product-dropdown">
