@@ -10,6 +10,7 @@ import { ToastOptions, toast } from "react-toastify";
 import { WishlistContext } from "@/context/WishlistProvider";
 import { CartContext } from "@/context/CartProvider";
 import ProductSearch from "./ProductSearch";
+import { LoginModalContext } from "@/context/LoginModalProvider";
 
 const toastConfig: ToastOptions = {
     position: "bottom-center",
@@ -23,11 +24,13 @@ const toastConfig: ToastOptions = {
 }
 export default function Header() {
     const { status, data: session } = useSession();
+    const { displayLogin } = useContext(LoginModalContext);
     const [isOpen, setIsOpen] = useState(false)
     const toggleDrawer = () => {
         if (status === 'authenticated') {
             setIsOpen((prevState) => !prevState)
         } else {
+            displayLogin()
             toast.error("Please log in to view cart.", toastConfig);
         }
     }
