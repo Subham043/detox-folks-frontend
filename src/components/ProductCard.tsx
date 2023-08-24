@@ -60,15 +60,57 @@ export default function ProductCard({ id, name, image, slug, product_prices, is_
         }
     };
 
+    const BulkOfferFactor = () => {
+        return product_prices.length > 0 && <div className="orderlist-deliver mb-0 text-left">
+            <h6 className='px-2 pt-1'>Bulk Offer :</h6>
+            <hr className="my-1" />
+            <ul className='pb-2'>
+                {
+                    product_prices.map((item, i) => <li className='px-2 pb-1' key={i}>
+                        {
+                            (cart_product_item().length>0 && item.min_quantity===cart_product_item()[0].product_price.min_quantity) ? 
+                            <code><i className='icofont-check'></i> Buy {item.min_quantity} Pcs. or more at &#8377;{item.discount_in_price}/Pcs.</code> : 
+                            <code className='text-dark'><i className='icofont-info-circle'></i> Buy {item.min_quantity} Pcs. or more at &#8377;{item.discount_in_price}/Pcs.</code>
+                        }
+                    </li>)
+                }
+            </ul>
+        </div>
+    }
+
     const PriceFactor = () => {
         if(cart_product_item().length>0){
             return (<h6 className="product-price">
                 {cart_product_item()[0].product_price.discount !== 0 && <del>&#8377;{cart_product_item()[0].product_price.price}</del>}<span>&#8377;{cart_product_item()[0].product_price.discount_in_price}<small>/pieces</small></span>
+                <div className="p-relative">
+                    <ul className="navbar-list">
+                        <li className="navbar-item dropdown product-dropdown">
+                            <a className="" href="#">
+                                <i className="icofont-info-circle mx-1"></i>
+                            </a>
+                            <ul className="dropdown-position-list product-dropdown-position-list">
+                                <li><BulkOfferFactor/></li>
+                            </ul>
+                        </li>
+                    </ul>
+                </div>
             </h6>);
         }
         if(product_prices.length > 0){
             return (<h6 className="product-price">
                 {product_prices[product_prices.length - 1].discount !== 0 && <del>&#8377;{product_prices[product_prices.length - 1].price}</del>}<span>&#8377;{product_prices[product_prices.length - 1].discount_in_price}<small>/pieces</small></span>
+                <div className="p-relative">
+                    <ul className="navbar-list">
+                        <li className="navbar-item dropdown product-dropdown">
+                            <a className="" href="#">
+                                <i className="icofont-info-circle mx-1"></i>
+                            </a>
+                            <ul className="dropdown-position-list product-dropdown-position-list">
+                                <li><BulkOfferFactor/></li>
+                            </ul>
+                        </li>
+                    </ul>
+                </div>
             </h6>);
         }
         return <></>;

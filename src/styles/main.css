@@ -1763,7 +1763,7 @@ tbody tr td:last-child {
 
 .product-card {
     width: 100%;
-    overflow: hidden;
+    /* overflow: hidden; */
     position: relative;
     margin-bottom: 25px;
     padding: 15px 18px;
@@ -1775,6 +1775,18 @@ tbody tr td:last-child {
     -moz-transition: all linear .3s;
     -ms-transition: all linear .3s;
     -o-transition: all linear .3s
+}
+
+.text-left{
+    text-align: left;
+}
+
+.product-dropdown:hover .product-dropdown-position-list{
+ top: 30px !important;
+}
+.product-dropdown-position-list{
+ width: auto;
+ min-width: 365px;
 }
 
 .product-card:hover {

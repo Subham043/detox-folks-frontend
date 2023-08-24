@@ -134,7 +134,7 @@ export default function ProductDetail({
                     repo.product.product_prices.map((item, i) => <li className='px-2 pb-1' key={i}>
                         {
                             (cart_product_item().length>0 && item.min_quantity===cart_product_item()[0].product_price.min_quantity) ? 
-                            <code><i className='icofont-info-circle'></i> Buy {item.min_quantity} Pieces or more at &#8377;{item.discount_in_price}/Pieces</code> : 
+                            <code><i className='icofont-check'></i> Buy {item.min_quantity} Pieces or more at &#8377;{item.discount_in_price}/Pieces</code> : 
                             <code className='text-dark'><i className='icofont-info-circle'></i> Buy {item.min_quantity} Pieces or more at &#8377;{item.discount_in_price}/Pieces</code>
                         }
                     </li>)
