@@ -17,6 +17,7 @@ import Layout from "@/components/Layout";
 import { SessionProvider } from "next-auth/react";
 import WishlistProvider from "@/context/WishlistProvider";
 import CartProvider from "@/context/CartProvider";
+import LoginModalProvider from "@/context/LoginModalProvider";
 
 export default function App({ Component, pageProps: { session, ...pageProps } }: AppProps) {
   return <SWRConfig
@@ -25,14 +26,16 @@ export default function App({ Component, pageProps: { session, ...pageProps } }:
   }}
  >
   <SessionProvider session={session}>
-    <CartProvider>
-      <WishlistProvider>
-        <Layout>
-          <Component {...pageProps} />
-        </Layout>
-        <ToastContainer />
-      </WishlistProvider>
-    </CartProvider>
+    <LoginModalProvider>
+      <CartProvider>
+        <WishlistProvider>
+          <Layout>
+            <Component {...pageProps} />
+          </Layout>
+          <ToastContainer />
+        </WishlistProvider>
+      </CartProvider>
+    </LoginModalProvider>
   </SessionProvider>
  </SWRConfig>
 }

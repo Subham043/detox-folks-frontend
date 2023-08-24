@@ -4892,6 +4892,21 @@ tbody tr td:last-child {
     transform: translateY(-50%)
 }
 
+.clse-btn .cart-close {
+    position: absolute;
+    top: -20px;
+    left: unset;
+    right: -10px;
+    -webkit-transform: none;
+    transform:none;
+    z-index: 1;
+}
+
+.clse-btn .cart-close i {
+    /* color: var(--white); */
+    border: 1px dashed var(--primary);
+}
+
 .cart-close i {
     width: 35px;
     height: 35px;
@@ -4900,7 +4915,7 @@ tbody tr td:last-child {
     border-radius: 50%;
     text-align: center;
     display: inline-block;
-    color: var(--text);
+    color: var(--primary);
     background: var(--white);
     text-shadow: var(--primary-tshadow);
     transition: all linear .3s;
@@ -6882,7 +6897,7 @@ tbody tr td:last-child {
     padding: 100px 0;
     text-align: center;
     position: relative;
-    z-index: 1
+    z-index: 0
 }
 
 .single-banner::before {
@@ -7215,6 +7230,11 @@ tbody tr td:last-child {
 .p-sticky-product{
     position: sticky;
     top: 80px;
+}
+
+.ReactModal__Content{
+    padding: 10px !important;
+    overflow: unset !important;
 }
 
 @keyframes animatedBackground {

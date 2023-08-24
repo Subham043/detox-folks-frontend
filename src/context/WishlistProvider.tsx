@@ -1,9 +1,10 @@
-import React, { createContext, useEffect, useState } from "react";
+import React, { createContext, useContext, useEffect, useState } from "react";
 import { ChildrenType, WishlistType as WishlistDataType } from "../helper/types";
 import { axiosPublic } from "../../axios";
 import { api_routes } from "../helper/routes";
 import { useSession } from "next-auth/react";
 import { ToastOptions, toast } from 'react-toastify';
+import { LoginModalContext } from "./LoginModalProvider";
 
 const toastConfig:ToastOptions = {
     position: "bottom-center",
@@ -40,6 +41,7 @@ const WishlistProvider: React.FC<ChildrenType> = ({children}) => {
     const [wishlist, setWishlistDetails] = useState<WishlistType>({wishlist:[]});
     const [wishlistLoading, setWishlistLoading] = useState<boolean>(false);
     const { status, data: session } = useSession();
+    const { displayLogin } = useContext(LoginModalContext);
   
     useEffect(() => {
       getWishlist()
@@ -63,7 +65,7 @@ const WishlistProvider: React.FC<ChildrenType> = ({children}) => {
               setWishlistLoading(false);
             }
         }else{
-            toast.error("Please log in to add the item to wishlist.", toastConfig);
+            loginHandler("Please log in to add the item to wishlist.");
         }
     }
     
@@ -84,7 +86,7 @@ const WishlistProvider: React.FC<ChildrenType> = ({children}) => {
               setWishlistLoading(false);
             }
         }else{
-            toast.error("Please log in to remove the item from wishlist.", toastConfig);
+            loginHandler("Please log in to remove the item from wishlist.");
         }
     }
     
@@ -102,6 +104,10 @@ const WishlistProvider: React.FC<ChildrenType> = ({children}) => {
               setWishlistLoading(false);
             }
         }
+    }
+    const loginHandler = (msg: string) => {
+        toast.error(msg, toastConfig);
+        displayLogin();
     }
 
     return (

@@ -22,6 +22,7 @@
     "react": "18.2.0",
     "react-dom": "18.2.0",
     "react-hook-form": "^7.45.4",
+    "react-modal": "^3.16.1",
     "react-modern-drawer": "^1.2.0",
     "react-slick": "^0.29.0",
     "react-tabs": "^6.0.2",
@@ -32,6 +33,7 @@
     "yup": "^1.2.0"
   },
   "devDependencies": {
+    "@types/react-modal": "^3.16.0",
     "@types/react-slick": "^0.23.10"
   }
 }

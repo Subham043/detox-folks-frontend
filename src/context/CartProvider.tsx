@@ -1,9 +1,10 @@
-import React, { createContext, useEffect, useState } from "react";
+import React, { createContext, useContext, useEffect, useState } from "react";
 import { ChildrenType, CartType as CartDataType } from "../helper/types";
 import { axiosPublic } from "../../axios";
 import { api_routes } from "../helper/routes";
 import { useSession } from "next-auth/react";
 import { ToastOptions, toast } from 'react-toastify';
+import { LoginModalContext } from "./LoginModalProvider";
 
 const toastConfig:ToastOptions = {
     position: "top-right",
@@ -50,6 +51,7 @@ const CartProvider: React.FC<ChildrenType> = ({children}) => {
     const [cart, setCartDetails] = useState<CartType>({cart:[], cart_subtotal:0});
     const [cartLoading, setCartLoading] = useState<boolean>(false);
     const { status, data: session } = useSession();
+    const { displayLogin } = useContext(LoginModalContext);
   
     useEffect(() => {
       getCart()
@@ -73,7 +75,7 @@ const CartProvider: React.FC<ChildrenType> = ({children}) => {
               setCartLoading(false);
             }
         }else{
-            toast.error("Please log in to add the item to cart.", toastConfig);
+          loginHandler("Please log in to add the item to cart.");
         }
     }
     
@@ -98,7 +100,7 @@ const CartProvider: React.FC<ChildrenType> = ({children}) => {
               setCartLoading(false);
             }
         }else{
-            toast.error("Please log in to add the item to cart.", toastConfig);
+          loginHandler("Please log in to update the item in cart.");
         }
     }
     
@@ -119,7 +121,7 @@ const CartProvider: React.FC<ChildrenType> = ({children}) => {
               setCartLoading(false);
             }
         }else{
-            toast.error("Please log in to remove the item from cart.", toastConfig);
+          loginHandler("Please log in to remove the item from cart.");
         }
     }
     
@@ -137,6 +139,11 @@ const CartProvider: React.FC<ChildrenType> = ({children}) => {
               setCartLoading(false);
             }
         }
+    }
+
+    const loginHandler = (msg:string) => {
+      toast.error(msg, toastConfig);
+      displayLogin();
     }
 
     return (
