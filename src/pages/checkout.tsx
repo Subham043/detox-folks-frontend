@@ -48,8 +48,8 @@ export default function Checkout() {
                           <td className="table-name"><h6>{item.product.name}</h6></td>
                           <td className="table-price">
                             {
-                              item.product.product_prices.length>0 && <h6>
-                                  <span>&#8377;{item.product.product_prices[item.product.product_prices.length-1].discount_in_price}<small>/pieces</small></span>
+                              item.product_price && <h6>
+                                  <span>&#8377;{item.product_price.discount_in_price}<small>/pieces</small></span>
                               </h6>
                             }
                           </td>

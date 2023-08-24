@@ -31,59 +31,40 @@ export default function Wishlist() {
                       <th scope="col">Name</th>
                       <th scope="col">Price</th>
                       <th scope="col">description</th>
-                      <th scope="col">shopping</th>
                       <th scope="col">action</th>
                     </tr>
                   </thead>
                   <tbody>
                     {
-                      wishlist.wishlist.map((item, i)=><tr key={i}>
-                      <td className="table-serial"><h6>{i+1}</h6></td>
-                      <td className="table-image">
-                        <img src={item.product.image} alt="product" />
-                      </td>
-                      <td className="table-name"><h6>{item.product.name}</h6></td>
-                      <td className="table-price">
-                        {
+                      wishlist.wishlist.map((item, i) => <tr key={i}>
+                        <td className="table-serial"><h6>{i + 1}</h6></td>
+                        <td className="table-image">
+                          <img src={item.product.image} alt="product" />
+                        </td>
+                        <td className="table-name"><h6>{item.product.name}</h6></td>
+                        <td className="table-price">
+                          {
                             item.product.product_prices.length > 0 && <h6>&#8377;{item.product.product_prices[item.product.product_prices.length - 1].discount_in_price}<small>/pieces</small></h6>
-                        }
-                      </td>
-                      <td className="table-desc">
-                        <p>
-                          {item.product.short_description}<Link href={`/products/${item.product.slug}`}>read more</Link>
-                        </p>
-                      </td>
-                      <td className="table-shop">
-                        <button className="product-add" title="Add to Cart">
-                          add to cart
-                        </button>
-                        <div className="product-action">
-                          <button className="action-minus" title="Quantity Minus">
-                            <i className="icofont-minus"></i></button
-                          ><input
-                            className="action-input"
-                            title="Quantity Number"
-                            type="text"
-                            name="quantity"
-                            defaultValue="1"
-                          /><button className="action-plus" title="Quantity Plus">
-                            <i className="icofont-plus"></i>
-                          </button>
-                        </div>
-                      </td>
-                      <td className="table-action">
-                        <Link
-                          className="view"
-                          href={`/products/${item.product.slug}`}
-                          title="Quick View"
-                          data-bs-toggle="modal"
-                          data-bs-target="#product-view"
-                        ><i className="fas fa-eye"></i></Link
-                        ><button className="trash" disabled={wishlistLoading} onClick={()=>deleteItemWishlist(item.id)} title="Remove Wishlist"
-                        ><i className="icofont-trash"></i
-                        ></button>
-                      </td>
-                    </tr>)
+                          }
+                        </td>
+                        <td className="table-desc">
+                          <p>
+                            {item.product.short_description}<Link href={`/products/${item.product.slug}`}>read more</Link>
+                          </p>
+                        </td>
+                        <td className="table-action">
+                          <Link
+                            className="view"
+                            href={`/products/${item.product.slug}`}
+                            title="Quick View"
+                            data-bs-toggle="modal"
+                            data-bs-target="#product-view"
+                          ><i className="fas fa-eye"></i></Link
+                          ><button className="trash" disabled={wishlistLoading} onClick={() => deleteItemWishlist(item.id)} title="Remove Wishlist"
+                          ><i className="icofont-trash"></i
+                          ></button>
+                        </td>
+                      </tr>)
                     }
                   </tbody>
                 </table>

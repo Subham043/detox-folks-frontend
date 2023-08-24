@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { useContext, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import Drawer from 'react-modern-drawer'
 import useSWR from 'swr'
 import { api_routes } from "@/helper/routes";
@@ -54,13 +54,19 @@ export default function Header() {
         }
     };
 
+    useEffect(() => {
+        setIsOpen(false)
+    }, [router]);
+
 
     const { data, isLoading } = useSWR<CategoryResponseType>(api_routes.categories + '?total=1000');
     const { wishlist } = useContext(WishlistContext);
     const { cart, updateItemCart, deleteItemCart, cartLoading } = useContext(CartContext);
 
     const incrementQuantity = (item: CartType) => {
-        const price = item.product.product_prices.filter(i => (item.quantity + 50) <= i.min_quantity).length > 0 ? item.product.product_prices.filter(i => (item.quantity + 50) <= i.min_quantity)[0] : item.product.product_prices[item.product.product_prices.length - 1];
+        const priceArr = [...item.product.product_prices];
+        const price_des_quantity = priceArr.sort(function(a, b){return b.min_quantity - a.min_quantity});
+        const price = price_des_quantity.filter(i => (item.quantity + 50) >= i.min_quantity).length > 0 ? price_des_quantity.filter(i => (item.quantity + 50) >= i.min_quantity)[0] : price_des_quantity[price_des_quantity.length - 1];
         updateItemCart({
             cartItemId: item.id,
             product_id: item.product.id,
@@ -71,7 +77,9 @@ export default function Header() {
     };
 
     const decrementQuantity = (item: CartType) => {
-        const price = item.product.product_prices.filter(i => (Math.max(0, item.quantity - 50)) <= i.min_quantity).length > 0 ? item.product.product_prices.filter(i => (Math.max(0, item.quantity - 50)) <= i.min_quantity)[0] : item.product.product_prices[item.product.product_prices.length - 1];
+        const priceArr = [...item.product.product_prices];
+        const price_des_quantity = priceArr.sort(function(a, b){return b.min_quantity - a.min_quantity});
+        const price = price_des_quantity.filter(i => (Math.max(0, item.quantity - 50)) >= i.min_quantity).length > 0 ? price_des_quantity.filter(i => (Math.max(0, item.quantity - 50)) >= i.min_quantity)[0] : price_des_quantity[price_des_quantity.length - 1];
         if (Math.max(0, item.quantity - 50) !== 0) {
             updateItemCart({
                 cartItemId: item.id,
@@ -221,8 +229,8 @@ export default function Header() {
                                 <div className="cart-info">
                                     <h6><a href="product-single.html">{item.product.name}</a></h6>
                                     {
-                                        item.product.product_prices.length > 0 && <p>
-                                            Unit Price - <span>&#8377;{item.product.product_prices[item.product.product_prices.length - 1].discount_in_price}<small>/pieces</small></span>
+                                        item.product_price && <p>
+                                            Unit Price - <span>&#8377;{item.product_price.discount_in_price}<small>/pieces</small></span>
                                         </p>
                                     }
                                 </div>
