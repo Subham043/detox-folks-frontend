@@ -19,8 +19,8 @@ export default function CartQuantity({quantity, loading, incrementQuantity, decr
                 title="Quantity Number"
                 type="text"
                 name="quantity"
-                readOnly={loading}
-                disabled={loading}
+                readOnly={true}
+                disabled={true}
                 value={quantity}
             /><button className="action-plus" title="Quantity Plus" disabled={loading} onClick={()=>incrementQuantity()}>
                 <i className="icofont-plus"></i>

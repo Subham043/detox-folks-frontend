@@ -147,13 +147,6 @@ export default function ProductCard({ id, name, image, slug, product_prices, is_
                 <h6 className="product-name">
                     <Link href={`/products/${slug}`}>{name}</Link>
                 </h6>
-                {/* {
-                    cart_product_item().length>0 ? <h6 className="product-price">
-                        {cart_product_item()[0].product_price.discount !== 0 && <del>&#8377;{cart_product_item()[0].product_price.price}</del>}<span>&#8377;{cart_product_item()[0].product_price.discount_in_price}<small>/pieces</small></span>
-                    </h6>: product_prices.length > 0 && <h6 className="product-price">
-                        {product_prices[product_prices.length - 1].discount !== 0 && <del>&#8377;{product_prices[product_prices.length - 1].price}</del>}<span>&#8377;{product_prices[product_prices.length - 1].discount_in_price}<small>/pieces</small></span>
-                    </h6>
-                } */}
                 <PriceFactor />
                 <CartQuantity quantity={quantity} incrementQuantity={incrementQuantity} decrementQuantity={decrementQuantity} loading={cartLoading} />
             </div>
