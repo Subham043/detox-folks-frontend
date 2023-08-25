@@ -4,6 +4,9 @@ import { useSession } from "next-auth/react";
 import Modal from 'react-modal';
 import LoginModal from "@/components/LoginModal";
 import { useRouter } from "next/router";
+
+Modal.setAppElement('#body');
+
 const customStyles = {
   content: {
     top: '50%',

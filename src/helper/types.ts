@@ -285,3 +285,14 @@ export interface WebsiteSettingType<> {
     created_at: string;
     updated_at: string;
 }
+export interface BillingAddressType<> {
+    id: number;
+    city: string;
+    state: string;
+    address: string;
+    country: string;
+    pin: number;
+    is_active: boolean;
+    created_at: string;
+    updated_at: string;
+}
