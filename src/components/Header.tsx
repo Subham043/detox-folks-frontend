@@ -191,11 +191,11 @@ export default function Header() {
                             <div className="navbar-info-group">
                                 <div className="navbar-info">
                                     <i className="icofont-ui-touch-phone"></i>
-                                    <p><small>call us</small><span>{websiteLoading ? <div className="blog-heading-loading"></div>: website.website.phone}</span></p>
+                                    {websiteLoading ? <div className="blog-heading-loading"></div>:<p><small>call us</small><span>{website.website.phone}</span></p>}
                                 </div>
                                 <div className="navbar-info">
                                     <i className="icofont-ui-email"></i>
-                                    <p><small>email us</small><span>{websiteLoading ? <div className="blog-heading-loading"></div>: website.website.email}</span></p>
+                                    {websiteLoading ? <div className="blog-heading-loading"></div>:<p><small>email us</small><span>{website.website.email}</span></p>}
                                 </div>
                             </div>
                         </div>
@@ -245,8 +245,8 @@ export default function Header() {
                                             title="Quantity Number"
                                             type="text"
                                             name="quantity"
-                                            disabled={cartLoading}
-                                            readOnly={cartLoading}
+                                            disabled={true}
+                                            readOnly={true}
                                             value={item.quantity}
                                         /><button className="action-plus" title="Quantity Plus" disabled={cartLoading} onClick={() => incrementQuantity(item)}>
                                             <i className="icofont-plus"></i>
