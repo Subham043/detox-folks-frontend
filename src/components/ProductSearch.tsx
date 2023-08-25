@@ -17,7 +17,7 @@ export default function ProductSearch() {
     }, [router]);
 
     return <form className="header-form flex-wrap">
-        <div className="d-flex flex-wrap col-12">
+        <div className="header-form-holder flex-wrap col-12">
             <input type="text" placeholder="Search anything..." className="col-11" value={search} onChange={(e) => {setSearch(e.target.value);setShowList(true)}} /><button className="col-1">
                 <i className="fas fa-search"></i>
             </button>

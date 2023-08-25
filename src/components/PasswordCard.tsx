@@ -95,8 +95,8 @@ export default function PasswordCard() {
         </div>
         <div className="account-content">
             <form  onSubmit={handleSubmit(onSubmit)}>
-                <div className="row">
-                    <div className="col-md-6 col-lg-3">
+                <div className="row justify-content-center">
+                    <div className="col-md-4 col-lg-4">
                         <div className="form-group">
                             <label className="form-label">Old Password</label
                             ><input
@@ -111,7 +111,7 @@ export default function PasswordCard() {
                           as={<div style={{ color: 'red' }} />}
                       />
                     </div>
-                    <div className="col-md-6 col-lg-3">
+                    <div className="col-md-4 col-lg-4">
                         <div className="form-group">
                             <label className="form-label">New Password</label
                             ><input
@@ -126,7 +126,7 @@ export default function PasswordCard() {
                           as={<div style={{ color: 'red' }} />}
                       />
                     </div>
-                    <div className="col-md-6 col-lg-3">
+                    <div className="col-md-4 col-lg-4">
                         <div className="form-group">
                             <label className="form-label">Confirm Password</label
                             ><input
@@ -141,8 +141,8 @@ export default function PasswordCard() {
                           as={<div style={{ color: 'red' }} />}
                       />
                     </div>
-                    <div className="col-md-6 col-lg-3">
-                        <div className="profile-btn text-center">
+                    <div className="col-md-4 col-lg-4">
+                        <div className="profile-btn text-center mt-0">
                             <button className="btn btn-success btn-sm px-2 py-2" type="submit" disabled={loading}>
                               {
                                 loading ? <Spinner/> : <>
