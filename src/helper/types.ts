@@ -266,3 +266,22 @@ export interface CounterResponseType<> {
     message: string;
     counter: CounterType[];
 }
+
+export interface WebsiteSettingType<> {
+    id: number;
+    email: string;
+    facebook: string;
+    address: string;
+    instagram: string;
+    linkedin: string;
+    youtube: string;
+    website_favicon: string;
+    website_footer_logo: string;
+    website_logo: string;
+    website_logo_alt: string;
+    website_logo_title: string;
+    website_name: string;
+    phone: number;
+    created_at: string;
+    updated_at: string;
+}

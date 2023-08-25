@@ -11,6 +11,7 @@ import { WishlistContext } from "@/context/WishlistProvider";
 import { CartContext } from "@/context/CartProvider";
 import ProductSearch from "./ProductSearch";
 import { LoginModalContext } from "@/context/LoginModalProvider";
+import { WebsiteContext } from "@/context/WebsiteProvider";
 
 const toastConfig: ToastOptions = {
     position: "bottom-center",
@@ -62,6 +63,7 @@ export default function Header() {
     const { data, isLoading } = useSWR<CategoryResponseType>(api_routes.categories + '?total=1000');
     const { wishlist } = useContext(WishlistContext);
     const { cart, updateItemCart, deleteItemCart, cartLoading } = useContext(CartContext);
+    const { website, websiteLoading } = useContext(WebsiteContext);
 
     const incrementQuantity = (item: CartType) => {
         const priceArr = [...item.product.product_prices];
@@ -100,7 +102,7 @@ export default function Header() {
                 <div className="row">
                     <div className="col-md-12 col-lg-12">
                         <div className="header-top-welcome text-center">
-                            <p>Welcome to Detox-Folks Online Store!</p>
+                            <p>Welcome to {website.website.website_name} Online Store!</p>
                         </div>
                     </div>
                 </div>
@@ -110,11 +112,11 @@ export default function Header() {
             <div className="container">
                 <div className="header-content">
                     <div className="header-media-group">
-                        <Link href="/"><img src="/images/logo.png" alt="logo" /></Link
+                        <Link href="/"><img src={website.website.website_logo} alt="logo" /></Link
                         >
                     </div>
                     <Link href="/" className="header-logo"
-                    ><img src="/images/logo.png" alt="logo" /></Link
+                    ><img src={website.website.website_logo} alt="logo" /></Link
                     >
                     <ProductSearch />
                     <div className="header-widget-group">
@@ -189,11 +191,11 @@ export default function Header() {
                             <div className="navbar-info-group">
                                 <div className="navbar-info">
                                     <i className="icofont-ui-touch-phone"></i>
-                                    <p><small>call us</small><span>(+880) 183 8288 389</span></p>
+                                    <p><small>call us</small><span>{websiteLoading ? <div className="blog-heading-loading"></div>: website.website.phone}</span></p>
                                 </div>
                                 <div className="navbar-info">
                                     <i className="icofont-ui-email"></i>
-                                    <p><small>email us</small><span>support@example.com</span></p>
+                                    <p><small>email us</small><span>{websiteLoading ? <div className="blog-heading-loading"></div>: website.website.email}</span></p>
                                 </div>
                             </div>
                         </div>

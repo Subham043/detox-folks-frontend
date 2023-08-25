@@ -1,12 +1,14 @@
 import Link from "next/link";
-import { FC } from "react";
+import { FC, useContext } from "react";
 import useSWR from 'swr'
 import { api_routes } from "@/helper/routes";
 import { LegalResponseType } from "@/helper/types";
 import Policy from "./Policy";
+import { WebsiteContext } from "@/context/WebsiteProvider";
 
 const Footer: FC = () => {
   const { data, isLoading } = useSWR<LegalResponseType>(api_routes.legal);
+  const { website, websiteLoading } = useContext(WebsiteContext);
 
   return <>
     <Policy />
@@ -19,11 +21,10 @@ const Footer: FC = () => {
               ><img src="/images/logo.png" alt="logo"
                 /></Link>
               <ul className="footer-social">
-                <li><a className="icofont-facebook" href="#"></a></li>
-                <li><a className="icofont-twitter" href="#"></a></li>
-                <li><a className="icofont-linkedin" href="#"></a></li>
-                <li><a className="icofont-instagram" href="#"></a></li>
-                <li><a className="icofont-pinterest" href="#"></a></li>
+                <li><a className="icofont-facebook" href={website.website.facebook}></a></li>
+                <li><a className="icofont-instagram" href={website.website.instagram}></a></li>
+                <li><a className="icofont-linkedin" href={website.website.linkedin}></a></li>
+                <li><a className="fab fa-youtube" href={website.website.youtube}></a></li>
               </ul>
             </div>
           </div>
@@ -33,19 +34,15 @@ const Footer: FC = () => {
               <ul className="footer-contact">
                 <li>
                   <i className="icofont-ui-email"></i>
-                  <p>
-                    <span>support@example.com</span>
-                  </p>
+                  {websiteLoading ? <div className="blog-heading-loading"></div>: <p><span>{website.website.email}</span></p>}
                 </li>
                 <li>
                   <i className="icofont-ui-touch-phone"></i>
-                  <p>
-                    <span>+120 279 532 13</span>
-                  </p>
+                  {websiteLoading ? <div className="blog-heading-loading"></div>: <p><span>{website.website.phone}</span></p>}
                 </li>
                 <li>
                   <i className="icofont-location-pin"></i>
-                  <p>1Hd- 50, 010 Avenue, NY 90001 United States</p>
+                  {websiteLoading ? <div className="blog-heading-loading"></div>: <p>{website.website.address}</p>}
                 </li>
               </ul>
             </div>
@@ -62,6 +59,14 @@ const Footer: FC = () => {
                   <li><Link href="/contact">Contact Us</Link></li>
                 </ul>
                 <ul>
+                  {
+                    isLoading && <>
+                    <li><div className="blog-heading-loading"></div></li>
+                    <li><div className="blog-heading-loading"></div></li>
+                    <li><div className="blog-heading-loading"></div></li>
+                    <li><div className="blog-heading-loading"></div></li>
+                    </>
+                  }
                   {
                     data?.legal.map((item, i)=><li key={i}><Link href={`/legal/${item.slug}`}>{item.page_name}</Link></li>)
                   }
@@ -89,7 +94,7 @@ const Footer: FC = () => {
           <div className="col-12">
             <div className="footer-bottom justify-content-center">
               <p className="footer-copytext">
-                &copy; All Copyrights Reserved by <Link href="/">DetoxFolks</Link>
+                &copy; All Copyrights Reserved by <Link href="/">{website.website.website_name}</Link>
               </p>
               {/* <div className="footer-card">
                 <a href="#"
