@@ -3,6 +3,7 @@ import Hero from '@/components/Hero';
 import ProfileCard from '@/components/ProfileCard';
 import PasswordCard from '@/components/PasswordCard';
 import BillingAddress from '@/components/BillingAddress';
+import BillingInformation from '@/components/BillingInformation';
 
 export default function Profile() {
 
@@ -24,6 +25,9 @@ export default function Profile() {
             </div>
             <div className="col-lg-12">
               <PasswordCard />
+            </div>
+            <div className="col-lg-12">
+              <BillingInformation />
             </div>
             <div className="col-lg-12">
               <BillingAddress />
