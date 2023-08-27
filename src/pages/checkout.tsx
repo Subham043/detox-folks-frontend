@@ -1,12 +1,101 @@
 import Head from 'next/head'
 import Hero from '@/components/Hero';
-import { useContext } from 'react';
+import { useContext, useState } from 'react';
 import { CartContext } from '@/context/CartProvider';
 import Link from 'next/link';
+import BillingInformation from '@/components/BillingInformation';
+import BillingAddress from '@/components/BillingAddress';
+import { ToastOptions, toast } from 'react-toastify';
+import Spinner from '@/components/Spinner';
+import { axiosPublic } from '../../axios';
+import { api_routes } from '@/helper/routes';
+import { ErrorMessage } from '@hookform/error-message';
+import * as yup from "yup";
+import { useForm } from "react-hook-form";
+import { yupResolver } from "@hookform/resolvers/yup";
+import { useSession } from 'next-auth/react';
+
+const schema = yup
+  .object({
+    coupon_code: yup.string().required(),
+  })
+  .required();
+
+const toastConfig:ToastOptions = {
+    position: "bottom-center",
+    autoClose: 5000,
+    hideProgressBar: false,
+    closeOnClick: true,
+    pauseOnHover: true,
+    draggable: true,
+    progress: undefined,
+    theme: "light",
+}
 
 
 export default function Checkout() {
-  const { cart, updateItemCart, deleteItemCart, cartLoading } = useContext(CartContext);
+  const [loading, setLoading] = useState(false);
+  const { cart, getCart, deleteItemCart, cartLoading } = useContext(CartContext);
+  const { status, data: session } = useSession();
+  
+  const {
+    handleSubmit,
+    control,
+    setValue,
+    register,
+    getValues,
+    reset,
+    setError,
+    formState: { errors },
+  } = useForm({
+    resolver: yupResolver(schema),
+});
+
+const onSubmit = async (data: any) => {
+    setLoading(true);
+    try {
+      const response = await axiosPublic.post(api_routes.coupon_apply, {...data}, {
+        headers: {"Authorization" : `Bearer ${session?.user.token}`}
+      });
+      toast.success(response.data.message, toastConfig);            
+      reset({
+        coupon_code: "",
+      });
+      getCart();
+    } catch (error: any) {
+      console.log(error);
+      if (error?.response?.data?.message) {
+        toast.error(error?.response?.data?.message, toastConfig);
+      }
+      if (error?.response?.data?.errors?.coupon_code) {
+        setError("coupon_code", {
+          type: "server",
+          message: error?.response?.data?.errors?.coupon_code[0],
+        });
+      }
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const removeCouponHandler = async (data: any) => {
+    setLoading(true);
+    try {
+      const response = await axiosPublic.delete(api_routes.coupon_remove, {
+        headers: {"Authorization" : `Bearer ${session?.user.token}`}
+      });
+      toast.success(response.data.message, toastConfig);
+      getCart();
+    } catch (error: any) {
+      console.log(error);
+      if (error?.response?.data?.message) {
+        toast.error(error?.response?.data?.message, toastConfig);
+      }
+    } finally {
+      setLoading(false);
+    }
+  };
+  
 
   return (
     <>
@@ -72,23 +161,48 @@ export default function Checkout() {
                       </tbody>
                     </table>
                   </div>
-                  <div className="chekout-coupon">
-                    <button className="coupon-btn">Do you have a coupon code?</button>
-                    <form className="coupon-form">
+                  {
+                    cart.coupon_applied===null ? <div className="chekout-coupon">
+                    <form className="coupon-form d-flex" onSubmit={handleSubmit(onSubmit)}>
                       <input
                         type="text"
-                        placeholder="Enter your coupon code"
-                      /><button type="submit"><span>apply</span></button>
+                        placeholder="Enter your coupon code" {...register('coupon_code')}
+                      /><button type="submit" disabled={loading}>
+                        {
+                          loading ? <Spinner/> : <span>apply</span>
+                        }
+                      </button>
                     </form>
+                    <ErrorMessage
+                        errors={errors}
+                        name='coupon_code'
+                        as={<div style={{ color: 'red' }} />}
+                      />
+                  </div> : <div className="chekout-coupon">
+                    <div className="coupon-form d-flex">
+                      <div className='w-100 text-left px-3'>
+                        <b>Coupon</b> : {cart.coupon_applied.code}
+                      </div><button type="button" disabled={loading} onClick={removeCouponHandler}>
+                        {
+                          loading ? <Spinner/> : <span>remove</span>
+                        }
+                      </button>
+                    </div>
                   </div>
+                  }
                   <div className="checkout-charge">
                     <ul>
                       <li><span>Sub total</span><span>&#8377;{cart.cart_subtotal}</span></li>
-                      <li><span>delivery fee</span><span>$10.00</span></li>
-                      <li><span>discount</span><span>$00.00</span></li>
+                      {
+                        cart.cart_charges.map((item, i)=><li key={i}><span>{item.charges_name}</span><span><b>+</b> &#8377;{item.charges_in_amount}</span></li>)
+                      }
+                      <li><span>tax ({cart.tax.tax_in_percentage}%)</span><span><b>+</b> &#8377;{cart.total_tax}</span></li>
+                      <li><span className="p-relative">
+                        discount
+                        </span><span><b>-</b> &#8377;{cart.discount_price}</span></li>
                       <li>
-                        <span>Total<small>(Incl. VAT)</small></span
-                        ><span>$277.00</span>
+                        <span>Total</span
+                        ><span>&#8377;{cart.total_price}</span>
                       </li>
                     </ul>
                   </div>
@@ -96,206 +210,10 @@ export default function Checkout() {
               </div>
             </div>
             <div className="col-lg-12">
-              <div className="account-card">
-                <div className="account-title"><h4>Delivery Schedule</h4></div>
-                <div className="account-content">
-                  <div className="row">
-                    <div className="col-md-6 col-lg-4 alert fade show">
-                      <div className="profile-card schedule active">
-                        <h6>express</h6>
-                        <p>90 min express delivery</p>
-                      </div>
-                    </div>
-                    <div className="col-md-6 col-lg-4 alert fade show">
-                      <div className="profile-card schedule">
-                        <h6>8am-10pm</h6>
-                        <p>8.00 AM - 10.00 PM</p>
-                      </div>
-                    </div>
-                    <div className="col-md-6 col-lg-4 alert fade show">
-                      <div className="profile-card schedule">
-                        <h6>Next day</h6>
-                        <p>Next day or Tomorrow</p>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </div>
+              <BillingInformation />
             </div>
             <div className="col-lg-12">
-              <div className="account-card">
-                <div className="account-title">
-                  <h4>contact number</h4>
-                  <button data-bs-toggle="modal" data-bs-target="#contact-add">
-                    add contact
-                  </button>
-                </div>
-                <div className="account-content">
-                  <div className="row">
-                    <div className="col-md-6 col-lg-4 alert fade show">
-                      <div className="profile-card contact active">
-                        <h6>primary</h6>
-                        <p>+8801838288389</p>
-                        <ul>
-                          <li>
-                            <button
-                              className="edit icofont-edit"
-                              title="Edit This"
-                              data-bs-toggle="modal"
-                              data-bs-target="#contact-edit"
-                            ></button>
-                          </li>
-                          <li>
-                            <button
-                              className="trash icofont-ui-delete"
-                              title="Remove This"
-                              data-bs-dismiss="alert"
-                            ></button>
-                          </li>
-                        </ul>
-                      </div>
-                    </div>
-                    <div className="col-md-6 col-lg-4 alert fade show">
-                      <div className="profile-card contact">
-                        <h6>secondary</h6>
-                        <p>+8801941101915</p>
-                        <ul>
-                          <li>
-                            <button
-                              className="edit icofont-edit"
-                              title="Edit This"
-                              data-bs-toggle="modal"
-                              data-bs-target="#contact-edit"
-                            ></button>
-                          </li>
-                          <li>
-                            <button
-                              className="trash icofont-ui-delete"
-                              title="Remove This"
-                              data-bs-dismiss="alert"
-                            ></button>
-                          </li>
-                        </ul>
-                      </div>
-                    </div>
-                    <div className="col-md-6 col-lg-4 alert fade show">
-                      <div className="profile-card contact">
-                        <h6>secondary</h6>
-                        <p>+8801747875727</p>
-                        <ul>
-                          <li>
-                            <button
-                              className="edit icofont-edit"
-                              title="Edit This"
-                              data-bs-toggle="modal"
-                              data-bs-target="#contact-edit"
-                            ></button>
-                          </li>
-                          <li>
-                            <button
-                              className="trash icofont-ui-delete"
-                              title="Remove This"
-                              data-bs-dismiss="alert"
-                            ></button>
-                          </li>
-                        </ul>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
-            <div className="col-lg-12">
-              <div className="account-card">
-                <div className="account-title">
-                  <h4>delivery address</h4>
-                  <button data-bs-toggle="modal" data-bs-target="#address-add">
-                    add address
-                  </button>
-                </div>
-                <div className="account-content">
-                  <div className="row">
-                    <div className="col-md-6 col-lg-4 alert fade show">
-                      <div className="profile-card address active">
-                        <h6>Home</h6>
-                        <p>
-                          jalkuri, fatullah, narayanganj-1420. word no-09, road
-                          no-17/A
-                        </p>
-                        <ul className="user-action">
-                          <li>
-                            <button
-                              className="edit icofont-edit"
-                              title="Edit This"
-                              data-bs-toggle="modal"
-                              data-bs-target="#address-edit"
-                            ></button>
-                          </li>
-                          <li>
-                            <button
-                              className="trash icofont-ui-delete"
-                              title="Remove This"
-                              data-bs-dismiss="alert"
-                            ></button>
-                          </li>
-                        </ul>
-                      </div>
-                    </div>
-                    <div className="col-md-6 col-lg-4 alert fade show">
-                      <div className="profile-card address">
-                        <h6>Office</h6>
-                        <p>
-                          east tejturi bazar, dhaka-1200. word no-04, road
-                          no-13/c, house no-4/b
-                        </p>
-                        <ul className="user-action">
-                          <li>
-                            <button
-                              className="edit icofont-edit"
-                              title="Edit This"
-                              data-bs-toggle="modal"
-                              data-bs-target="#address-edit"
-                            ></button>
-                          </li>
-                          <li>
-                            <button
-                              className="trash icofont-ui-delete"
-                              title="Remove This"
-                              data-bs-dismiss="alert"
-                            ></button>
-                          </li>
-                        </ul>
-                      </div>
-                    </div>
-                    <div className="col-md-6 col-lg-4 alert fade show">
-                      <div className="profile-card address">
-                        <h6>Bussiness</h6>
-                        <p>
-                          kawran bazar, dhaka-1100. word no-02, road no-13/d,
-                          house no-7/m
-                        </p>
-                        <ul className="user-action">
-                          <li>
-                            <button
-                              className="edit icofont-edit"
-                              title="Edit This"
-                              data-bs-toggle="modal"
-                              data-bs-target="#address-edit"
-                            ></button>
-                          </li>
-                          <li>
-                            <button
-                              className="trash icofont-ui-delete"
-                              title="Remove This"
-                              data-bs-dismiss="alert"
-                            ></button>
-                          </li>
-                        </ul>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </div>
+              <BillingAddress />
             </div>
             <div className="col-lg-12">
               <div className="account-card mb-0">

@@ -217,6 +217,39 @@ export interface CartType<> {
     amount: number;
 }
 
+export interface CartChargeType<> {
+    created_at: string;
+    updated_at: string;
+    charges_slug: string;
+    charges_name: string;
+    id: number;
+    charges_in_amount: number;
+    include_charges_for_cart_price_below: number;
+    is_active: boolean;
+}
+
+export interface CartTaxType<> {
+    created_at: string;
+    updated_at: string;
+    tax_name: string;
+    tax_slug: string;
+    id: number;
+    tax_in_percentage: number;
+}
+
+export interface CartCouponType<> {
+    created_at: string;
+    updated_at: string;
+    code: string;
+    description: string;
+    name: string;
+    id: number;
+    discount: number;
+    maximum_discount_in_price: number|null;
+    maximum_number_of_use: number|null;
+    minimum_cart_value: number|null;
+}
+
 
 export interface LegalType<> {
     id: number;
