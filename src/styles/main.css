@@ -4579,7 +4579,7 @@ tbody tr td:last-child {
     top: 0;
     left: -320px;
     width: 280px;
-    height: 100vh;
+    height: 100%;
     padding: 0;
     z-index: 5;
     background: var(--white);
@@ -7435,5 +7435,17 @@ tbody tr td:last-child {
 
     .orderlist-head {
         padding: 15px 0px
+    }
+
+    .about-img{
+        margin-left: 0 !important;
+        margin-top: 15px;
+    }
+
+    .footer-bottom{
+        padding: 10px 15px 5px !important;
+    }
+    .single-banner h2, .product-dropdown-position-list, .product-dropdown{
+        display: none;
     }
 }

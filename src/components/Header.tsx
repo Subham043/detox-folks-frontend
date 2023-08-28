@@ -30,6 +30,10 @@ export default function Header() {
     const { status, data: session } = useSession();
     const { displayLogin } = useContext(LoginModalContext);
     const [isOpen, setIsOpen] = useState(false)
+    const [isMobileDrawerOpen, setIsMobileDrawerOpen] = useState(false)
+    const [loading, setLoading] = useState(false);
+    const router = useRouter();
+    const callbackUrl = "/";
     const toggleDrawer = () => {
         if (status === 'authenticated') {
             setIsOpen((prevState) => !prevState)
@@ -38,9 +42,14 @@ export default function Header() {
             toast.error("Please log in to view cart.", toastConfig);
         }
     }
-    const [loading, setLoading] = useState(false);
-    const router = useRouter();
-    const callbackUrl = "/";
+    const toggleMobileDrawer = () => {
+        setIsMobileDrawerOpen((prevState) => !prevState)
+    }
+
+    useEffect(() => {
+        setIsMobileDrawerOpen(false)
+    }, [router]);
+
     const onLogout = async (event: any) => {
         event.preventDefault()
         setLoading(true);
@@ -71,7 +80,7 @@ export default function Header() {
 
     const incrementQuantity = (item: CartType) => {
         const priceArr = [...item.product.product_prices];
-        const price_des_quantity = priceArr.sort(function(a, b){return b.min_quantity - a.min_quantity});
+        const price_des_quantity = priceArr.sort(function (a, b) { return b.min_quantity - a.min_quantity });
         const price = price_des_quantity.filter(i => (item.quantity + 50) >= i.min_quantity).length > 0 ? price_des_quantity.filter(i => (item.quantity + 50) >= i.min_quantity)[0] : price_des_quantity[price_des_quantity.length - 1];
         updateItemCart({
             cartItemId: item.id,
@@ -84,7 +93,7 @@ export default function Header() {
 
     const decrementQuantity = (item: CartType) => {
         const priceArr = [...item.product.product_prices];
-        const price_des_quantity = priceArr.sort(function(a, b){return b.min_quantity - a.min_quantity});
+        const price_des_quantity = priceArr.sort(function (a, b) { return b.min_quantity - a.min_quantity });
         const price = price_des_quantity.filter(i => (Math.max(0, item.quantity - 50)) >= i.min_quantity).length > 0 ? price_des_quantity.filter(i => (Math.max(0, item.quantity - 50)) >= i.min_quantity)[0] : price_des_quantity[price_des_quantity.length - 1];
         if (Math.max(0, item.quantity - 50) !== 0) {
             updateItemCart({
@@ -118,6 +127,9 @@ export default function Header() {
                     <div className="header-media-group">
                         <Link href="/"><img src={website.website.website_logo} alt="logo" /></Link
                         >
+                        <button onClick={toggleMobileDrawer}>
+                            <i className="icofont-navigation-menu" />
+                        </button>
                     </div>
                     <Link href="/" className="header-logo"
                     ><img src={website.website.website_logo} alt="logo" /></Link
@@ -166,7 +178,7 @@ export default function Header() {
                                         <div className="container">
                                             <div className="row">
                                                 {
-                                                    isLoading && loadingArr.map( i => <div className="col-sm-12 col-lg-3 mb-2" key={i}>
+                                                    isLoading && loadingArr.map(i => <div className="col-sm-12 col-lg-3 mb-2" key={i}>
                                                         <div className="blog-small-img-loading"></div>
                                                     </div>)
                                                 }
@@ -202,11 +214,11 @@ export default function Header() {
                             <div className="navbar-info-group">
                                 <div className="navbar-info">
                                     <i className="icofont-ui-touch-phone"></i>
-                                    {websiteLoading ? <div className="blog-heading-loading"></div>:<p><small>call us</small><span>{website.website.phone}</span></p>}
+                                    {websiteLoading ? <div className="blog-heading-loading"></div> : <p><small>call us</small><span>{website.website.phone}</span></p>}
                                 </div>
                                 <div className="navbar-info">
                                     <i className="icofont-ui-email"></i>
-                                    {websiteLoading ? <div className="blog-heading-loading"></div>:<p><small>email us</small><span>{website.website.email}</span></p>}
+                                    {websiteLoading ? <div className="blog-heading-loading"></div> : <p><small>email us</small><span>{website.website.email}</span></p>}
                                 </div>
                             </div>
                         </div>
@@ -229,7 +241,7 @@ export default function Header() {
                     </div>
                     <button onClick={toggleDrawer} className="cart-close"><i className="icofont-close"></i></button>
                 </div>
-                {cart.cart.length> 0 ? <ul className="cart-list">
+                {cart.cart.length > 0 ? <ul className="cart-list">
                     {
                         cart.cart.map((item, i) => <li className="cart-item" key={i}>
                             <div className="cart-media">
@@ -271,9 +283,9 @@ export default function Header() {
                 </ul> : <ul className="cart-list">
                     <li className="cart-item">
                         <p className='text-center'>No items are there in cart. Kindly add one!</p>
-                    </li>    
+                    </li>
                 </ul>}
-                {cart.cart.length>0 && <div className="cart-footer">
+                {cart.cart.length > 0 && <div className="cart-footer">
                     <Link className="cart-checkout-btn" href="/checkout"
                     ><span className="checkout-label">Proceed to Checkout</span
                     ><span className="checkout-price">&#8377;{cart.cart_subtotal}</span></Link
@@ -281,5 +293,51 @@ export default function Header() {
                 </div>}
             </aside>
         </Drawer>
+        <aside className={`nav-sidebar ${isMobileDrawerOpen && 'active'}`}>
+        <div className="nav-header">
+          <a href="#"><img src={website.website.website_logo} alt="logo" /></a
+          ><button onClick={toggleMobileDrawer} className="nav-close"><i className="icofont-close"></i></button>
+        </div>
+        <div className="nav-content">
+          <ul className="nav-list">
+                <li>
+                    <Link className="nav-link" href="/"><i className="icofont-home"></i>home</Link>
+                </li>
+                <li>
+                    <Link className="nav-link" href="/about"><i className="icofont-info-circle"></i>about us</Link>
+                </li>
+                <li>
+                    <Link className="nav-link" href="/products"><i className="icofont-page"></i>products</Link>
+                </li>
+                <li>
+                    <Link className="nav-link" href="/blogs"><i className="icofont-book-alt"></i>blogs</Link>
+                </li>
+                <li>
+                    <Link className="nav-link" href="/contact"><i className="icofont-contacts"></i>contact us</Link>
+                </li>
+                {
+                    status === 'unauthenticated' ? <li>
+                    <Link className="nav-link" href="/login"><i className="fas fa-user"></i>Login</Link>
+                </li> : <>
+                    <li>
+                        <Link className="nav-link" href="/profile"><i className="fas fa-user"></i>Profile</Link>
+                    </li>
+                    <li>
+                        <Link className="nav-link" href="/wishlist"><i className="fas fa-heart"></i>Wishlist</Link>
+                    </li>
+                    <li>
+                        <Link className="nav-link" href="/cart"><i className="fas fa-cart-plus"></i>Cart</Link>
+                    </li>
+                    <li>
+                        <Link className="nav-link" href="/checkout"><i className="icofont-money"></i>Checkout</Link>
+                    </li>
+                    <li>
+                        <Link className="nav-link" href="/orders"><i className="icofont-bag-alt"></i>Order</Link>
+                    </li>
+                    <li><a style={loading ? { pointerEvents: 'none', cursor: 'none' } : { cursor: 'pointer' }} onClick={(event) => onLogout(event)} className="nav-link"><i className="icofont-logout"></i> {loading ? 'Logging Out' : 'Logout'}</a></li>
+                </>}
+            </ul>
+        </div>
+      </aside>
     </>
 }

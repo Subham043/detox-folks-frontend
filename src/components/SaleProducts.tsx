@@ -23,7 +23,7 @@ export default function SaleProducts() {
             </div>)
             }
         </div>}
-      <div className="row row-cols-2 row-cols-md-3 row-cols-lg-4 row-cols-xl-4">
+      <div className="row row-cols-12 row-cols-md-3 row-cols-lg-4 row-cols-xl-4">
         {
             !isLoading && data?.data.map((item, i)=><ProductCard key={i} {...item} />)
         }
