@@ -12,6 +12,9 @@ import { CartContext } from "@/context/CartProvider";
 import ProductSearch from "./ProductSearch";
 import { LoginModalContext } from "@/context/LoginModalProvider";
 import { WebsiteContext } from "@/context/WebsiteProvider";
+import Pagination from "./Pagination";
+
+const loadingArr = [1, 2, 3, 4]
 
 const toastConfig: ToastOptions = {
     position: "bottom-center",
@@ -60,7 +63,8 @@ export default function Header() {
     }, [router]);
 
 
-    const { data, isLoading } = useSWR<CategoryResponseType>(api_routes.categories + '?total=1000');
+    const [page, setPage] = useState("1")
+    const { data, isLoading } = useSWR<CategoryResponseType>(api_routes.categories + `?total=8&page=${page}`);
     const { wishlist } = useContext(WishlistContext);
     const { cart, updateItemCart, deleteItemCart, cartLoading } = useContext(CartContext);
     const { website, websiteLoading } = useContext(WebsiteContext);
@@ -162,6 +166,11 @@ export default function Header() {
                                         <div className="container">
                                             <div className="row">
                                                 {
+                                                    isLoading && loadingArr.map( i => <div className="col-sm-12 col-lg-3 mb-2" key={i}>
+                                                        <div className="blog-small-img-loading"></div>
+                                                    </div>)
+                                                }
+                                                {
                                                     data?.data.map((item, i) => <div className="col-lg-3" key={i}>
                                                         <div className="megamenu-wrap">
                                                             <Link href={`/category/${item.slug}`}><h5 className="megamenu-title">{item.name}</h5></Link>
@@ -176,6 +185,7 @@ export default function Header() {
                                                     </div>)
                                                 }
                                             </div>
+                                            <Pagination {...data?.meta} paginationHandler={setPage} />
                                         </div>
                                     </div>
                                 </li>
@@ -219,7 +229,7 @@ export default function Header() {
                     </div>
                     <button onClick={toggleDrawer} className="cart-close"><i className="icofont-close"></i></button>
                 </div>
-                <ul className="cart-list">
+                {cart.cart.length> 0 ? <ul className="cart-list">
                     {
                         cart.cart.map((item, i) => <li className="cart-item" key={i}>
                             <div className="cart-media">
@@ -258,21 +268,17 @@ export default function Header() {
                             </div>
                         </li>)
                     }
-                </ul>
-                <div className="cart-footer">
-                    {/* <button className="coupon-btn">Do you have a coupon code?</button>
-                    <form className="coupon-form">
-                        <input type="text" placeholder="Enter your coupon code" /><button
-                            type="submit"
-                        >
-                            <span>apply</span>
-                        </button>
-                    </form> */}
+                </ul> : <ul className="cart-list">
+                    <li className="cart-item">
+                        <p className='text-center'>No items are there in cart. Kindly add one!</p>
+                    </li>    
+                </ul>}
+                {cart.cart.length>0 && <div className="cart-footer">
                     <Link className="cart-checkout-btn" href="/checkout"
                     ><span className="checkout-label">Proceed to Checkout</span
                     ><span className="checkout-price">&#8377;{cart.cart_subtotal}</span></Link
                     >
-                </div>
+                </div>}
             </aside>
         </Drawer>
     </>

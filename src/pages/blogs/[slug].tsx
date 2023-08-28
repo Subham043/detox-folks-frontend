@@ -5,6 +5,7 @@ import { axiosPublic } from '../../../axios';
 import { api_routes } from '@/helper/routes';
 import { BlogType } from '@/helper/types';
 import PopularBlogs from '@/components/PopularBlogs';
+import BlogSocialWidget from '@/components/BlogSocialWidget';
 
 type ServerSideProps = {
   blog: BlogType;
@@ -60,11 +61,9 @@ export default function BlogDetail({
                   <div className="blog-details-footer">
                     <ul className="blog-details-share">
                       <li><span>share:</span></li>
-                      <li><a href="#" className="icofont-facebook"></a></li>
-                      <li><a href="#" className="icofont-twitter"></a></li>
-                      <li><a href="#" className="icofont-linkedin"></a></li>
-                      <li><a href="#" className="icofont-pinterest"></a></li>
-                      <li><a href="#" className="icofont-instagram"></a></li>
+                      <li><a href={`https://www.facebook.com/share.php?u=http://localhost:3000/blogs/${repo.blog.slug}&title=${repo.blog.name}`} target='_blank' className="icofont-facebook"></a></li>
+                      <li><a href={`https://twitter.com/share?text=${repo.blog.name}&url=http://localhost:3000/blogs/${repo.blog.slug}`} target='_blank' className="icofont-twitter"></a></li>
+                      <li><a href={`https://www.linkedin.com/shareArticle?mini=true&url=http://localhost:3000/blogs/${repo.blog.slug}&title=${repo.blog.name}&source=${repo.blog.name}`} target='_blank' className="icofont-linkedin"></a></li>
                     </ul>
                   </div>
                 </div>
@@ -72,16 +71,7 @@ export default function BlogDetail({
             </div>
             <div className="col-xl-4 col-lg-4">
               <PopularBlogs />
-              <div className="blog-widget">
-                <h3 className="blog-widget-title">follow us</h3>
-                <ul className="blog-widget-social">
-                  <li><a href="#" className="icofont-facebook"></a></li>
-                  <li><a href="#" className="icofont-twitter"></a></li>
-                  <li><a href="#" className="icofont-linkedin"></a></li>
-                  <li><a href="#" className="icofont-pinterest"></a></li>
-                  <li><a href="#" className="icofont-instagram"></a></li>
-                </ul>
-              </div>
+              <BlogSocialWidget />
             </div>
           </div>
         </div>

@@ -144,7 +144,7 @@ export default function Products() {
                                             </ul>
                                         </div>
                                         <div className="col-lg-4">
-                                            <div className="orderlist-deliver">
+                                            <div className="orderlist-deliver main-orderlist-deliver">
                                                 <h6>Delivery location</h6>
                                                 <p>
                                                     {item.name}<br/>

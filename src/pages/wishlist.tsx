@@ -22,7 +22,7 @@ export default function Wishlist() {
         <div className="container">
           <div className="row">
             <div className="col-lg-12">
-              <div className="table-scroll">
+              {wishlist.wishlist.length>0 ? <div className="table-scroll">
                 <table className="table-list">
                   <thead>
                     <tr>
@@ -68,7 +68,7 @@ export default function Wishlist() {
                     }
                   </tbody>
                 </table>
-              </div>
+              </div> : <p className='text-center'>No items are there in wishlist. Kindly add one!</p>}
             </div>
           </div>
         </div>

@@ -2067,7 +2067,7 @@ tbody tr td:last-child {
 
 .feature-card {
     width: 100%;
-    overflow: hidden;
+    /* overflow: hidden; */
     position: relative;
     margin-bottom: 25px;
     padding: 18px 18px;
@@ -2196,7 +2196,8 @@ tbody tr td:last-child {
 }
 
 .feature-image img {
-    height: 200px;
+    /* height: 200px; */
+    height: 150px;
     object-fit: contain;
 }
 
@@ -7381,7 +7382,15 @@ tbody tr td:last-child {
 }
 
 .orderlist-deliver {
-    height: 215px;
+    /* min-height: 215px; */
+    /* padding: 25px; */
+    border-radius: 8px;
+    margin-bottom: 25px;
+    background: var(--chalk)
+}
+
+.main-orderlist-deliver {
+    min-height: 215px;
     padding: 25px;
     border-radius: 8px;
     margin-bottom: 25px;

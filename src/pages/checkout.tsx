@@ -153,7 +153,7 @@ const onSubmit = async (data: any) => {
 
       <section className="inner-section checkout-part">
         <div className="container">
-          <div className="row">
+          {cart.cart.length>0 ? <div className="row">
             <div className="col-lg-12">
               <div className="account-card">
                 <div className="account-title"><h4>Your order</h4></div>
@@ -276,8 +276,8 @@ const onSubmit = async (data: any) => {
                 <div className="checkout-check">
                   <input type="checkbox" id="checkout-check" /><label
                     htmlFor="checkout-check"
-                  >By making this purchase you agree to our
-                    <a href="#">Terms and Conditions</a>.</label
+                  >By making this purchase you agree to our&nbsp; 
+                    <Link href="/legal/terms-condition">Terms and Conditions</Link>.</label
                   >
                 </div>
                 <div className="checkout-proced">
@@ -290,7 +290,7 @@ const onSubmit = async (data: any) => {
                 </div>
               </div>
             </div>
-          </div>
+          </div> : <p className='text-center'>No items are there in cart. Kindly add one!</p>}
         </div>
       </section>
 

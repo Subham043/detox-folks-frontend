@@ -251,16 +251,13 @@ export default function ProductDetail({
                                     <label className="details-list-title">Share:</label>
                                     <ul className="details-share-list">
                                         <li>
-                                            <a href="#" className="icofont-facebook" title="Facebook"></a>
+                                            <a target='_blank' href={`https://www.facebook.com/share.php?u=http://localhost:3000/products/${repo.product.slug}&title=${repo.product.name}`} className="icofont-facebook" title="Facebook"></a>
                                         </li>
                                         <li>
-                                            <a href="#" className="icofont-twitter" title="Twitter"></a>
+                                            <a target='_blank' href={`https://twitter.com/share?text=${repo.product.name}&url=http://localhost:3000/products/${repo.product.slug}`} className="icofont-twitter" title="Twitter"></a>
                                         </li>
                                         <li>
-                                            <a href="#" className="icofont-linkedin" title="Linkedin"></a>
-                                        </li>
-                                        <li>
-                                            <a href="#" className="icofont-instagram" title="Instagram"></a>
+                                            <a target='_blank' href={`https://www.linkedin.com/shareArticle?mini=true&url=http://localhost:3000/products/${repo.product.slug}&title=${repo.product.name}&source=${repo.product.name}`} className="icofont-linkedin" title="Linkedin"></a>
                                         </li>
                                     </ul>
                                 </div>

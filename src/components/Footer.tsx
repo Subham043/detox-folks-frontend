@@ -20,11 +20,11 @@ const Footer: FC = () => {
               <Link className="footer-logo" href="/"
               ><img src="/images/logo.png" alt="logo"
                 /></Link>
-              <ul className="footer-social">
-                <li><a className="icofont-facebook" href={website.website.facebook}></a></li>
-                <li><a className="icofont-instagram" href={website.website.instagram}></a></li>
-                <li><a className="icofont-linkedin" href={website.website.linkedin}></a></li>
-                <li><a className="fab fa-youtube" href={website.website.youtube}></a></li>
+              <ul className="footer-social text-center">
+                <li><a className="icofont-facebook" target="_blank" href={website.website.facebook}></a></li>
+                <li><a className="icofont-instagram" target="_blank" href={website.website.instagram}></a></li>
+                <li><a className="icofont-linkedin" target="_blank" href={website.website.linkedin}></a></li>
+                <li><a className="fab fa-youtube" target="_blank" href={website.website.youtube}></a></li>
               </ul>
             </div>
           </div>
@@ -52,11 +52,11 @@ const Footer: FC = () => {
               <h3 className="footer-title">quick Links</h3>
               <div className="footer-links">
                 <ul>
-                  <li><Link href="/">Home</Link></li>
-                  <li><Link href="/about">About Us</Link></li>
-                  <li><Link href="/products">Products</Link></li>
-                  <li><Link href="/blogs">Blogs</Link></li>
-                  <li><Link href="/contact">Contact Us</Link></li>
+                  <li><Link href="/" target="_blank">Home</Link></li>
+                  <li><Link href="/about" target="_blank">About Us</Link></li>
+                  <li><Link href="/products" target="_blank">Products</Link></li>
+                  <li><Link href="/blogs" target="_blank">Blogs</Link></li>
+                  <li><Link href="/contact" target="_blank">Contact Us</Link></li>
                 </ul>
                 <ul>
                   {
@@ -68,7 +68,7 @@ const Footer: FC = () => {
                     </>
                   }
                   {
-                    data?.legal.map((item, i)=><li key={i}><Link href={`/legal/${item.slug}`}>{item.page_name}</Link></li>)
+                    data?.legal.map((item, i)=><li key={i}><Link href={`/legal/${item.slug}`} target="_blank">{item.page_name}</Link></li>)
                   }
                 </ul>
               </div>

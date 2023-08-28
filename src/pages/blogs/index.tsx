@@ -7,6 +7,7 @@ import BlogCard from '@/components/BlogCard';
 import Pagination from '@/components/Pagination';
 import { useState } from 'react';
 import PopularBlogs from '@/components/PopularBlogs';
+import BlogSocialWidget from '@/components/BlogSocialWidget';
 
 const loadingArr = [1, 2, 3, 4]
 
@@ -83,16 +84,7 @@ export default function Blogs() {
                 </div>
               </div>
               <PopularBlogs />
-              <div className="blog-widget">
-                <h3 className="blog-widget-title">follow us</h3>
-                <ul className="blog-widget-social">
-                  <li><a href="#" className="icofont-facebook"></a></li>
-                  <li><a href="#" className="icofont-twitter"></a></li>
-                  <li><a href="#" className="icofont-linkedin"></a></li>
-                  <li><a href="#" className="icofont-pinterest"></a></li>
-                  <li><a href="#" className="icofont-instagram"></a></li>
-                </ul>
-              </div>
+              <BlogSocialWidget />
             </div>
           </div>
         </div>
