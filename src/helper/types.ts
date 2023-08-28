@@ -339,3 +339,76 @@ export interface BillingInformationType<> {
     created_at: string;
     updated_at: string;
 }
+
+export interface OrderChargeType<> {
+    created_at: string;
+    updated_at: string;
+    charges_slug: string;
+    charges_name: string;
+    id: number;
+    charges_in_amount: number;
+    include_charges_for_cart_price_below: number;
+    is_active: boolean;
+}
+
+export interface OrderStatusType<> {
+    created_at: string;
+    updated_at: string;
+    status: string;
+    id: number;
+}
+
+export interface OrderProductType<> {
+    id: number;
+    amount: number;
+    discount: number;
+    discount_in_price: number;
+    min_quantity: number;
+    price: number;
+    quantity: number;
+    slug: string
+    brief_description: string;
+    name: string;
+    image: string;
+    created_at: string;
+    updated_at: string;
+}
+
+export interface OrderType<> {
+    id: number;
+    name: string;
+    email: string;
+    phone: number;
+    city: string;
+    state: string;
+    address: string;
+    country: string;
+    pin: number;
+    coupon_code: string;
+    coupon_description: string;
+    coupon_name: string;
+    coupon_discount: number;
+    coupon_maximum_discount_in_price: number|null;
+    coupon_maximum_number_of_use: number|null;
+    coupon_minimum_cart_value: number|null
+    discount_price: number;
+    subtotal: number;
+    tax_in_percentage: number;
+    tax_name: string;
+    tax_slug: string;
+    total_charges: number;
+    total_price: number;
+    total_tax: number;
+    created_at: string;
+    updated_at: string;
+    charges: OrderChargeType[];
+    statuses: OrderStatusType[];
+    products: OrderProductType[];
+    payment: {
+        mode: string;
+        status: string;
+        created_at: string;
+        updated_at: string;
+        id: number;
+    }
+}

@@ -1,6 +1,6 @@
 import Head from 'next/head'
 import Hero from '@/components/Hero';
-import { useContext, useState } from 'react';
+import { useContext, useEffect, useState } from 'react';
 import { CartContext } from '@/context/CartProvider';
 import Link from 'next/link';
 import BillingInformation from '@/components/BillingInformation';
@@ -14,6 +14,7 @@ import * as yup from "yup";
 import { useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { useSession } from 'next-auth/react';
+import { useRouter } from 'next/router';
 
 const schema = yup
   .object({
@@ -37,6 +38,14 @@ export default function Checkout() {
   const [loading, setLoading] = useState(false);
   const { cart, getCart, deleteItemCart, cartLoading } = useContext(CartContext);
   const { status, data: session } = useSession();
+  const router = useRouter();
+  const [selectedData, setSelectedData] = useState<{
+    billing_address_id : number,
+    billing_information_id : number,
+  }>({
+    billing_address_id : 0,
+    billing_information_id : 0,
+  })
   
   const {
     handleSubmit,
@@ -95,6 +104,41 @@ const onSubmit = async (data: any) => {
       setLoading(false);
     }
   };
+
+  const getSelectedBillingAddress = (data: number) => {
+    setSelectedData({
+      ...selectedData, billing_address_id: data
+    })
+  }
+  
+  const getSelectedBillingInformation = (data: number) => {
+    setSelectedData({
+      ...selectedData, billing_information_id: data
+    })
+  }
+  
+  const placeOrderHandler = async (data: any) => {
+    setLoading(true);
+    try {
+      const response = await axiosPublic.post(api_routes.place_order, {billing_address_id: selectedData.billing_address_id, billing_information_id: selectedData.billing_information_id, mode_of_payment: 'Cash On Delivery'}, {
+        headers: {"Authorization" : `Bearer ${session?.user.token}`}
+      });
+      getCart();
+      toast.success(response.data.message, toastConfig);
+      router.push('/orders');
+    } catch (error: any) {
+      console.log(error);
+      if (error?.response?.data?.message) {
+        toast.error(error?.response?.data?.message, toastConfig);
+      }
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  useEffect(()=>{
+    getCart();
+  }, [status])
   
 
   return (
@@ -181,7 +225,7 @@ const onSubmit = async (data: any) => {
                   </div> : <div className="chekout-coupon">
                     <div className="coupon-form d-flex">
                       <div className='w-100 text-left px-3'>
-                        <b>Coupon</b> : {cart.coupon_applied.code}
+                        <b>Coupon</b> : {cart.coupon_applied && cart.coupon_applied.code}
                       </div><button type="button" disabled={loading} onClick={removeCouponHandler}>
                         {
                           loading ? <Spinner/> : <span>remove</span>
@@ -210,67 +254,21 @@ const onSubmit = async (data: any) => {
               </div>
             </div>
             <div className="col-lg-12">
-              <BillingInformation />
+              <BillingInformation getSelectedItem={getSelectedBillingInformation} />
             </div>
             <div className="col-lg-12">
-              <BillingAddress />
+              <BillingAddress getSelectedItem={getSelectedBillingAddress} />
             </div>
             <div className="col-lg-12">
               <div className="account-card mb-0">
                 <div className="account-title">
                   <h4>payment option</h4>
-                  <button data-bs-toggle="modal" data-bs-target="#payment-add">
-                    add card
-                  </button>
                 </div>
                 <div className="account-content">
                   <div className="row">
-                    <div className="col-md-6 col-lg-4 alert fade show">
-                      <div className="payment-card payment active">
-                        <img src="/images/payment/png/01.png" alt="payment" />
-                        <h4>card number</h4>
-                        <p>
-                          <span>****</span><span>****</span><span>****</span
-                          ><sup>1876</sup>
-                        </p>
-                        <h5>miron mahmud</h5>
-                        <button
-                          className="trash icofont-ui-delete"
-                          title="Remove This"
-                          data-bs-dismiss="alert"
-                        ></button>
-                      </div>
-                    </div>
-                    <div className="col-md-6 col-lg-4 alert fade show">
-                      <div className="payment-card payment">
-                        <img src="/images/payment/png/02.png" alt="payment" />
-                        <h4>card number</h4>
-                        <p>
-                          <span>****</span><span>****</span><span>****</span
-                          ><sup>1876</sup>
-                        </p>
-                        <h5>miron mahmud</h5>
-                        <button
-                          className="trash icofont-ui-delete"
-                          title="Remove This"
-                          data-bs-dismiss="alert"
-                        ></button>
-                      </div>
-                    </div>
-                    <div className="col-md-6 col-lg-4 alert fade show">
-                      <div className="payment-card payment">
-                        <img src="/images/payment/png/03.png" alt="payment" />
-                        <h4>card number</h4>
-                        <p>
-                          <span>****</span><span>****</span><span>****</span
-                          ><sup>1876</sup>
-                        </p>
-                        <h5>miron mahmud</h5>
-                        <button
-                          className="trash icofont-ui-delete"
-                          title="Remove This"
-                          data-bs-dismiss="alert"
-                        ></button>
+                    <div className="col-md-6 col-lg-3 alert fade show">
+                      <div className="profile-card address active">
+                          <h6>Cash On Delivery</h6>
                       </div>
                     </div>
                   </div>
@@ -283,150 +281,18 @@ const onSubmit = async (data: any) => {
                   >
                 </div>
                 <div className="checkout-proced">
-                  <a href="invoice.html" className="btn btn-inline"
-                  >proced to checkout</a
+                  <button className="btn btn-inline" disabled={loading} onClick={placeOrderHandler}
                   >
+                    { loading ? <Spinner /> : <>
+                      Place Order
+                    </>}
+                  </button>
                 </div>
               </div>
             </div>
           </div>
         </div>
       </section>
-      <div className="modal fade" id="contact-add">
-        <div className="modal-dialog modal-dialog-centered">
-          <div className="modal-content">
-            <button className="modal-close" data-bs-dismiss="modal">
-              <i className="icofont-close"></i>
-            </button>
-            <form className="modal-form">
-              <div className="form-title"><h3>add new contact</h3></div>
-              <div className="form-group">
-                <label className="form-label">title</label
-                ><select className="form-select">
-                  <option selected>choose title</option>
-                  <option value="primary">primary</option>
-                  <option value="secondary">secondary</option>
-                </select>
-              </div>
-              <div className="form-group">
-                <label className="form-label">number</label
-                ><input
-                  className="form-control"
-                  type="text"
-                  placeholder="Enter your number"
-                />
-              </div>
-              <button className="form-btn" type="submit">save contact info</button>
-            </form>
-          </div>
-        </div>
-      </div>
-      <div className="modal fade" id="address-add">
-        <div className="modal-dialog modal-dialog-centered">
-          <div className="modal-content">
-            <button className="modal-close" data-bs-dismiss="modal">
-              <i className="icofont-close"></i>
-            </button>
-            <form className="modal-form">
-              <div className="form-title"><h3>add new address</h3></div>
-              <div className="form-group">
-                <label className="form-label">title</label
-                ><select className="form-select">
-                  <option selected>choose title</option>
-                  <option value="home">home</option>
-                  <option value="office">office</option>
-                  <option value="Bussiness">Bussiness</option>
-                  <option value="academy">academy</option>
-                  <option value="others">others</option>
-                </select>
-              </div>
-              <div className="form-group">
-                <label className="form-label">address</label
-                ><textarea
-                  className="form-control"
-                  placeholder="Enter your address"
-                ></textarea>
-              </div>
-              <button className="form-btn" type="submit">save address info</button>
-            </form>
-          </div>
-        </div>
-      </div>
-      <div className="modal fade" id="payment-add">
-        <div className="modal-dialog modal-dialog-centered">
-          <div className="modal-content">
-            <button className="modal-close" data-bs-dismiss="modal">
-              <i className="icofont-close"></i>
-            </button>
-            <form className="modal-form">
-              <div className="form-title"><h3>add new payment</h3></div>
-              <div className="form-group">
-                <label className="form-label">card number</label
-                ><input
-                  className="form-control"
-                  type="text"
-                  placeholder="Enter your card number"
-                />
-              </div>
-              <button className="form-btn" type="submit">save card info</button>
-            </form>
-          </div>
-        </div>
-      </div>
-      <div className="modal fade" id="contact-edit">
-        <div className="modal-dialog modal-dialog-centered">
-          <div className="modal-content">
-            <button className="modal-close" data-bs-dismiss="modal">
-              <i className="icofont-close"></i>
-            </button>
-            <form className="modal-form">
-              <div className="form-title"><h3>edit contact info</h3></div>
-              <div className="form-group">
-                <label className="form-label">title</label
-                ><select className="form-select">
-                  <option value="primary" selected>primary</option>
-                  <option value="secondary">secondary</option>
-                </select>
-              </div>
-              <div className="form-group">
-                <label className="form-label">number</label
-                ><input className="form-control" type="text" defaultValue="+8801838288389" />
-              </div>
-              <button className="form-btn" type="submit">save contact info</button>
-            </form>
-          </div>
-        </div>
-      </div>
-      <div className="modal fade" id="address-edit">
-        <div className="modal-dialog modal-dialog-centered">
-          <div className="modal-content">
-            <button className="modal-close" data-bs-dismiss="modal">
-              <i className="icofont-close"></i>
-            </button>
-            <form className="modal-form">
-              <div className="form-title"><h3>edit address info</h3></div>
-              <div className="form-group">
-                <label className="form-label">title</label
-                ><select className="form-select">
-                  <option value="home" selected>home</option>
-                  <option value="office">office</option>
-                  <option value="Bussiness">Bussiness</option>
-                  <option value="academy">academy</option>
-                  <option value="others">others</option>
-                </select>
-              </div>
-              <div className="form-group">
-                <label className="form-label">address</label
-                ><textarea
-                  className="form-control"
-                  placeholder="jalkuri, fatullah, narayanganj-1420. word no-09, road no-17/A"
-                ></textarea>
-              </div>
-              <button className="form-btn" type="submit">save address info</button>
-            </form>
-          </div>
-        </div>
-      </div>
 
     </>
   )

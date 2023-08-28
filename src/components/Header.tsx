@@ -128,6 +128,7 @@ export default function Header() {
                                     <a className="navbar-link header-widget" href="#"><img src="/images/user.png" alt="user" /><span>{session?.user.name}</span></a>
                                     <ul className="dropdown-position-list">
                                         <li><Link href="/profile">Profile</Link></li>
+                                        <li><Link href="/orders">Orders</Link></li>
                                         <li><a style={loading ? { pointerEvents: 'none', cursor: 'none' } : { cursor: 'pointer' }} onClick={(event) => onLogout(event)}>{loading ? 'Logging Out' : 'Logout'}</a></li>
                                     </ul>
                                 </li>

@@ -49,7 +49,11 @@ const toastConfig: ToastOptions = {
     theme: "light",
 }
 
-export default function BillingInformation() {
+type Props = {
+    getSelectedItem?: (data:number)=>void;
+}
+
+export default function BillingInformation({getSelectedItem}:Props) {
     const [loading, setLoading] = useState(false);
     const [dataLoading, setDataLoading] = useState(false);
     const [billingInformations, setBillingInformations] = useState<BillingInformationType[]>([]);
@@ -59,6 +63,7 @@ export default function BillingInformation() {
         id: number|null
     }>({ status: false, id: null});
     const { status, data: session } = useSession();
+    const [selected, setSelected] = useState(0);
 
     const {
         handleSubmit,
@@ -87,6 +92,10 @@ export default function BillingInformation() {
                     headers: { "Authorization": `Bearer ${session?.user.token}` }
                 });
                 setBillingInformations([...response.data.data])
+                if(response.data.data.length>0){
+                    setSelected(response.data.data[0].id)
+                    getSelectedItem && getSelectedItem(response.data.data[0].id)
+                }
 
             } catch (error) {
                 console.log(error);
@@ -94,7 +103,7 @@ export default function BillingInformation() {
                 setDataLoading(false)
             }
         },
-        [status],
+        [status, getSelectedItem],
     )
 
     const onSubmit = async (data: any) => {
@@ -206,7 +215,7 @@ export default function BillingInformation() {
                     }
                     {
                         billingInformations.map((item, i)=><div className="col-md-6 col-lg-4 alert fade show" key={i}>
-                        <div className="profile-card address">
+                        <div className={`profile-card address ${selected===item.id ? 'active' : ''}`} onClick={()=>{setSelected(item.id); getSelectedItem && getSelectedItem(item.id)}}>
                             <h6>{item.name}</h6>
                             <p>
                                 {item.email}, {item.phone}

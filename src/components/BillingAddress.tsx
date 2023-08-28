@@ -49,7 +49,11 @@ const toastConfig: ToastOptions = {
     theme: "light",
 }
 
-export default function BillingAddress() {
+type Props = {
+    getSelectedItem?: (data:number)=>void;
+}
+
+export default function BillingAddress({getSelectedItem}:Props) {
     const [loading, setLoading] = useState(false);
     const [dataLoading, setDataLoading] = useState(false);
     const [billingAddresses, setBillingAddresses] = useState<BillingAddressType[]>([]);
@@ -59,6 +63,8 @@ export default function BillingAddress() {
         id: number|null
     }>({ status: false, id: null});
     const { status, data: session } = useSession();
+    const [selected, setSelected] = useState(0);
+    
 
     const {
         handleSubmit,
@@ -87,6 +93,10 @@ export default function BillingAddress() {
                     headers: { "Authorization": `Bearer ${session?.user.token}` }
                 });
                 setBillingAddresses([...response.data.data])
+                if(response.data.data.length>0){
+                    setSelected(response.data.data[0].id)
+                    getSelectedItem && getSelectedItem(response.data.data[0].id)
+                }
 
             } catch (error) {
                 console.log(error);
@@ -94,7 +104,7 @@ export default function BillingAddress() {
                 setDataLoading(false)
             }
         },
-        [status],
+        [status, getSelectedItem],
     )
 
     const onSubmit = async (data: any) => {
@@ -222,7 +232,7 @@ export default function BillingAddress() {
                     }
                     {
                         billingAddresses.map((item, i)=><div className="col-md-6 col-lg-4 alert fade show" key={i}>
-                        <div className="profile-card address">
+                        <div className={`profile-card address ${selected===item.id ? 'active' : ''}`} onClick={()=>{setSelected(item.id); getSelectedItem && getSelectedItem(item.id)}}>
                             <h6>{item.country}</h6>
                             <p>
                                 {item.address}, {item.city}, {item.state} - {item.pin}, {item.country}
