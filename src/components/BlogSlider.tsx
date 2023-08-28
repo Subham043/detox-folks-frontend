@@ -9,7 +9,34 @@ const settings = {
   dots: true,
   infinite: true,
   speed: 500,
-  slidesToScroll: 2
+  slidesToScroll: 2,
+  initialSlide: 0,
+  responsive: [
+    {
+      breakpoint: 1024,
+      settings: {
+        slidesToShow: 2,
+        slidesToScroll: 2,
+        initialSlide: 0
+      }
+    },
+    {
+      breakpoint: 600,
+      settings: {
+        slidesToShow: 1,
+        slidesToScroll: 1,
+        initialSlide: 0
+      }
+    },
+    {
+      breakpoint: 480,
+      settings: {
+        slidesToShow: 1,
+        slidesToScroll: 1,
+        initialSlide: 0
+      }
+    }
+  ]
 };
 
 const loadingArr = [1, 2, 3]
@@ -17,7 +44,7 @@ const loadingArr = [1, 2, 3]
 export default function BlogSlider() {
   const { data, isLoading } = useSWR<BlogResponseType>(api_routes.blog + '?total=6');
 
-  if(isLoading){
+  if (isLoading) {
     return <section className="section blog-part">
       <div className="container">
         <div className="row">
@@ -27,11 +54,11 @@ export default function BlogSlider() {
         </div>
         <div className="row">
           {
-            loadingArr.map( i => <div className="col-lg-4 col-md-6 col-sm-12" key={i}>
-            <div className="blog-img-loading"></div>
-            <div className="blog-heading-loading"></div>
-            <div className="blog-paragraph-loading"></div>
-          </div>)
+            loadingArr.map(i => <div className="col-lg-4 col-md-6 col-sm-12" key={i}>
+              <div className="blog-img-loading"></div>
+              <div className="blog-heading-loading"></div>
+              <div className="blog-paragraph-loading"></div>
+            </div>)
           }
         </div>
       </div>
