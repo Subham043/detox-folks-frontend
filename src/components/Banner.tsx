@@ -29,7 +29,7 @@ export default function Banner({banner}: BannerProps) {
                       {item.description}
                     </p>
                     <div className="banner-btn">
-                      <Link className="btn btn-inline" href={item.button_link}
+                      <Link className="btn btn-inline" target="_blank" href={item.button_link}
                         ><i className="fas fa-shopping-basket"></i
                         ><span>{item.button_text}</span></Link>
                     </div>

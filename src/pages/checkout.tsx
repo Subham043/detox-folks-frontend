@@ -16,6 +16,8 @@ import { yupResolver } from "@hookform/resolvers/yup";
 import { useSession } from 'next-auth/react';
 import { useRouter } from 'next/router';
 
+const loadingArr = [1, 2, 3, 4]
+
 const schema = yup
   .object({
     coupon_code: yup.string().required(),
@@ -39,13 +41,8 @@ export default function Checkout() {
   const { cart, getCart, deleteItemCart, cartLoading } = useContext(CartContext);
   const { status, data: session } = useSession();
   const router = useRouter();
-  const [selectedData, setSelectedData] = useState<{
-    billing_address_id : number,
-    billing_information_id : number,
-  }>({
-    billing_address_id : 0,
-    billing_information_id : 0,
-  })
+  const [selectedBillingAddressData, setSelectedBillingAddressData] = useState<number>(0)
+  const [selectedBillingInformationData, setSelectedBillingInformationData] = useState<number>(0)
   
   const {
     handleSubmit,
@@ -106,21 +103,17 @@ const onSubmit = async (data: any) => {
   };
 
   const getSelectedBillingAddress = (data: number) => {
-    setSelectedData({
-      ...selectedData, billing_address_id: data
-    })
+    setSelectedBillingAddressData(data)
   }
   
   const getSelectedBillingInformation = (data: number) => {
-    setSelectedData({
-      ...selectedData, billing_information_id: data
-    })
+    setSelectedBillingInformationData(data)
   }
   
   const placeOrderHandler = async (data: any) => {
     setLoading(true);
     try {
-      const response = await axiosPublic.post(api_routes.place_order, {billing_address_id: selectedData.billing_address_id, billing_information_id: selectedData.billing_information_id, mode_of_payment: 'Cash On Delivery'}, {
+      const response = await axiosPublic.post(api_routes.place_order, {billing_address_id: selectedBillingAddressData, billing_information_id: selectedBillingInformationData, mode_of_payment: 'Cash On Delivery'}, {
         headers: {"Authorization" : `Bearer ${session?.user.token}`}
       });
       getCart();
@@ -153,144 +146,157 @@ const onSubmit = async (data: any) => {
 
       <section className="inner-section checkout-part">
         <div className="container">
-          {cart.cart.length>0 ? <div className="row">
-            <div className="col-lg-12">
-              <div className="account-card">
-                <div className="account-title"><h4>Your order</h4></div>
-                <div className="account-content">
-                  <div className="table-scroll">
-                    <table className="table-list">
-                      <thead>
-                        <tr>
-                          <th scope="col">Serial</th>
-                          <th scope="col">Product</th>
-                          <th scope="col">Name</th>
-                          <th scope="col">Price</th>
-                          <th scope="col">quantity</th>
-                          <th scope="col">Total</th>
-                          <th scope="col">action</th>
-                        </tr>
-                      </thead>
-                      <tbody>
-                        {
-                          cart.cart.map((item, i)=><tr key={i}>
-                          <td className="table-serial"><h6>{i+1}</h6></td>
-                          <td className="table-image">
-                            <img src={item.product.image} alt="product" />
-                          </td>
-                          <td className="table-name"><h6>{item.product.name}</h6></td>
-                          <td className="table-price">
+          {cartLoading && <div className="row">
+            {
+                loadingArr.map( i => <div className="col-12 mb-2" key={i}>
+                    <div className="blog-small-img-loading"></div>
+            </div>)
+            }
+          </div>}
+          {
+            !cartLoading && <>
+              {(cart.cart.length>0) ? <div className="row">
+                <div className="col-lg-12">
+                  <div className="account-card">
+                    <div className="account-title"><h4>Your order</h4></div>
+                    <div className="account-content">
+                      <div className="table-scroll">
+                        <table className="table-list">
+                          <thead>
+                            <tr>
+                              <th scope="col">Serial</th>
+                              <th scope="col">Product</th>
+                              <th scope="col">Name</th>
+                              <th scope="col">Price</th>
+                              <th scope="col">quantity</th>
+                              <th scope="col">Total</th>
+                              <th scope="col">action</th>
+                            </tr>
+                          </thead>
+                          <tbody>
                             {
-                              item.product_price && <h6>
-                                  <span>&#8377;{item.product_price.discount_in_price}<small>/pieces</small></span>
-                              </h6>
+                              cart.cart.map((item, i)=><tr key={i}>
+                              <td className="table-serial"><h6>{i+1}</h6></td>
+                              <td className="table-image">
+                                <img src={item.product.image} alt="product" />
+                              </td>
+                              <td className="table-name"><h6>{item.product.name}</h6></td>
+                              <td className="table-price">
+                                {
+                                  item.product_price && <h6>
+                                      <span>&#8377;{item.product_price.discount_in_price}<small>/pieces</small></span>
+                                  </h6>
+                                }
+                              </td>
+                              <td className="table-quantity"><h6>{item.quantity}</h6></td>
+                              <td className="table-brand"><h6>&#8377;{item.amount}</h6></td>
+                              <td className="table-action">
+                                <Link
+                                  className="view"
+                                  href={`/products/${item.product.slug}`}
+                                  title="Quick View"
+                                  data-bs-toggle="modal"
+                                  data-bs-target="#product-view"
+                                ><i className="fas fa-eye"></i></Link
+                                ><button className="trash" title="Remove Wishlist" disabled={cartLoading} onClick={()=>deleteItemCart(item.id)}
+                                ><i className="icofont-trash"></i
+                                ></button>
+                              </td>
+                            </tr>)
                             }
-                          </td>
-                          <td className="table-quantity"><h6>{item.quantity}</h6></td>
-                          <td className="table-brand"><h6>&#8377;{item.amount}</h6></td>
-                          <td className="table-action">
-                            <Link
-                              className="view"
-                              href={`/products/${item.product.slug}`}
-                              title="Quick View"
-                              data-bs-toggle="modal"
-                              data-bs-target="#product-view"
-                            ><i className="fas fa-eye"></i></Link
-                            ><button className="trash" title="Remove Wishlist" disabled={cartLoading} onClick={()=>deleteItemCart(item.id)}
-                            ><i className="icofont-trash"></i
-                            ></button>
-                          </td>
-                        </tr>)
-                        }
-                      </tbody>
-                    </table>
-                  </div>
-                  {
-                    cart.coupon_applied===null ? <div className="chekout-coupon">
-                    <form className="coupon-form d-flex" onSubmit={handleSubmit(onSubmit)}>
-                      <input
-                        type="text"
-                        placeholder="Enter your coupon code" {...register('coupon_code')}
-                      /><button type="submit" disabled={loading}>
-                        {
-                          loading ? <Spinner/> : <span>apply</span>
-                        }
-                      </button>
-                    </form>
-                    <ErrorMessage
-                        errors={errors}
-                        name='coupon_code'
-                        as={<div style={{ color: 'red' }} />}
-                      />
-                  </div> : <div className="chekout-coupon">
-                    <div className="coupon-form d-flex">
-                      <div className='w-100 text-left px-3'>
-                        <b>Coupon</b> : {cart.coupon_applied && cart.coupon_applied.code}
-                      </div><button type="button" disabled={loading} onClick={removeCouponHandler}>
-                        {
-                          loading ? <Spinner/> : <span>remove</span>
-                        }
-                      </button>
-                    </div>
-                  </div>
-                  }
-                  <div className="checkout-charge">
-                    <ul>
-                      <li><span>Sub total</span><span>&#8377;{cart.cart_subtotal}</span></li>
+                          </tbody>
+                        </table>
+                      </div>
                       {
-                        cart.cart_charges.map((item, i)=><li key={i}><span>{item.charges_name}</span><span><b>+</b> &#8377;{item.charges_in_amount}</span></li>)
+                        cart.coupon_applied===null ? <div className="chekout-coupon">
+                        <form className="coupon-form d-flex" onSubmit={handleSubmit(onSubmit)}>
+                          <input
+                            type="text"
+                            placeholder="Enter your coupon code" {...register('coupon_code')}
+                          /><button type="submit" disabled={loading}>
+                            {
+                              loading ? <Spinner/> : <span>apply</span>
+                            }
+                          </button>
+                        </form>
+                        <ErrorMessage
+                            errors={errors}
+                            name='coupon_code'
+                            as={<div style={{ color: 'red' }} />}
+                          />
+                      </div> : <div className="chekout-coupon">
+                        <div className="coupon-form d-flex">
+                          <div className='w-100 text-left px-3'>
+                            <b>Coupon</b> : {cart.coupon_applied && cart.coupon_applied.code}
+                          </div><button type="button" disabled={loading} onClick={removeCouponHandler}>
+                            {
+                              loading ? <Spinner/> : <span>remove</span>
+                            }
+                          </button>
+                        </div>
+                      </div>
                       }
-                      <li><span>tax ({cart.tax.tax_in_percentage}%)</span><span><b>+</b> &#8377;{cart.total_tax}</span></li>
-                      <li><span className="p-relative">
-                        discount
-                        </span><span><b>-</b> &#8377;{cart.discount_price}</span></li>
-                      <li>
-                        <span>Total</span
-                        ><span>&#8377;{cart.total_price}</span>
-                      </li>
-                    </ul>
-                  </div>
-                </div>
-              </div>
-            </div>
-            <div className="col-lg-12">
-              <BillingInformation getSelectedItem={getSelectedBillingInformation} />
-            </div>
-            <div className="col-lg-12">
-              <BillingAddress getSelectedItem={getSelectedBillingAddress} />
-            </div>
-            <div className="col-lg-12">
-              <div className="account-card mb-0">
-                <div className="account-title">
-                  <h4>payment option</h4>
-                </div>
-                <div className="account-content">
-                  <div className="row">
-                    <div className="col-md-6 col-lg-3 alert fade show">
-                      <div className="profile-card address active">
-                          <h6>Cash On Delivery</h6>
+                      <div className="checkout-charge">
+                        <ul>
+                          <li><span>Sub total</span><span>&#8377;{cart.cart_subtotal}</span></li>
+                          {
+                            cart.cart_charges.map((item, i)=><li key={i}><span>{item.charges_name}</span><span><b>+</b> &#8377;{item.charges_in_amount}</span></li>)
+                          }
+                          <li><span>tax ({cart.tax.tax_in_percentage}%)</span><span><b>+</b> &#8377;{cart.total_tax}</span></li>
+                          <li><span className="p-relative">
+                            discount
+                            </span><span><b>-</b> &#8377;{cart.discount_price}</span></li>
+                          <li>
+                            <span>Total</span
+                            ><span>&#8377;{cart.total_price}</span>
+                          </li>
+                        </ul>
                       </div>
                     </div>
                   </div>
                 </div>
-                <div className="checkout-check">
-                  <input type="checkbox" id="checkout-check" /><label
-                    htmlFor="checkout-check"
-                  >By making this purchase you agree to our&nbsp; 
-                    <Link href="/legal/terms-condition">Terms and Conditions</Link>.</label
-                  >
+                <div className="col-lg-12">
+                  <BillingInformation getSelectedItem={getSelectedBillingInformation} />
                 </div>
-                <div className="checkout-proced">
-                  <button className="btn btn-inline" disabled={loading} onClick={placeOrderHandler}
-                  >
-                    { loading ? <Spinner /> : <>
-                      Place Order
-                    </>}
-                  </button>
+                <div className="col-lg-12">
+                  <BillingAddress getSelectedItem={getSelectedBillingAddress} />
                 </div>
-              </div>
-            </div>
-          </div> : <p className='text-center'>No items are there in cart. Kindly add one!</p>}
+                <div className="col-lg-12">
+                  <div className="account-card mb-0">
+                    <div className="account-title">
+                      <h4>payment option</h4>
+                    </div>
+                    <div className="account-content">
+                      <div className="row">
+                        <div className="col-md-6 col-lg-3 alert fade show">
+                          <div className="profile-card address active">
+                              <h6>Cash On Delivery</h6>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                    <div className="checkout-check">
+                      <input type="checkbox" id="checkout-check" /><label
+                        htmlFor="checkout-check"
+                      >By making this purchase you agree to our&nbsp; 
+                        <Link href="/legal/terms-condition">Terms and Conditions</Link>.</label
+                      >
+                    </div>
+                    <div className="checkout-proced">
+                      <button className="btn btn-inline" disabled={loading} onClick={placeOrderHandler}
+                      >
+                        { loading ? <Spinner /> : <>
+                          Place Order
+                        </>}
+                      </button>
+                    </div>
+                  </div>
+                </div>
+              </div> : 
+              <p className='text-center'>No items are there in cart. Kindly add one!</p>
+            }
+            </>
+          }
         </div>
       </section>
 

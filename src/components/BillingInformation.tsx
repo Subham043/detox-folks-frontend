@@ -95,6 +95,7 @@ export default function BillingInformation({getSelectedItem}:Props) {
                 if(response.data.data.length>0){
                     setSelected(response.data.data[0].id)
                     getSelectedItem && getSelectedItem(response.data.data[0].id)
+                    
                 }
 
             } catch (error) {
