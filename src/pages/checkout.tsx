@@ -111,6 +111,14 @@ const onSubmit = async (data: any) => {
   }
   
   const placeOrderHandler = async (data: any) => {
+    if(selectedBillingAddressData===0){
+      toast.error('please add an address', toastConfig);
+      return;
+    }
+    if(selectedBillingInformationData===0){
+      toast.error('please add an billing information', toastConfig);
+      return;
+    }
     setLoading(true);
     try {
       const response = await axiosPublic.post(api_routes.place_order, {billing_address_id: selectedBillingAddressData, billing_information_id: selectedBillingInformationData, mode_of_payment: 'Cash On Delivery'}, {
