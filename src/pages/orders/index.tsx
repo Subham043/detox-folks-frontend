@@ -75,20 +75,20 @@ export default function Products() {
                                             <div className="order-track">
                                                 <ul className="order-track-list">
                                                     <li className={`order-track-item ${item.statuses.map(it=>it.status).includes('PROCESSING') ? 'active' : ''}`}>
-                                                        <i className="icofont-check"></i
-                                                        ><span>order processing</span>
+                                                        {item.statuses.map(it=>it.status).includes('PROCESSING') ? <i className="icofont-check"></i> : <i className="icofont-close"></i>}
+                                                        <span>order processing</span>
                                                     </li>
                                                     <li className={`order-track-item ${item.statuses.map(it=>it.status).includes('CONFIRMED') ? 'active' : ''}`}>
-                                                        <i className="icofont-close"></i
-                                                        ><span>order confirmed</span>
+                                                    {item.statuses.map(it=>it.status).includes('CONFIRMED') ? <i className="icofont-check"></i> : <i className="icofont-close"></i>}
+                                                        <span>order confirmed</span>
                                                     </li>
                                                     <li className={`order-track-item ${item.statuses.map(it=>it.status).includes('OUT FOR DELIVERY') ? 'active' : ''}`}>
-                                                        <i className="icofont-close"></i
-                                                        ><span>out for delivery</span>
+                                                    {item.statuses.map(it=>it.status).includes('OUT FOR DELIVERY') ? <i className="icofont-check"></i> : <i className="icofont-close"></i>}
+                                                        <span>out for delivery</span>
                                                     </li>
                                                     <li className={`order-track-item ${item.statuses.map(it=>it.status).includes('DELIVERED') ? 'active' : ''}`}>
-                                                        <i className="icofont-close"></i
-                                                        ><span>order delivered</span>
+                                                    {item.statuses.map(it=>it.status).includes('DELIVERED') ? <i className="icofont-check"></i> : <i className="icofont-close"></i>}
+                                                        <span>order delivered</span>
                                                     </li>
                                                 </ul>
                                             </div>
