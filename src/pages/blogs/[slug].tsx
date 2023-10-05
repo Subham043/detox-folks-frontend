@@ -14,11 +14,17 @@ type ServerSideProps = {
 export const getServerSideProps: GetServerSideProps<{
   repo: ServerSideProps
 }> = async (ctx: any) => {
-  const blogResponse = await axiosPublic.get(api_routes.blog + `/${ctx?.params.slug}`);
+  try {
+    const blogResponse = await axiosPublic.get(api_routes.blog + `/${ctx?.params.slug}`);
+    return { props: { repo: {
+      blog: blogResponse.data.blog,
+    } } }
+  } catch (error) {
+    return {
+        notFound: true,
+    }
+  }
 
-  return { props: { repo: {
-    blog: blogResponse.data.blog,
-  } } }
 }
 
 

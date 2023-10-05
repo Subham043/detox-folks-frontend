@@ -4,6 +4,7 @@ import { useContext } from 'react';
 import { CartContext } from '@/context/CartProvider';
 import Link from 'next/link';
 import { CartType } from '@/helper/types';
+import Spinner from '@/components/Spinner';
 
 
 export default function Cart() {
@@ -65,7 +66,7 @@ const decrementQuantity = (item: CartType) => {
                             <div className="cart-media">
                                 <a href="#"><img src={item.product.image} alt="product" /></a
                                 ><button className="cart-delete" disabled={cartLoading} onClick={() => deleteItemCart(item.id)}>
-                                    <i className="far fa-trash-alt"></i>
+                                    {cartLoading ? <Spinner /> : <i className="far fa-trash-alt"></i>}
                                 </button>
                             </div>
                             <div className="cart-info-group">
@@ -80,7 +81,8 @@ const decrementQuantity = (item: CartType) => {
                                 <div className="cart-action-group">
                                     <div className="product-action">
                                         <button className="action-minus" title="Quantity Minus" disabled={cartLoading} onClick={() => decrementQuantity(item)}>
-                                            <i className="icofont-minus"></i></button
+                                            {cartLoading ? <Spinner /> : <i className="icofont-minus"></i>}
+                                        </button
                                         ><input
                                             className="action-input"
                                             title="Quantity Number"
@@ -90,7 +92,7 @@ const decrementQuantity = (item: CartType) => {
                                             readOnly={true}
                                             value={item.quantity}
                                         /><button className="action-plus" title="Quantity Plus" disabled={cartLoading} onClick={() => incrementQuantity(item)}>
-                                            <i className="icofont-plus"></i>
+                                            {cartLoading ? <Spinner /> : <i className="icofont-plus"></i>}
                                         </button>
                                     </div>
                                     <h6>&#8377;{item.amount}</h6>

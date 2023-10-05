@@ -250,7 +250,7 @@ export default function Header() {
                             <div className="cart-media">
                                 <a href="#"><img src={item.product.image} alt="product" /></a
                                 ><button className="cart-delete" disabled={cartLoading} onClick={() => deleteItemCart(item.id)}>
-                                    <i className="far fa-trash-alt"></i>
+                                    {cartLoading ? <Spinner /> : <i className="far fa-trash-alt"></i>}
                                 </button>
                             </div>
                             <div className="cart-info-group">
@@ -311,7 +311,7 @@ export default function Header() {
                     <Link className="nav-link" href="/about"><i className="icofont-info-circle"></i>about us</Link>
                 </li>
                 <li>
-                    <Link className="nav-link" href="/category"><i className="icofont-listing-box"></i>cetgories</Link>
+                    <Link className="nav-link" href="/category"><i className="icofont-listing-box"></i>Categories</Link>
                 </li>
                 <li>
                     <Link className="nav-link" href="/products"><i className="icofont-page"></i>products</Link>

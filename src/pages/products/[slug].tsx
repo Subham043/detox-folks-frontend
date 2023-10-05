@@ -35,15 +35,21 @@ type ServerSideProps = {
 export const getServerSideProps: GetServerSideProps<{
     repo: ServerSideProps
 }> = async (ctx: any) => {
-    const productResponse = await axiosPublic.get(api_routes.products + `/${ctx?.params.slug}`);
-
-    return {
-        props: {
-            repo: {
-                product: productResponse.data.product,
+    try {
+        const productResponse = await axiosPublic.get(api_routes.products + `/${ctx?.params.slug}`);
+        return {
+            props: {
+                repo: {
+                    product: productResponse.data.product,
+                }
             }
         }
+    } catch (error) {
+        return {
+            notFound: true,
+        }
     }
+
 }
 
 export default function ProductDetail({
@@ -291,7 +297,7 @@ export default function ProductDetail({
                         }
                     </div>
                     <div
-                        className="row row-cols-12 row-cols-md-3 row-cols-lg-4 row-cols-xl-3"
+                        className="row row-cols-1 row-cols-md-3 row-cols-lg-4 row-cols-xl-3"
                     >
                         {
                             data?.data.map((item, i) => <ProductCard key={i} {...item} />)

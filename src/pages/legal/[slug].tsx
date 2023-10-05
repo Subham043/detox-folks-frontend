@@ -12,15 +12,21 @@ type ServerSideProps = {
 export const getServerSideProps: GetServerSideProps<{
     repo: ServerSideProps
 }> = async (ctx: any) => {
-    const legalResponse = await axiosPublic.get(api_routes.legal + `/${ctx?.params.slug}`);
-
-    return {
-        props: {
-            repo: {
-                legal: legalResponse.data.legal,
+    try {
+        const legalResponse = await axiosPublic.get(api_routes.legal + `/${ctx?.params.slug}`);
+        return {
+            props: {
+                repo: {
+                    legal: legalResponse.data.legal,
+                }
             }
         }
+    } catch (error) {
+        return {
+            notFound: true,
+        }
     }
+
 }
 
 export default function ProductDetail({

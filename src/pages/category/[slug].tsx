@@ -19,15 +19,21 @@ type ServerSideProps = {
 export const getServerSideProps: GetServerSideProps<{
     repo: ServerSideProps
 }> = async (ctx: any) => {
-    const categoryResponse = await axiosPublic.get(api_routes.categories + `/${ctx?.params.slug}`);
-
-    return {
-        props: {
-            repo: {
-                category: categoryResponse.data.category,
+    try {
+        const categoryResponse = await axiosPublic.get(api_routes.categories + `/${ctx?.params.slug}`);
+        return {
+            props: {
+                repo: {
+                    category: categoryResponse.data.category,
+                }
             }
         }
+    } catch (error) {
+        return {
+            notFound: true,
+        }
     }
+
 }
 
 
@@ -156,40 +162,42 @@ export default function Category({
                                         </div>
                                     </div>
                                     {
-                                        displayFilter ? <div className="shop-widget mb-4 d-none-lg d-block-md d-block-sm">
-                                                <div className="row justify-content-between align-items-center mb-3 border-1" onClick={()=>setDisplayFilter(false)}>
-                                                    <h6 className="shop-widget-title mb-0 pb-0 border-0 col-auto">Filter by Sub-Category</h6>
-                                                    <i className="icofont-minus col-auto"></i>
-                                                </div>
-                                                <div>
-                                                    <input
-                                                        className="shop-widget-search"
-                                                        type="text"
-                                                        placeholder="Search..."
-                                                        value={filterSearch}
-                                                        onChange={(e) => filterSearchHandler(e.target.value)}
-                                                    />
-                                                    <ul className="shop-widget-list shop-widget-scroll">
-                                                        {
-                                                            mainSubCategoryArr.map((item, i) => <li key={i}>
-                                                                <div className="shop-widget-content">
-                                                                    <input type="checkbox" id={`category${i + 1}`} value={item.id} checked={subCategoryArr.includes(item.id.toString())} onChange={(e) => filterHandler(e.target)} /><label htmlFor={`category${i + 1}`}
-                                                                    >{item.name}</label
-                                                                    >
-                                                                </div>
-                                                            </li>)
-                                                        }
-                                                    </ul>
-                                                    <button className="shop-widget-btn" onClick={clearFilterHandler}>
-                                                        <i className="far fa-trash-alt"></i><span>clear filter</span>
-                                                    </button>
-                                                </div>
-                                            </div> : <div className="shop-widget mb-4 d-none-lg d-block-md d-block-sm">
-                                            <div className="row justify-content-between align-items-center" onClick={()=>setDisplayFilter(true)}>
-                                                <h6 className="shop-widget-title border-0 mb-0 pb-0 col-auto">Filter by Sub-Category</h6>
-                                                <i className="icofont-plus col-auto"></i>
-                                            </div>
-                                        </div>
+                                            mainSubCategoryArr.length>0 && <>
+                                                {displayFilter ? <div className="shop-widget mb-4 d-none-lg d-block-md d-block-sm">
+                                                    <div className="row justify-content-between align-items-center mb-3 border-1" onClick={()=>setDisplayFilter(false)}>
+                                                        <h6 className="shop-widget-title mb-0 pb-0 border-0 col-auto">Filter by Sub-Category</h6>
+                                                        <i className="icofont-minus col-auto"></i>
+                                                    </div>
+                                                    <div>
+                                                        <input
+                                                            className="shop-widget-search"
+                                                            type="text"
+                                                            placeholder="Search..."
+                                                            value={filterSearch}
+                                                            onChange={(e) => filterSearchHandler(e.target.value)}
+                                                        />
+                                                        <ul className="shop-widget-list shop-widget-scroll">
+                                                            {
+                                                                mainSubCategoryArr.map((item, i) => <li key={i}>
+                                                                    <div className="shop-widget-content">
+                                                                        <input type="checkbox" id={`category${i + 1}`} value={item.id} checked={subCategoryArr.includes(item.id.toString())} onChange={(e) => filterHandler(e.target)} /><label htmlFor={`category${i + 1}`}
+                                                                        >{item.name}</label
+                                                                        >
+                                                                    </div>
+                                                                </li>)
+                                                            }
+                                                        </ul>
+                                                        <button className="shop-widget-btn" onClick={clearFilterHandler}>
+                                                            <i className="far fa-trash-alt"></i><span>clear filter</span>
+                                                        </button>
+                                                    </div>
+                                                    </div> : <div className="shop-widget mb-4 d-none-lg d-block-md d-block-sm">
+                                                    <div className="row justify-content-between align-items-center" onClick={()=>setDisplayFilter(true)}>
+                                                        <h6 className="shop-widget-title border-0 mb-0 pb-0 col-auto">Filter by Sub-Category</h6>
+                                                        <i className="icofont-plus col-auto"></i>
+                                                    </div>
+                                                </div>}
+                                            </>
                                     }
                                     
                                 </div>
@@ -202,7 +210,7 @@ export default function Category({
                                 }
                             </div>
                             <div
-                                className="row row-cols-12 row-cols-md-3 row-cols-lg-3 row-cols-xl-3"
+                                className="row row-cols-1 row-cols-md-3 row-cols-lg-3 row-cols-xl-3"
                             >
                                 {
                                     data?.data.map((item, i) => <ProductCard key={i} {...item} />)
