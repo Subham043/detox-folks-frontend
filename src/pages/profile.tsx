@@ -69,7 +69,7 @@ export default function Profile() {
                       <h4 className="alert-heading col-auto">Verification Pending!</h4>
                       <button type="button" className="btn-close col-auto" data-bs-dismiss="alert" aria-label="Close" onClick={()=> setShowVerification(false)}></button>
                     </div>
-                    <p>Your email verification is still pending. Kindly verify your email by clicking on the link we had emailed to you? If you didn't receive the email, we will gladly send you another</p>
+                    <p>Your email verification is still pending. Kindly verify your email by clicking on the link we had emailed to you? If you didn&apos;t receive the email, we will gladly send you another</p>
                     <hr />
                     <button className="btn btn-success btn-sm px-2 py-2" disabled={loading} onClick={resendMail}>
                            {
