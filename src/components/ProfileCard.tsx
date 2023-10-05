@@ -35,7 +35,7 @@ const toastConfig:ToastOptions = {
 
 export default function ProfileCard() {
     const [loading, setLoading] = useState(false);
-    const { status, data: session } = useSession();
+    const { status, data: session, update: sessionUpdate } = useSession();
 
     const {
         handleSubmit,
@@ -80,6 +80,11 @@ export default function ProfileCard() {
             headers: {"Authorization" : `Bearer ${session?.user.token}`}
           });
           toast.success(response.data.message, toastConfig); 
+          sessionUpdate({
+            profile: {
+              ...data
+            }
+          })
         } catch (error: any) {
           console.log(error);
           if (error?.response?.data?.message) {

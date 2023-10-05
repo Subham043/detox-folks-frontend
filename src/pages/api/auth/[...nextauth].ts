@@ -42,13 +42,23 @@ export const authOptions: NextAuthOptions = {
         async redirect({ url, baseUrl }) {
             return url
         },
-        async jwt({ token, user, account, profile, isNewUser }) {    
+        async jwt({ token, user, trigger, session }) {    
             if(token && user){
                 token.id = user.id;
                 token.verified = user.verified;
                 token.phone = user.phone;
                 token.token = user.token;
-            }    
+            }  
+            if(trigger === 'update') {
+                if(session?.verified) {
+                    token.verified = 'VERIFIED';
+                }
+                if(session?.profile) {
+                    token.name = session.profile.name;
+                    token.email = session.profile.email;
+                    token.phone = session.profile.phone;
+                }
+            }  
             return token
         },
         async session({ session, user, token }) {
