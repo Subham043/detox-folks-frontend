@@ -13,6 +13,7 @@ export default function Products() {
     const [sort, setSort] = useState('-id')
     const [total, setTotal] = useState("10")
     const [page, setPage] = useState("1")
+    const [displayFilter, setDisplayFilter] = useState(false)
     const [filterSearch, setFilterSearch] = useState("")
     const [subCategory, setSubCategory] = useState("")
     const [subCategoryArr, setSubCategoryArr] = useState<string[]>([])
@@ -86,7 +87,7 @@ export default function Products() {
             <section className="inner-section shop-part">
                 <div className="container">
                     <div className="row content-reverse">
-                        <div className="col-lg-3">
+                        <div className="col-lg-3 d-none-md d-none-sm">
                             <div className="shop-widget">
                                 <h6 className="shop-widget-title">Filter By Category</h6>
                                 <div>
@@ -154,6 +155,59 @@ export default function Products() {
                                             </select>
                                         </div>
                                     </div>
+                                    {
+                                        displayFilter ? <div className="shop-widget mb-4 d-none-lg d-block-md d-block-sm">
+                                            <div className="row justify-content-between align-items-center mb-3 border-1" onClick={()=>setDisplayFilter(false)}>
+                                                <h6 className="shop-widget-title mb-0 pb-0 border-0 col-auto">Filter By Category</h6>
+                                                <i className="icofont-minus col-auto"></i>
+                                            </div>
+                                            <div>
+                                                <input
+                                                    className="shop-widget-search"
+                                                    type="text"
+                                                    placeholder="Search..."
+                                                    value={filterSearch}
+                                                    onChange={(e) => filterSearchHandler(e.target.value)}
+                                                />
+                                                {
+                                                    isCategoryLoading && loadingArr.map( i => <div className="blog-heading-loading" key={i}></div>)
+                                                }
+                                                <ul className="shop-widget-list shop-widget-scroll w-100">
+                                                    {
+                                                        mainCategoryArr?.map((item, i) => <li key={i}>
+                                                            <div className='w-100'>
+                                                                <div className="shop-widget-content">
+                                                                    <input type="checkbox" id={`category${i + 1}`} value={item.id} checked={categoryArr.includes(item.id.toString())} onChange={(e) => filterCategoryHandler(e.target)} /><label htmlFor={`category${i + 1}`}
+                                                                    >{item.name}</label>
+                                                                </div>
+                                                                {item.sub_categories.length>0 && <ul className="shop-widget-list mx-4">
+                                                                    {
+                                                                        item.sub_categories?.map((itm, index) => <li key={index}>
+                                                                            <div className="shop-widget-content">
+                                                                                <input type="checkbox" id={`sub_category${i+1}${index + 1}`} value={itm.id} checked={subCategoryArr.includes(itm.id.toString())} onChange={(e) => filterSubCategoryHandler(e.target)} /><label htmlFor={`sub_category${i+1}${index + 1}`}
+                                                                                >{itm.name}</label
+                                                                                >
+                                                                            </div>
+                                                                        </li>)
+                                                                    }
+                                                                </ul>}
+                                                                <hr />
+                                                            </div>
+                                                        </li>)
+                                                    }
+                                                </ul>
+                                                <button className="shop-widget-btn" onClick={clearFilterHandler}>
+                                                    <i className="far fa-trash-alt"></i><span>clear filter</span>
+                                                </button>
+                                            </div>
+                                        </div> : 
+                                        <div className="shop-widget mb-4 d-none-lg d-block-md d-block-sm">
+                                            <div className="row justify-content-between align-items-center border-1" onClick={()=>setDisplayFilter(true)}>
+                                                <h6 className="shop-widget-title mb-0 pb-0 border-0 col-auto">Filter By Category</h6>
+                                                <i className="icofont-plus col-auto"></i>
+                                            </div>
+                                        </div>
+                                    }
                                 </div>
                             </div>
                             <div className="row">

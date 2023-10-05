@@ -36,6 +36,7 @@ export default function Category({
 }: InferGetServerSidePropsType<typeof getServerSideProps>) {
     const [sort, setSort] = useState('-id')
     const [total, setTotal] = useState("10")
+    const [displayFilter, setDisplayFilter] = useState(false)
     const [page, setPage] = useState("1")
     const [filterSearch, setFilterSearch] = useState("")
     const [subCategory, setSubCategory] = useState("")
@@ -85,7 +86,7 @@ export default function Category({
                     <div className="row justify-content-center">
                         <div className="col-lg-12 col-xl-12">
                             <article className="blog-details">
-                                <a className="blog-details-thumb w-100" href="#"
+                                <a className="blog-details-thumb w-100 mb-4" href="#"
                                 ><img src={repo.category.image} alt="blog"
                                     /></a>
                                 <div className="blog-details-content">
@@ -102,7 +103,7 @@ export default function Category({
             <section className="inner-section shop-part">
                 <div className="container">
                     <div className="row content-reverse">
-                        <div className="col-lg-3">
+                        <div className="col-lg-3 d-none-md d-none-sm">
                             <div className="shop-widget">
                                 <h6 className="shop-widget-title">Filter by Sub-Category</h6>
                                 <div>
@@ -154,6 +155,43 @@ export default function Category({
                                             </select>
                                         </div>
                                     </div>
+                                    {
+                                        displayFilter ? <div className="shop-widget mb-4 d-none-lg d-block-md d-block-sm">
+                                                <div className="row justify-content-between align-items-center mb-3 border-1" onClick={()=>setDisplayFilter(false)}>
+                                                    <h6 className="shop-widget-title mb-0 pb-0 border-0 col-auto">Filter by Sub-Category</h6>
+                                                    <i className="icofont-minus col-auto"></i>
+                                                </div>
+                                                <div>
+                                                    <input
+                                                        className="shop-widget-search"
+                                                        type="text"
+                                                        placeholder="Search..."
+                                                        value={filterSearch}
+                                                        onChange={(e) => filterSearchHandler(e.target.value)}
+                                                    />
+                                                    <ul className="shop-widget-list shop-widget-scroll">
+                                                        {
+                                                            mainSubCategoryArr.map((item, i) => <li key={i}>
+                                                                <div className="shop-widget-content">
+                                                                    <input type="checkbox" id={`category${i + 1}`} value={item.id} checked={subCategoryArr.includes(item.id.toString())} onChange={(e) => filterHandler(e.target)} /><label htmlFor={`category${i + 1}`}
+                                                                    >{item.name}</label
+                                                                    >
+                                                                </div>
+                                                            </li>)
+                                                        }
+                                                    </ul>
+                                                    <button className="shop-widget-btn" onClick={clearFilterHandler}>
+                                                        <i className="far fa-trash-alt"></i><span>clear filter</span>
+                                                    </button>
+                                                </div>
+                                            </div> : <div className="shop-widget mb-4 d-none-lg d-block-md d-block-sm">
+                                            <div className="row justify-content-between align-items-center" onClick={()=>setDisplayFilter(true)}>
+                                                <h6 className="shop-widget-title border-0 mb-0 pb-0 col-auto">Filter by Sub-Category</h6>
+                                                <i className="icofont-plus col-auto"></i>
+                                            </div>
+                                        </div>
+                                    }
+                                    
                                 </div>
                             </div>
                             <div className="row">

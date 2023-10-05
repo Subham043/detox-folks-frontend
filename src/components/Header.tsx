@@ -13,6 +13,7 @@ import ProductSearch from "./ProductSearch";
 import { LoginModalContext } from "@/context/LoginModalProvider";
 import { WebsiteContext } from "@/context/WebsiteProvider";
 import Pagination from "./Pagination";
+import ProductMobileSearch from "./ProductMobileSearch";
 
 const loadingArr = [1, 2, 3, 4]
 
@@ -226,6 +227,7 @@ export default function Header() {
                 </div>
             </div>
         </nav>
+        <ProductMobileSearch />
 
         <Drawer
             open={isOpen}

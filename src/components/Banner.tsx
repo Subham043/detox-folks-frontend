@@ -15,7 +15,7 @@ type BannerProps = {
 }
 
 export default function Banner({banner}: BannerProps) {
-    return <section className="home-index-slider slider-arrow slider-dots mb-5">
+    return <section className="home-index-slider slider-arrow slider-dots mb-3">
     <Slider {...settings}>
       {banner.map((item, i) => {
         return (
