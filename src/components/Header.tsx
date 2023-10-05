@@ -14,6 +14,7 @@ import { LoginModalContext } from "@/context/LoginModalProvider";
 import { WebsiteContext } from "@/context/WebsiteProvider";
 import Pagination from "./Pagination";
 import ProductMobileSearch from "./ProductMobileSearch";
+import Spinner from "./Spinner";
 
 const loadingArr = [1, 2, 3, 4]
 
@@ -264,8 +265,9 @@ export default function Header() {
                                 <div className="cart-action-group">
                                     <div className="product-action">
                                         <button className="action-minus" title="Quantity Minus" disabled={cartLoading} onClick={() => decrementQuantity(item)}>
-                                            <i className="icofont-minus"></i></button
-                                        ><input
+                                            {cartLoading ? <Spinner /> : <i className="icofont-minus"></i>}
+                                        </button>
+                                        <input
                                             className="action-input"
                                             title="Quantity Number"
                                             type="text"
@@ -274,7 +276,7 @@ export default function Header() {
                                             readOnly={true}
                                             value={item.quantity}
                                         /><button className="action-plus" title="Quantity Plus" disabled={cartLoading} onClick={() => incrementQuantity(item)}>
-                                            <i className="icofont-plus"></i>
+                                            {cartLoading ? <Spinner /> : <i className="icofont-plus"></i>}
                                         </button>
                                     </div>
                                     <h6>&#8377;{item.amount}</h6>

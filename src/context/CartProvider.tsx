@@ -135,7 +135,7 @@ const CartProvider: React.FC<ChildrenType> = ({children}) => {
               const old_cart = cart.cart;
               old_cart[cartItemIndex] = response.data.cart;
               setCartDetails({cart: [...old_cart], cart_charges: [...response.data.cart_charges], coupon_applied: response.data.coupon_applied, tax: response.data.tax, cart_subtotal:response.data.cart_subtotal, discount_price: response.data.discount_price, total_charges: response.data.total_charges, total_price: response.data.total_price, total_tax: response.data.total_tax});
-              toast.success("Item quantity updated in cart.", toastConfig);
+              // toast.success("Item quantity updated in cart.", toastConfig);
             } catch (error: any) {
               console.log(error);
               toast.error("Something went wrong. Please try again later!", toastConfig);
