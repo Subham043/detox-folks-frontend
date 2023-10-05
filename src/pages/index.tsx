@@ -11,6 +11,7 @@ import { api_routes } from '@/helper/routes';
 import { AboutSectionType, BannerType } from '@/helper/types';
 import FeaturedProducts from '@/components/FeaturedProducts';
 import SaleProducts from '@/components/SaleProducts';
+import NewProducts from '@/components/NewProducts';
 
 type ServerSideProps = {
   banner: BannerType[];
@@ -21,10 +22,21 @@ export const getServerSideProps: GetServerSideProps<{
   repo: ServerSideProps
 }> = async () => {
   const bannerResponse = await axiosPublic.get(api_routes.home_page_banner);
-  const aboutResponse = await axiosPublic.get(api_routes.about_section);
+  // const aboutResponse = await axiosPublic.get(api_routes.about_section);
   return { props: { repo: {
     banner: bannerResponse.data.banner,
-    about: aboutResponse.data.about,
+    // about: aboutResponse.data.about,
+    // banner: [],
+    about: {
+      id: 0,
+      slug: '',
+      description: '',
+      heading: '',
+      description_unfiltered: '',
+      image: '',
+      created_at: '',
+      updated_at: '',
+    },
   } } }
 }
 
@@ -40,9 +52,11 @@ export default function Home({
         <link rel="icon" href="/images/favicon.png" />
       </Head>
     <Banner banner={repo.banner} />
-    <AboutSection  {...repo.about} />
+    {/* <AboutSection  {...repo.about} /> */}
 
     <FeaturedProducts />
+
+    <NewProducts />
 
     <SaleProducts />
     

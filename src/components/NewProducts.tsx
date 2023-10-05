@@ -6,14 +6,14 @@ import ProductCard from '@/components/ProductCard';
 
 const loadingArr = [1, 2, 3, 4, 5, 6, 7, 8]
 
-export default function SaleProducts() {
-    const { data, isLoading } = useSWR<ProductResponseType>(api_routes.products + `?total=6&page=1&sort=-id&filter[is_on_sale]=true`);
+export default function NewProducts() {
+    const { data, isLoading } = useSWR<ProductResponseType>(api_routes.products + `?total=6&page=1&sort=-id&filter[is_new]=true`);
 
     return <section className="section feature-part">
     <div className="container">
       <div className="row">
         <div className="col-lg-12">
-          <div className="section-heading"><h2>On Sale Products</h2></div>
+          <div className="section-heading"><h2>New Products</h2></div>
         </div>
       </div>
       {isLoading && <div className="row">

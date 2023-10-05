@@ -73,7 +73,7 @@ export default function Header() {
 
 
     const [page, setPage] = useState("1")
-    const { data, isLoading } = useSWR<CategoryResponseType>(api_routes.categories + `?total=8&page=${page}`);
+    const { data, isLoading } = useSWR<CategoryResponseType>(api_routes.categories + `?total=24&page=${page}`);
     const { wishlist } = useContext(WishlistContext);
     const { cart, updateItemCart, deleteItemCart, cartLoading } = useContext(CartContext);
     const { website, websiteLoading } = useContext(WebsiteContext);
@@ -173,7 +173,7 @@ export default function Header() {
                                     <Link className="navbar-link" href="/about">about us</Link>
                                 </li>
                                 <li className="navbar-item dropdown-megamenu">
-                                    <a className="navbar-link dropdown-arrow" href="#">categories</a>
+                                    <Link className="navbar-link dropdown-arrow" href="/category">categories</Link>
                                     <div className="megamenu">
                                         <div className="container">
                                             <div className="row">
@@ -197,7 +197,7 @@ export default function Header() {
                                                     </div>)
                                                 }
                                             </div>
-                                            <Pagination {...data?.meta} paginationHandler={setPage} />
+                                            {/* <Pagination {...data?.meta} paginationHandler={setPage} /> */}
                                         </div>
                                     </div>
                                 </li>
@@ -305,6 +305,9 @@ export default function Header() {
                 </li>
                 <li>
                     <Link className="nav-link" href="/about"><i className="icofont-info-circle"></i>about us</Link>
+                </li>
+                <li>
+                    <Link className="nav-link" href="/category"><i className="icofont-listing-box"></i>cetgories</Link>
                 </li>
                 <li>
                     <Link className="nav-link" href="/products"><i className="icofont-page"></i>products</Link>

@@ -14635,7 +14635,7 @@ tbody tr td:last-child {
 
 @media (max-width:575px) {
     .category-wrap {
-        width: 150px
+        width: 100%
     }
 }
 

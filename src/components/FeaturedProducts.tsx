@@ -13,7 +13,7 @@ export default function FeaturedProducts() {
     <div className="container">
       <div className="row">
         <div className="col-lg-12">
-          <div className="section-heading"><h2>our featured items</h2></div>
+          <div className="section-heading"><h2>Our Featured Products</h2></div>
         </div>
       </div>
       {isLoading && <div className="row">

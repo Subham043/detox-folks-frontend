@@ -112,7 +112,7 @@ export default function Products() {
                                                         {
                                                             item.sub_categories?.map((itm, index) => <li key={index}>
                                                                 <div className="shop-widget-content">
-                                                                    <input type="checkbox" id={`sub_category${index + 1}`} value={itm.id} checked={subCategoryArr.includes(itm.id.toString())} onChange={(e) => filterSubCategoryHandler(e.target)} /><label htmlFor={`sub_category${index + 1}`}
+                                                                    <input type="checkbox" id={`sub_category${i+1}${index + 1}`} value={itm.id} checked={subCategoryArr.includes(itm.id.toString())} onChange={(e) => filterSubCategoryHandler(e.target)} /><label htmlFor={`sub_category${i+1}${index + 1}`}
                                                                     >{itm.name}</label
                                                                     >
                                                                 </div>
