@@ -10,7 +10,7 @@ import { useEffect, useState } from 'react';
 const loadingArr = [1, 2, 3, 4, 5, 6]
 
 export default function Products() {
-    const [sort, setSort] = useState('-id')
+    const [sort, setSort] = useState('name')
     const [total, setTotal] = useState("12")
     const [page, setPage] = useState("1")
     const [displayFilter, setDisplayFilter] = useState(false)

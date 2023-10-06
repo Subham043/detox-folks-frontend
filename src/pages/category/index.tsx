@@ -11,7 +11,7 @@ import Link from 'next/link';
 const loadingArr = [1, 2, 3, 4, 5, 6]
 
 export default function Products() {
-    const [sort, setSort] = useState('-id')
+    const [sort, setSort] = useState('name')
     const [total, setTotal] = useState("10")
     const [page, setPage] = useState("1")
     const { data, isLoading } = useSWR<CategoryResponseType>(api_routes.categories + `?total=${total}&page=${page}&sort=${sort}`);

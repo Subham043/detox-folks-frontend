@@ -41,7 +41,7 @@ export const getServerSideProps: GetServerSideProps<{
 export default function SubCategory({
     repo,
 }: InferGetServerSidePropsType<typeof getServerSideProps>) {
-    const [sort, setSort] = useState('-id')
+    const [sort, setSort] = useState('name')
     const [total, setTotal] = useState("12")
     const [page, setPage] = useState("1")
     const { data, isLoading } = useSWR<ProductResponseType>(api_routes.products + `?total=${total}&page=${page}&sort=${sort}&filter[has_sub_categories]=${repo.subCategory.id}`);

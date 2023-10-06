@@ -75,7 +75,7 @@ export default function Header() {
 
 
     const [page, setPage] = useState("1")
-    const { data, isLoading } = useSWR<CategoryResponseType>(api_routes.categories + `?total=24&page=${page}`);
+    const { data, isLoading } = useSWR<CategoryResponseType>(api_routes.categories + `?total=24&page=${page}&sort=name`);
     const { wishlist } = useContext(WishlistContext);
     const { cart, updateItemCart, deleteItemCart, cartLoading } = useContext(CartContext);
     const { website, websiteLoading } = useContext(WebsiteContext);
