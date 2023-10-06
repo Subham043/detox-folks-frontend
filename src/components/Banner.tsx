@@ -22,7 +22,7 @@ export default function Banner({banner}: BannerProps) {
           <div className={`banner-part banner-${(i+1)%2===0 ? '2' : '1'}`} key={i}>
             <div className="container">
               <div className="row align-items-center">
-                <div className="col-md-6 col-lg-6">
+                <div className="col-md-6 col-lg-6 banner-text-col">
                   <div className="banner-content">
                     <h1>{item.title}</h1>
                     <p>
@@ -35,7 +35,7 @@ export default function Banner({banner}: BannerProps) {
                     </div>
                   </div>
                 </div>
-                <div className="col-md-6 col-lg-6">
+                <div className="col-md-6 col-lg-6 banner-img-col">
                   <div className="banner-img">
                     <img src={item.banner_image} alt={item.banner_image_alt} title={item.banner_image_title} />
                   </div>

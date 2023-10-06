@@ -55,7 +55,7 @@
 .banner-content p {
     font-size: 18px;
     line-height: 28px;
-    margin-bottom: 50px
+    margin-bottom: 20px
 }
 
 .banner-btn .btn {
@@ -74,8 +74,23 @@
         line-height: 48px
     }
 
-    .banner-img {
+    /* .banner-img {
         display: none
+    } */
+
+    .banner-img-col{
+        order: 0;
+    }
+    
+    .banner-text-col{
+        order: 1;
+        text-align: center;
+    }
+
+    .banner-img img {
+        height: 220px;
+        object-fit: contain;
+        margin: auto;
     }
 
     .banner-btn .btn {
