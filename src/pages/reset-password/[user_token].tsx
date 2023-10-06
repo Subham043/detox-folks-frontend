@@ -11,6 +11,7 @@ import { ToastOptions, toast } from 'react-toastify';
 import Spinner from '@/components/Spinner';
 import { GetServerSideProps, InferGetServerSidePropsType } from 'next';
 import { useRouter } from 'next/navigation';
+import { getSession } from "next-auth/react"
 
 type ServerSideProps = {
     user_token: string;
@@ -19,7 +20,15 @@ type ServerSideProps = {
 export const getServerSideProps: GetServerSideProps<{
     repo: ServerSideProps
 }> = async (ctx: any) => {
-
+    const data = await getSession(ctx)
+    if(data!==null){
+      return {
+        redirect: {
+          destination: "/profile",
+          permanent: false,
+        },
+      };
+    }
     return {
         props: {
             repo: {

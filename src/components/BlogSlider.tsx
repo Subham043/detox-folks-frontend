@@ -65,7 +65,7 @@ export default function BlogSlider() {
     </section>
   }
 
-  return <section className="section blog-part">
+  return (!isLoading && data!==undefined && data?.data.length>0) && <section className="section blog-part">
     <div className="container">
       <div className="row">
         <div className="col-12">

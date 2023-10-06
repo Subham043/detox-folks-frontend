@@ -11,6 +11,22 @@ import { axiosPublic } from '../../axios';
 import { api_routes } from '@/helper/routes';
 import { useRouter, useSearchParams } from 'next/navigation';
 import Spinner from '@/components/Spinner';
+import { getSession } from "next-auth/react"
+
+export const getServerSideProps = async (ctx: any) => {
+  const data = await getSession(ctx)
+  if(data!==null){
+    return {
+      redirect: {
+        destination: "/profile",
+        permanent: false,
+      },
+    };
+  }
+  return {
+      props: {}
+  }
+}
 
 const schema = yup
   .object({

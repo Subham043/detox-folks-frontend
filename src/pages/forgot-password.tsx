@@ -9,6 +9,22 @@ import { api_routes } from '@/helper/routes';
 import { ErrorMessage } from '@hookform/error-message';
 import { ToastOptions, toast } from 'react-toastify';
 import Spinner from '@/components/Spinner';
+import { getSession } from "next-auth/react"
+
+export const getServerSideProps = async (ctx: any) => {
+  const data = await getSession(ctx)
+  if(data!==null){
+    return {
+      redirect: {
+        destination: "/profile",
+        permanent: false,
+      },
+    };
+  }
+  return {
+      props: {}
+  }
+}
 
 
 const schema = yup

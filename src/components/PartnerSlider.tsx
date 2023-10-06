@@ -61,7 +61,7 @@ export default function PartnerSlider() {
         </section>
     }
 
-    return <section className="section brand-part">
+    return (!isLoading && data!==undefined && data?.partner?.length>1) && <section className="section brand-part">
         <div className="container">
             <div className="row">
                 <div className="col-12">

@@ -33,7 +33,7 @@ export default function TestimonialSlider(){
     </section>
   }
 
-  return <section className="section testimonial-part">
+  return (!isLoading && data!==undefined && data?.testimonial?.length>1) && <section className="section testimonial-part">
     <div className="container">
       <div className="row">
         <div className="col-12">

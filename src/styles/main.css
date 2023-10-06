@@ -13792,12 +13792,12 @@ tbody tr td:last-child {
     display: -webkit-box;
     display: -ms-flexbox;
     display: flex;
-    -webkit-box-align: start;
-    -ms-flex-align: start;
-    align-items: flex-start;
-    -webkit-box-pack: start;
-    -ms-flex-pack: start;
-    justify-content: flex-start;
+    -webkit-box-align: center;
+    -ms-flex-align: center;
+    align-items: center;
+    -webkit-box-pack: center;
+    -ms-flex-pack: center;
+    justify-content: center;
     transition: all linear .3s;
     -webkit-transition: all linear .3s;
     -moz-transition: all linear .3s;
@@ -17845,11 +17845,15 @@ tbody tr td:last-child {
 }
 
 .footer-logo {
-    margin-bottom: 25px
+    margin-bottom: 25px;
+    text-align: center;
 }
 
 .footer-logo img {
-    width: 100%
+    width: auto;
+    height: 140px;
+    object-fit: contain;
+    margin: auto;
 }
 
 .footer-desc {

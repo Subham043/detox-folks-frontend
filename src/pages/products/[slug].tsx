@@ -234,25 +234,31 @@ export default function ProductDetail({
                                 </h3>
                                 <PriceFactor />
                                 <BulkOfferFactor />
-                                <p className="details-desc">
+                                {/* <p className="details-desc">
                                     {repo.product.brief_description}
-                                </p>
-                                <div className="details-list-group">
-                                    <label className="details-list-title">Categories:</label>
-                                    <ul className="details-tag-list">
-                                        {
-                                            repo.product.categories.map((item, i) => <li key={i}><Link href={`/category/${item.slug}`}>{item.name}</Link></li>)
-                                        }
-                                    </ul>
-                                </div>
-                                <div className="details-list-group">
-                                    <label className="details-list-title">Sub-Categories:</label>
-                                    <ul className="details-tag-list">
-                                        {
-                                            repo.product.sub_categories.map((item, i) => <li key={i}><Link href={`/sub-category/${item.slug}`}>{item.name}</Link></li>)
-                                        }
-                                    </ul>
-                                </div>
+                                </p> */}
+                                {
+                                    repo.product.categories.length > 0 &&
+                                    <div className="details-list-group">
+                                        <label className="details-list-title">Categories:</label>
+                                        <ul className="details-tag-list">
+                                            {
+                                                repo.product.categories.map((item, i) => <li key={i}><Link href={`/category/${item.slug}`}>{item.name}</Link></li>)
+                                            }
+                                        </ul>
+                                    </div>
+                                }
+                                {
+                                    repo.product.sub_categories.length > 0 &&
+                                    <div className="details-list-group">
+                                        <label className="details-list-title">Sub-Categories:</label>
+                                        <ul className="details-tag-list">
+                                            {
+                                                repo.product.sub_categories.map((item, i) => <li key={i}><Link href={`/sub-category/${item.slug}`}>{item.name}</Link></li>)
+                                            }
+                                        </ul>
+                                    </div>
+                                }
                                 <div className="details-list-group">
                                     <label className="details-list-title">Share:</label>
                                     <ul className="details-share-list">

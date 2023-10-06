@@ -1,6 +1,21 @@
 import Head from 'next/head'
 import LoginModal from '@/components/LoginModal';
+import { getSession } from "next-auth/react"
 
+export const getServerSideProps = async (ctx: any) => {
+  const data = await getSession(ctx)
+  if(data!==null){
+    return {
+      redirect: {
+        destination: "/profile",
+        permanent: false,
+      },
+    };
+  }
+  return {
+      props: {}
+  }
+}
 
 export default function Login() {
 

@@ -15,7 +15,7 @@ const Footer: FC = () => {
     <footer className="footer-part">
       <div className="container">
         <div className="row">
-          <div className="col-sm-12 col-lg-3 col-xl-3">
+          <div className="col-sm-12 col-lg-4 col-xl-4">
             <div className="footer-widget">
               <Link className="footer-logo" href="/"
               ><img src="/images/logo.png" alt="logo"
@@ -26,6 +26,34 @@ const Footer: FC = () => {
                 <li><a className="icofont-linkedin" target="_blank" href={website.website.linkedin}></a></li>
                 <li><a className="fab fa-youtube" target="_blank" href={website.website.youtube}></a></li>
               </ul>
+            </div>
+          </div>
+          <div className="col-sm-12 col-lg-4 col-xl-4">
+            <div className="footer-widget">
+              <div className="footer-links">
+                <ul>
+                  <h3 className="footer-title">quick Links</h3>
+                  <li><Link href="/" target="_blank">Home</Link></li>
+                  <li><Link href="/about" target="_blank">About Us</Link></li>
+                  <li><Link href="/products" target="_blank">Products</Link></li>
+                  <li><Link href="/blogs" target="_blank">Blogs</Link></li>
+                  <li><Link href="/contact" target="_blank">Contact Us</Link></li>
+                </ul>
+                <ul>
+                  <h3 className="footer-title">legal Links</h3>
+                  {
+                    isLoading && <>
+                    <li><div className="blog-heading-loading"></div></li>
+                    <li><div className="blog-heading-loading"></div></li>
+                    <li><div className="blog-heading-loading"></div></li>
+                    <li><div className="blog-heading-loading"></div></li>
+                    </>
+                  }
+                  {
+                    data?.legal.map((item, i)=><li key={i}><Link href={`/legal/${item.slug}`} target="_blank">{item.page_name}</Link></li>)
+                  }
+                </ul>
+              </div>
             </div>
           </div>
           <div className="col-sm-12 col-lg-3 col-xl-3">
@@ -45,44 +73,7 @@ const Footer: FC = () => {
                   {websiteLoading ? <div className="blog-heading-loading"></div>: <p>{website.website.address}</p>}
                 </li>
               </ul>
-            </div>
-          </div>
-          <div className="col-sm-12 col-lg-4 col-xl-4">
-            <div className="footer-widget">
-              <h3 className="footer-title">quick Links</h3>
-              <div className="footer-links">
-                <ul>
-                  <li><Link href="/" target="_blank">Home</Link></li>
-                  <li><Link href="/about" target="_blank">About Us</Link></li>
-                  <li><Link href="/products" target="_blank">Products</Link></li>
-                  <li><Link href="/blogs" target="_blank">Blogs</Link></li>
-                  <li><Link href="/contact" target="_blank">Contact Us</Link></li>
-                </ul>
-                <ul>
-                  {
-                    isLoading && <>
-                    <li><div className="blog-heading-loading"></div></li>
-                    <li><div className="blog-heading-loading"></div></li>
-                    <li><div className="blog-heading-loading"></div></li>
-                    <li><div className="blog-heading-loading"></div></li>
-                    </>
-                  }
-                  {
-                    data?.legal.map((item, i)=><li key={i}><Link href={`/legal/${item.slug}`} target="_blank">{item.page_name}</Link></li>)
-                  }
-                </ul>
-              </div>
-            </div>
-          </div>
-          <div className="col-sm-12 col-lg-2 col-xl-2">
-            <div className="footer-widget">
-              <h3 className="footer-title">Download App</h3>
-              <p className="footer-desc">
-                Lorem ipsum dolor sit amet tenetur dignissimos ipsum eligendi
-                autem obcaecati minus ducimus totam reprehenderit
-                exercitationem!
-              </p>
-              <div className="footer-app">
+              <div className="footer-app mt-3">
                 <a href="#"
                 ><img src="/images/google-store.png" alt="google" /></a
                 ><a href="#"><img src="/images/app-store.png" alt="app" /></a>
