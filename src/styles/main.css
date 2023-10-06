@@ -14594,13 +14594,16 @@ tbody tr td:last-child {
 
 .category-media {
     position: relative;
-    margin-bottom: 15px
+    margin-bottom: 15px;
+    text-align: center;
 }
 
 .category-media img {
-    width: 100%;
-    height: auto;
-    border-radius: 8px
+    width: auto;
+    height: 110px;
+    border-radius: 8px;
+    object-fit: contain;
+    margin: auto;
 }
 
 .category-overlay {
