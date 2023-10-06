@@ -61,13 +61,18 @@ export default function SubCategory({
                         <div className="col-lg-12 col-xl-12">
                             <article className="blog-details">
                                 <a className="blog-details-thumb w-100" href="#"
-                                ><img src={repo.subCategory.image} alt="blog"
-                                    /></a>
-                                <div className="blog-details-content">
-                                    <h2 className="blog-details-title">
-                                        {repo.subCategory.heading}
-                                    </h2>
-                                    <div className="blog-details-desc" dangerouslySetInnerHTML={{ __html: repo.subCategory.description }} />
+                                >
+                                    </a>
+                                <div className="blog-details-content row align-items-center">
+                                    <div className='col-xl-6 col-lg-6 col-sm-12'>
+                                        <img src={repo.subCategory.image} alt="blog"  className='w-100'/>
+                                    </div>
+                                    <div className='col-xl-6 col-lg-6 col-sm-12'>
+                                        <h2 className="blog-details-title">
+                                            {repo.subCategory.heading}
+                                        </h2>
+                                        <div className="blog-details-desc" dangerouslySetInnerHTML={{ __html: repo.subCategory.description }} />
+                                    </div>
                                 </div>
                             </article>
                         </div>

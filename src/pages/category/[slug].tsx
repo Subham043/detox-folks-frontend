@@ -91,17 +91,17 @@ export default function Category({
                 <div className="container">
                     <div className="row justify-content-center">
                         <div className="col-lg-12 col-xl-12">
-                            <article className="blog-details">
-                                <a className="blog-details-thumb w-100 mb-4" href="#"
-                                ><img src={repo.category.image} alt="blog"
-                                    /></a>
-                                <div className="blog-details-content">
+                            <div className="blog-details-content row align-items-center">
+                                <div className='col-xl-6 col-lg-6 col-sm-12'>
+                                    <img src={repo.category.image} alt="blog" className='w-100'/>
+                                </div>
+                                <div className='col-xl-6 col-lg-6 col-sm-12'>
                                     <h2 className="blog-details-title">
                                         {repo.category.heading}
                                     </h2>
                                     <div className="blog-details-desc" dangerouslySetInnerHTML={{ __html: repo.category.description }} />
                                 </div>
-                            </article>
+                            </div>
                         </div>
                     </div>
                 </div>
