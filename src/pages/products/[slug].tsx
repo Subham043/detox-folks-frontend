@@ -66,7 +66,7 @@ export default function ProductDetail({
 
     const [page, setPage] = useState("1")
     const [quantity, setQuantity] = useState<number>(0);
-    const { data, isLoading } = useSWR<ProductResponseType>(api_routes.products + `?total=8&page=${page}&filter[has_categories]=${getCategoryStr()}&filter[has_sub_categories]=${getSubCategoryStr()}`);
+    const { data, isLoading } = useSWR<ProductResponseType>(api_routes.products + `?total=12&page=${page}&filter[has_categories]=${getCategoryStr()}&filter[has_sub_categories]=${getSubCategoryStr()}`);
     const { wishlist, addItemWishlist, deleteItemWishlist, wishlistLoading } = useContext(WishlistContext);
     const { cart, addItemCart, updateItemCart, deleteItemCart, cartLoading } = useContext(CartContext);
 

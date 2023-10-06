@@ -42,7 +42,7 @@ export default function SubCategory({
     repo,
 }: InferGetServerSidePropsType<typeof getServerSideProps>) {
     const [sort, setSort] = useState('-id')
-    const [total, setTotal] = useState("10")
+    const [total, setTotal] = useState("12")
     const [page, setPage] = useState("1")
     const { data, isLoading } = useSWR<ProductResponseType>(api_routes.products + `?total=${total}&page=${page}&sort=${sort}&filter[has_sub_categories]=${repo.subCategory.id}`);
     return (
@@ -84,11 +84,10 @@ export default function SubCategory({
                                         <div className="filter-show">
                                             <label className="filter-label">Show :</label
                                             ><select className="form-select filter-select" value={total} onChange={(e) => setTotal(e.target.value)}>
-                                                <option value="10">10</option>
-                                                <option value="30">30</option>
-                                                <option value="60">60</option>
-                                                <option value="90">90</option>
-                                                <option value="100">100</option>
+                                                <option value="12">12</option>
+                                                <option value="36">36</option>
+                                                <option value="72">72</option>
+                                                <option value="108">108</option>
                                             </select>
                                         </div>
                                         <div className="filter-short">
