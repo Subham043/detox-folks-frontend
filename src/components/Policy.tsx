@@ -11,12 +11,12 @@ export default function Policy() {
     <div className="container">
       <div className="row intro-content">
         {
-            isLoading && loadingArr.map( i => <div className="col-sm-6 col-lg-3" key={i}>
+            isLoading && loadingArr.map( i => <div className="col-sm-12 col-lg-3" key={i}>
                 <div className="blog-small-img-loading"></div>
             </div>)
         }
         {
-            data?.feature.map((item, i) =><div className="col-sm-6 col-lg-3" key={i}>
+            data?.feature.map((item, i) =><div className="col-sm-12 col-lg-3" key={i}>
             <div className="intro-wrap">
               <div className="intro-icon">
                 {/* <i className="fas fa-truck"></i> */}

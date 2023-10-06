@@ -45,9 +45,9 @@ export default function ProductSearch() {
                                             {item.product_prices[item.product_prices.length-1].discount!==0 && <del>&#8377;{item.product_prices[item.product_prices.length-1].price}</del>}<span>&#8377;{item.product_prices[item.product_prices.length-1].discount_in_price}<small>/pieces</small></span>
                                             </h6>
                                         }
-                                        <p className="feature-desc m-0 text-dark">
+                                        {/* <p className="feature-desc m-0 text-dark">
                                             {item.short_description}
-                                        </p>
+                                        </p> */}
                                     </div>
                                 </Link>
                             </div>)

@@ -11,7 +11,7 @@ export default function Custom404() {
                 <title>DetoxFolks - 404</title>
                 <meta name="description" content='404' />
                 <meta name="keywords" content='404' />
-                <meta name="viewport" content="width=device-width, initial-scale=1" />
+                <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no" />
                 <link rel="icon" href="/images/favicon.png" />
             </Head>
             <Hero name='404' />

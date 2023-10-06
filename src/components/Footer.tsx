@@ -15,7 +15,7 @@ const Footer: FC = () => {
     <footer className="footer-part">
       <div className="container">
         <div className="row">
-          <div className="col-sm-6 col-xl-3">
+          <div className="col-sm-12 col-lg-3 col-xl-3">
             <div className="footer-widget">
               <Link className="footer-logo" href="/"
               ><img src="/images/logo.png" alt="logo"
@@ -28,7 +28,7 @@ const Footer: FC = () => {
               </ul>
             </div>
           </div>
-          <div className="col-sm-6 col-xl-3">
+          <div className="col-sm-12 col-lg-3 col-xl-3">
             <div className="footer-widget contact">
               <h3 className="footer-title">contact us</h3>
               <ul className="footer-contact">
@@ -47,7 +47,7 @@ const Footer: FC = () => {
               </ul>
             </div>
           </div>
-          <div className="col-sm-6 col-xl-4">
+          <div className="col-sm-12 col-lg-4 col-xl-4">
             <div className="footer-widget">
               <h3 className="footer-title">quick Links</h3>
               <div className="footer-links">
@@ -74,7 +74,7 @@ const Footer: FC = () => {
               </div>
             </div>
           </div>
-          <div className="col-sm-6 col-xl-2">
+          <div className="col-sm-12 col-lg-2 col-xl-2">
             <div className="footer-widget">
               <h3 className="footer-title">Download App</h3>
               <p className="footer-desc">

@@ -11,7 +11,7 @@ export default function Custom500() {
                 <title>DetoxFolks - 500</title>
                 <meta name="description" content='500' />
                 <meta name="keywords" content='500' />
-                <meta name="viewport" content="width=device-width, initial-scale=1" />
+                <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no" />
                 <link rel="icon" href="/images/favicon.png" />
             </Head>
             <Hero name='500' />

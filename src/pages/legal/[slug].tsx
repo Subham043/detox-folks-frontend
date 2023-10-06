@@ -39,7 +39,7 @@ export default function ProductDetail({
                 <title>DetoxFolks - {repo.legal.meta_title}</title>
                 <meta name="description" content={repo.legal.meta_description} />
                 <meta name="keywords" content={repo.legal.meta_keywords} />
-                <meta name="viewport" content="width=device-width, initial-scale=1" />
+                <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no" />
                 <link rel="icon" href="/images/favicon.png" />
             </Head>
             <Hero name={repo.legal.heading} />

@@ -51,7 +51,7 @@ export default function SubCategory({
                 <title>DetoxFolks - {repo.subCategory.meta_title}</title>
                 <meta name="description" content={repo.subCategory.meta_description} />
                 <meta name="keywords" content={repo.subCategory.meta_keywords} />
-                <meta name="viewport" content="width=device-width, initial-scale=1" />
+                <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no" />
                 <link rel="icon" href="/images/favicon.png" />
             </Head>
             <Hero name={repo.subCategory.name} />

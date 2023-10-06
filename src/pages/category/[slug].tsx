@@ -83,7 +83,7 @@ export default function Category({
                 <title>DetoxFolks - {repo.category.meta_title}</title>
                 <meta name="description" content={repo.category.meta_description} />
                 <meta name="keywords" content={repo.category.meta_keywords} />
-                <meta name="viewport" content="width=device-width, initial-scale=1" />
+                <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no" />
                 <link rel="icon" href="/images/favicon.png" />
             </Head>
             <Hero name={repo.category.name} />

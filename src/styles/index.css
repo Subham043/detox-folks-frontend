@@ -63,8 +63,9 @@
 }
 
 .banner-img img {
-    height: 550px;
+    height: 350px;
     object-fit: contain;
+    margin: auto;
 }
 
 @media (max-width: 767px) {

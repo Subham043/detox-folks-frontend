@@ -143,9 +143,9 @@ export default function ProductCard2({ id, name, image, slug, product_prices, is
           <Link href={`/products/${slug}`}>{name}</Link>
         </h6>
         <PriceFactor />
-        <p className="feature-desc">
+        {/* <p className="feature-desc">
           {short_description}
-        </p>
+        </p> */}
         <CartQuantity quantity={quantity} incrementQuantity={incrementQuantity} decrementQuantity={decrementQuantity} loading={cartLoading} />
         {/* <button className="product-add" title="Add to Cart">
           <i className="fas fa-shopping-basket"></i><span>add</span>

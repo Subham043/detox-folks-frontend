@@ -4,6 +4,7 @@ type ENV = {
 }
 
 export const ENV:ENV = {
-    API_ENDPOINT : "http://localhost:8000",
+    // API_ENDPOINT : "http://localhost:8000",
+    API_ENDPOINT : "https://detoxfolks-api.digisole.in",
     CURRENT_ENV : "dev"
 }

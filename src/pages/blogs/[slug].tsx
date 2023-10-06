@@ -37,7 +37,7 @@ export default function BlogDetail({
         <title>DetoxFolks - {repo.blog.meta_title}</title>
         <meta name="description" content={repo.blog.meta_description} />
         <meta name="keywords" content={repo.blog.meta_keywords} />
-        <meta name="viewport" content="width=device-width, initial-scale=1" />
+        <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no" />
         <link rel="icon" href="/images/favicon.png" />
       </Head>
       <Hero name={repo.blog.name} />

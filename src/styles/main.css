@@ -641,24 +641,24 @@ progress {
     margin-left: auto
 }
 
-@media (min-width:576px) {
+/* @media (min-width:576px) {
 
     .container,
     .container-sm {
         max-width: 540px
     }
-}
+} */
 
-@media (min-width:768px) {
+/* @media (min-width:768px) {
 
     .container,
     .container-md,
     .container-sm {
         max-width: 720px
     }
-}
+} */
 
-@media (min-width:992px) {
+/* @media (min-width:992px) {
 
     .container,
     .container-lg,
@@ -666,7 +666,7 @@ progress {
     .container-sm {
         max-width: 960px
     }
-}
+} */
 
 @media (min-width:1200px) {
 
@@ -11860,7 +11860,7 @@ button:focus {
     outline: 0;
 }
 
-@media (max-width:575px) {
+@media (max-width:775px) {
     .col {
         padding: 0 4px;
     }
@@ -12051,7 +12051,7 @@ button:focus {
     }
 }
 
-@media (max-width:575px) {
+@media (max-width:775px) {
     .backtop {
         width: 42px;
         height: 42px;
@@ -12614,7 +12614,7 @@ button:focus {
     display: block
 }
 
-@media (max-width:575px) {
+@media (max-width:775px) {
     .nav-tabs {
         -ms-flex-wrap: nowrap;
         flex-wrap: nowrap;
@@ -12838,7 +12838,7 @@ button:focus {
     -o-transition: all linear .3s
 }
 
-@media (max-width:575px) {
+@media (max-width:775px) {
     .slider-dots ul {
         bottom: 10px
     }
@@ -13268,7 +13268,7 @@ tbody tr td:last-child {
     color: var(--primary)
 }
 
-@media (max-width:575px) {
+@media (max-width:775px) {
     .order-track {
         overflow-x: scroll
     }
@@ -13360,7 +13360,7 @@ tbody tr td:last-child {
     text-transform: capitalize
 }
 
-@media (max-width:575px) {
+@media (max-width:775px) {
     .countdown-time {
         padding: 0 12px
     }
@@ -13735,15 +13735,23 @@ tbody tr td:last-child {
     background: rgba(255, 255, 255, .6)
 }
 
-@media (max-width:575px) {
+@media (max-width:775px) {
     .product-card {
         padding: 8px;
-        margin-bottom: 8px
+        margin-bottom: 15px
     }
 
     .product-name {
         font-size: 15px;
         line-height: 22px
+    }
+
+    .col-11 {
+        width: 89%;
+    }
+
+    .slick-prev, .slick-next{
+        display: none !important;
     }
 }
 
@@ -13759,12 +13767,12 @@ tbody tr td:last-child {
     display: -webkit-box;
     display: -ms-flexbox;
     display: flex;
-    -webkit-box-align: start;
-    -ms-flex-align: start;
-    align-items: flex-start;
-    -webkit-box-pack: start;
-    -ms-flex-pack: start;
-    justify-content: flex-start;
+    -webkit-box-align: center;
+    -ms-flex-align: center;
+    align-items: center;
+    -webkit-box-pack: center;
+    -ms-flex-pack: center;
+    justify-content: center;
     transition: all linear .3s;
     -webkit-transition: all linear .3s;
     -moz-transition: all linear .3s;
@@ -13814,7 +13822,9 @@ tbody tr td:last-child {
 }
 
 .feature-media {
-    position: relative
+    position: relative;
+    border-right: 1px solid var(--border);
+    padding-right: 15px;
 }
 
 .feature-label {
@@ -13868,7 +13878,7 @@ tbody tr td:last-child {
 .feature-wish {
     position: absolute;
     top: 0;
-    right: 0;
+    right: 10px;
     font-size: 18px;
     color: var(--gray-chalk)
 }
@@ -13881,11 +13891,15 @@ tbody tr td:last-child {
     /* height: 200px; */
     height: 150px;
     object-fit: contain;
+    width: 150px;
+    margin: auto;
 }
 
 .search-list-holder .feature-image img {
-    height: 80px;
     object-fit: contain;
+    width: 120px;
+    height: 100px;
+    margin: auto;
 }
 
 .feature-widget {
@@ -13927,9 +13941,9 @@ tbody tr td:last-child {
 
 .feature-content {
     width: 100%;
-    padding-left: 25px;
-    margin-left: 25px;
-    border-left: 1px solid var(--border)
+    padding-left: 0px;
+    margin-left: 15px;
+    /* border-left: 1px solid var(--border) */
 }
 
 .feature-rating {
@@ -14024,19 +14038,30 @@ tbody tr td:last-child {
     margin-bottom: 15px
 }
 
-@media (max-width:575px) {
+@media (max-width:775px) {
     .feature-card {
         padding: 8px;
         margin-bottom: 15px
     }
 
     .feature-image img {
-        width: 100%
+        width: 150px
     }
 
     .feature-name {
         font-size: 15px;
         line-height: 22px
+    }
+    .row {
+        --bs-gutter-x: 0;
+    }
+    .product-image img{
+        height: 150px;
+        margin-bottom: 10px;
+    }
+
+    .footer-links{
+        grid-template-columns: unset !important;
     }
 }
 
@@ -14397,7 +14422,7 @@ tbody tr td:last-child {
     text-shadow: var(--primary-tshadow)
 }
 
-@media (max-width:575px) {
+@media (max-width:775px) {
     .product-standard {
         padding: 10px 10px
     }
@@ -14550,7 +14575,7 @@ tbody tr td:last-child {
     border: 5px solid var(--body)
 }
 
-@media (max-width:575px) {
+@media (max-width:775px) {
     .testimonial-card {
         margin: 0 0 30px;
         padding: 25px 25px 0
@@ -14634,7 +14659,7 @@ tbody tr td:last-child {
     margin-bottom: 3px
 }
 
-@media (max-width:575px) {
+@media (max-width:775px) {
     .category-wrap {
         width: 100%
     }
@@ -14788,7 +14813,7 @@ tbody tr td:last-child {
     color: var(--heading)
 }
 
-@media (max-width:575px) {
+@media (max-width:775px) {
     .brand-wrap {
         width: 200px
     }
@@ -15026,7 +15051,7 @@ tbody tr td:last-child {
     margin-left: 5px
 }
 
-@media (max-width:575px) {
+@media (max-width:775px) {
     .blog-meta li {
         margin-right: 25px
     }
@@ -15161,7 +15186,7 @@ tbody tr td:last-child {
     background: var(--primary)
 }
 
-@media (max-width:575px) {
+@media (max-width:775px) {
     .account-card {
         padding: 0 15px 15px
     }
@@ -15351,7 +15376,7 @@ tbody tr td:last-child {
     border-color: var(--primary)
 }
 
-@media (max-width:575px) {
+@media (max-width:775px) {
     .payment-card p span {
         margin-right: 8px
     }
@@ -15631,7 +15656,7 @@ tbody tr td:last-child {
     text-transform: capitalize
 }
 
-@media (max-width:575px) {
+@media (max-width:775px) {
     .team-card {
         width: 290px;
         margin: 0 auto 50px
@@ -17686,7 +17711,7 @@ tbody tr td:last-child {
     margin-right: 5px
 }
 
-@media (max-width:575px) {
+@media (max-width:775px) {
     .news-form {
         -webkit-box-orient: vertical;
         -webkit-box-direction: normal;
@@ -18247,7 +18272,7 @@ tbody tr td:last-child {
     background: var(--primary)
 }
 
-@media (max-width:575px) {
+@media (max-width:775px) {
     .blog-widget-social li {
         margin-right: 5px
     }
@@ -18710,7 +18735,7 @@ tbody tr td:last-child {
     color: var(--white)
 }
 
-@media (max-width:575px) {
+@media (max-width:775px) {
 
     .filter-action,
     .filter-label {
@@ -18745,7 +18770,7 @@ tbody tr td:last-child {
     color: var(--text)
 }
 
-@media (max-width:575px) {
+@media (max-width:775px) {
     .bottom-paginate {
         margin-bottom: 30px;
         -webkit-box-orient: vertical;
@@ -19162,5 +19187,27 @@ tbody tr td:last-child {
     .header-form .header-form-holder{
         /* border: none; */
         border-radius: 0;
+    }
+}
+
+@media (max-width:767px) {
+    .modal-form {
+        width: 400px;
+        padding: 5px 18px;
+    }
+    .modal-form .form-title, .modal-form .form-group{
+        margin-bottom: 10px;
+    }
+
+    .modal-form .form-group textarea {
+        height: 75px;
+    }
+
+    .category-media img {
+        width: 100%;
+        height: auto;
+        border-radius: 8px;
+        height: 100px;
+        object-fit: contain;
     }
 }
