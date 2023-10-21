@@ -12,7 +12,7 @@ const loadingArr = [1, 2, 3, 4, 5, 6]
 
 export default function Products() {
     const [sort, setSort] = useState('name')
-    const [total, setTotal] = useState("10")
+    const [total, setTotal] = useState("20")
     const [page, setPage] = useState("1")
     const { data, isLoading } = useSWR<CategoryResponseType>(api_routes.categories + `?total=${total}&page=${page}&sort=${sort}`);
 
@@ -37,10 +37,8 @@ export default function Products() {
                                         <div className="filter-show">
                                             <label className="filter-label">Show :</label
                                             ><select className="form-select filter-select" value={total} onChange={(e) => setTotal(e.target.value)}>
-                                                <option value="10">10</option>
-                                                <option value="30">30</option>
+                                                <option value="20">20</option>
                                                 <option value="60">60</option>
-                                                <option value="90">90</option>
                                                 <option value="100">100</option>
                                             </select>
                                         </div>

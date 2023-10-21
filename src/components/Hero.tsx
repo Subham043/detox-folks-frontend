@@ -8,7 +8,7 @@ type HeroProps = {
 const Hero:FC<HeroProps> = ({name}) => {
     return <section
         className="inner-section single-banner"
-        style={{background: "url('https://www.nakodaplast.com/uploads/product_images/banner4.png') no-repeat center"}}
+        style={{background: "url('/images/hero.webp') no-repeat center"}}
     >
         <div className="container">
             <h2>{name}</h2>

@@ -8,10 +8,15 @@ import Link from 'next/link';
 import type { InferGetServerSidePropsType, GetServerSideProps } from 'next'
 import { axiosPublic } from '../../axios';
 import { api_routes } from '@/helper/routes';
-import { AboutSectionType, BannerType } from '@/helper/types';
+import { AboutSectionType, BannerType, CategoryResponseType } from '@/helper/types';
 import FeaturedProducts from '@/components/FeaturedProducts';
 import SaleProducts from '@/components/SaleProducts';
 import NewProducts from '@/components/NewProducts';
+import Pagination from '@/components/Pagination';
+import useSWR from 'swr'
+import { useState } from 'react';
+
+const loadingArr = [1, 2, 3, 4, 5, 6]
 
 type ServerSideProps = {
   banner: BannerType[];
@@ -43,6 +48,10 @@ export const getServerSideProps: GetServerSideProps<{
 export default function Home({
   repo,
 }: InferGetServerSidePropsType<typeof getServerSideProps>) {
+
+  const [page, setPage] = useState("1")
+  const { data, isLoading } = useSWR<CategoryResponseType>(api_routes.categories + `?total=20&page=${page}&sort=id`);
+
   return (
     <>
       <Head>
@@ -53,6 +62,61 @@ export default function Home({
       </Head>
     <Banner banner={repo.banner} />
     {/* <AboutSection  {...repo.about} /> */}
+
+    <section className="inner-section shop-part">
+        <div className="container">
+            <div className="row content-reverse">
+                <div className="col-lg-12">
+                  <div className="row">
+                      <div className="col-lg-12">
+                        <div className="section-heading"><h2>Our Categories</h2></div>
+                      </div>
+                    </div>
+                    <div className="row">
+                        {
+                            isLoading && loadingArr.map(i => <div className="col-md-6 col-lg-2 col-sm-12 mb-4" key={i}>
+                                <div className="product-img-loading" style={{height:'150px'}}></div>
+                            </div>)
+                        }
+                    </div>
+                    <div
+                        className="row row-cols-2 row-cols-md-3 row-cols-lg-4 row-cols-xl-5 justify-content-center mb-4"
+                    >
+                        {
+                            data?.data.map((item, i) => <div className="col mb-4" key={i}>
+                                    <div className="category-wrap">
+                                        <div className="category-media">
+                                            <img src={item.image} alt={item.name} />
+                                            <div className="category-overlay">
+                                                <Link href={`/category/${item.slug}`}>
+                                                    <i className="fas fa-link"></i>
+                                                </Link>
+                                            </div>
+                                        </div>
+                                        <div className="category-meta text-center">
+                                            <Link href={`/category/${item.slug}`}>
+                                                <h4>{item.name}</h4>
+                                            </Link>
+                                        </div> 
+                                    </div> 
+                                </div> 
+                                )
+                        }
+                    </div>
+                    {/* <Pagination {...data?.meta} paginationHandler={setPage} /> */}
+                    <div className="row">
+                      <div className="col-lg-12">
+                        <div className="section-btn-25">
+                          <Link href="/category" className="btn btn-outline"
+                            ><i className="fas fa-eye"></i><span>show more</span></Link
+                          >
+                        </div>
+                      </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
 
     <FeaturedProducts />
 

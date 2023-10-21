@@ -55,7 +55,7 @@ export default function SubCategory({
                 <link rel="icon" href="/images/favicon.png" />
             </Head>
             <Hero name={repo.subCategory.name} />
-            <section className="inner-section blog-details-part mb-5">
+            {/* <section className="inner-section blog-details-part mb-5">
                 <div className="container">
                     <div className="row justify-content-center">
                         <div className="col-lg-12 col-xl-12">
@@ -78,7 +78,7 @@ export default function SubCategory({
                         </div>
                     </div>
                 </div>
-            </section>
+            </section> */}
             <section className="inner-section shop-part">
                 <div className="container">
                     <div className="row content-reverse">

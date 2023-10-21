@@ -24,9 +24,9 @@ export default function Policy() {
               </div>
               <div className="intro-content">
                 <h5>{item.title}</h5>
-                <p>{item.description}</p>
               </div>
             </div>
+            <p>{item.description}</p>
           </div>)
         }
       </div>
