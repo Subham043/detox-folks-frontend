@@ -3,7 +3,6 @@ import Banner from '@/components/Banner';
 import PartnerSlider from '@/components/PartnerSlider';
 import TestimonialSlider from '@/components/TestimonialSlider';
 import BlogSlider from '@/components/BlogSlider';
-import AboutSection from '@/components/AboutSection';
 import Link from 'next/link';
 import type { InferGetServerSidePropsType, GetServerSideProps } from 'next'
 import { axiosPublic } from '../../axios';
@@ -12,9 +11,9 @@ import { AboutSectionType, BannerType, CategoryResponseType } from '@/helper/typ
 import FeaturedProducts from '@/components/FeaturedProducts';
 import SaleProducts from '@/components/SaleProducts';
 import NewProducts from '@/components/NewProducts';
-import Pagination from '@/components/Pagination';
 import useSWR from 'swr'
 import { useState } from 'react';
+import CategoryCard from '@/components/CategoryCard';
 
 const loadingArr = [1, 2, 3, 4, 5, 6]
 
@@ -84,35 +83,9 @@ export default function Home({
                     >
                         {
                             data?.data.map((item, i) => <div className="col mb-4" key={i}>
-                                    <div className="category-wrap">
-                                        <div className="category-media">
-                                            <img src={item.image} alt={item.name} />
-                                            <div className="category-overlay">
-                                              {
-                                                item.sub_categories.length>0 ? 
-                                                <Link href={`/category/${item.slug}`}>
-                                                    <i className="fas fa-link"></i>
-                                                </Link>:
-                                                <Link href={`/category/${item.slug}/product`}>
-                                                    <i className="fas fa-link"></i>
-                                                </Link>
-                                              }
-                                            </div>
-                                        </div>
-                                        <div className="category-meta text-center">
-                                            {
-                                              item.sub_categories.length>0 ? 
-                                              <Link href={`/category/${item.slug}`}>
-                                                  <h4>{item.name}</h4>
-                                              </Link>:
-                                              <Link href={`/category/${item.slug}/product`}>
-                                                  <h4>{item.name}</h4>
-                                              </Link>
-                                            }
-                                        </div> 
-                                    </div> 
-                                </div> 
-                                )
+                                  <CategoryCard {...item} />
+                              </div> 
+                            )
                         }
                     </div>
                     {/* <Pagination {...data?.meta} paginationHandler={setPage} /> */}

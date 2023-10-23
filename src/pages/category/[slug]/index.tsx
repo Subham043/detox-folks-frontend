@@ -8,6 +8,7 @@ import { useState } from 'react';
 import Link from 'next/link';
 import { GetServerSideProps, InferGetServerSidePropsType } from 'next';
 import { axiosPublic } from '../../../../axios';
+import SubCategoryCard from '@/components/SubCategoryCard';
 
 const loadingArr = [1, 2, 3, 4, 5, 6]
 
@@ -93,23 +94,9 @@ export default function Products({
                             >
                                 {
                                     data?.data.map((item, i) => <div className="col mb-4" key={i}>
-                                            <div className="category-wrap">
-                                                <div className="category-media">
-                                                    <img src={item.image} alt={item.name} />
-                                                    <div className="category-overlay">
-                                                        <Link href={`/sub-category/${item.slug}`}>
-                                                            <i className="fas fa-link"></i>
-                                                        </Link>
-                                                    </div>
-                                                </div>
-                                                <div className="category-meta text-center">
-                                                    <Link href={`/sub-category/${item.slug}`}>
-                                                        <h4>{item.name}</h4>
-                                                    </Link>
-                                                </div> 
-                                            </div> 
+                                            <SubCategoryCard {...item} />
                                         </div> 
-                                        )
+                                    )
                                 }
                             </div>
                             <Pagination {...data?.meta} paginationHandler={setPage} />

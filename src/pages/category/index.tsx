@@ -7,6 +7,7 @@ import ProductCard from '@/components/ProductCard';
 import Pagination from '@/components/Pagination';
 import { useState } from 'react';
 import Link from 'next/link';
+import CategoryCard from '@/components/CategoryCard';
 
 const loadingArr = [1, 2, 3, 4, 5, 6]
 
@@ -66,35 +67,9 @@ export default function Products() {
                             >
                                 {
                                     data?.data.map((item, i) => <div className="col mb-4" key={i}>
-                                            <div className="category-wrap">
-                                                <div className="category-media">
-                                                    <img src={item.image} alt={item.name} />
-                                                    <div className="category-overlay">
-                                                        {
-                                                            item.sub_categories.length>0 ? 
-                                                            <Link href={`/category/${item.slug}`}>
-                                                                <i className="fas fa-link"></i>
-                                                            </Link>:
-                                                            <Link href={`/category/${item.slug}/product`}>
-                                                                <i className="fas fa-link"></i>
-                                                            </Link>
-                                                        }
-                                                    </div>
-                                                </div>
-                                                <div className="category-meta text-center">
-                                                    {
-                                                        item.sub_categories.length>0 ?
-                                                        <Link href={`/category/${item.slug}`}>
-                                                            <h4>{item.name}</h4>
-                                                        </Link>:
-                                                        <Link href={`/category/${item.slug}/product`}>
-                                                            <h4>{item.name}</h4>
-                                                        </Link>
-                                                    }
-                                                </div> 
-                                            </div> 
+                                            <CategoryCard {...item} />
                                         </div> 
-                                        )
+                                    )
                                 }
                             </div>
                             <Pagination {...data?.meta} paginationHandler={setPage} />
