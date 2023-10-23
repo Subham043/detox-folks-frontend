@@ -7,10 +7,8 @@ import type { InferGetServerSidePropsType, GetServerSideProps } from 'next'
 import { axiosPublic } from '../../axios';
 import { api_routes } from '@/helper/routes';
 import { AboutSectionType, BannerType } from '@/helper/types';
-import FeaturedProducts from '@/components/FeaturedProducts';
-import SaleProducts from '@/components/SaleProducts';
-import NewProducts from '@/components/NewProducts';
 import CategoryMain from '@/components/CategoryMain';
+import SpecialProducts from '@/components/SpecialProducts';
 
 type ServerSideProps = {
   banner: BannerType[];
@@ -56,11 +54,11 @@ export default function Home({
 
       <CategoryMain displayFilter={false} />
 
-      <FeaturedProducts />
+      <SpecialProducts title='Our Featured Products' filter='is_featured' />
 
-      <NewProducts />
+      <SpecialProducts title='New Products' filter='is_new' />
 
-      <SaleProducts />
+      <SpecialProducts title='On Sale Products' filter='is_on_sale' />
       
       <PartnerSlider />
       <TestimonialSlider />

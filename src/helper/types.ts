@@ -184,6 +184,9 @@ export interface ProductType<> {
     is_featured: boolean;
     created_at: string;
     updated_at: string;
+    cart_quantity_specification: string;
+    cart_quantity_interval: number;
+    min_cart_quantity: number;
     sub_categories: SubCategoryType[];
     categories: CategoryType[];
     product_specifications: ProductSpecificationType[];
