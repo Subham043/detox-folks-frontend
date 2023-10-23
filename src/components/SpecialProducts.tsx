@@ -7,7 +7,7 @@ import ProductCard from '@/components/ProductCard';
 const loadingArr = [1, 2, 3, 4, 5, 6, 7, 8]
 
 export default function SpecialProducts({title="On Sale Products", filter="is_on_sale"}:{title?:string, filter?:"is_on_sale"|"is_new"|"is_featured"}) {
-    const { data, isLoading } = useSWR<ProductResponseType>(api_routes.products + `?total=12&page=1&sort=-id&filter[${filter}]=true&filter[is_random]=true`);
+    const { data, isLoading } = useSWR<ProductResponseType>(api_routes.products + `?total=12&page=1&sort=id&filter[${filter}]=true&filter[is_random]=true`);
 
     return <section className="section feature-part">
     <div className="container">

@@ -54,6 +54,7 @@ export default function CartQuantity({quantity, loading, incrementQuantity, decr
                 title="Quantity Number"
                 type="text"
                 name="quantity"
+                inputMode="numeric"
                 disabled={loading}
                 readOnly={loading}
                 value={qnt}
