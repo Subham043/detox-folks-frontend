@@ -35,6 +35,8 @@ const schema = yup
         .required()
         .min(10, "Must be exactly 10 digits")
         .max(10, "Must be exactly 10 digits"),
+        gst: yup
+        .string(),
     })
     .required();
 
@@ -146,6 +148,12 @@ export default function BillingInformation({getSelectedItem}:Props) {
                   message: error?.response?.data?.errors?.phone[0],
                 });
               }
+              if (error?.response?.data?.errors?.gst) {
+                setError("gst", {
+                  type: "server",
+                  message: error?.response?.data?.errors?.gst[0],
+                });
+              }
         } finally {
             setLoading(false);
         }
@@ -176,6 +184,7 @@ export default function BillingInformation({getSelectedItem}:Props) {
             })
             setValue("name", item.name)
             setValue("email", item.email)
+            setValue("gst", item.gst)
             setValue("phone", item.phone.toString())
         }
         setShowModal(true)
@@ -191,6 +200,7 @@ export default function BillingInformation({getSelectedItem}:Props) {
             name: "",
             email: "",
             phone: "",
+            gst: "",
         });
     }
 
@@ -300,6 +310,20 @@ export default function BillingInformation({getSelectedItem}:Props) {
                 <ErrorMessage
                     errors={errors}
                     name='phone'
+                    as={<div style={{ color: 'red' }} />}
+                />
+              </div>
+              <div className="form-group">
+                <label className="form-label">GST</label
+                ><input
+                  type="text"
+                  className="form-control"
+                  placeholder="Enter your GST"
+                  {...register('gst')}
+                />
+                <ErrorMessage
+                    errors={errors}
+                    name='gst'
                     as={<div style={{ color: 'red' }} />}
                 />
               </div>

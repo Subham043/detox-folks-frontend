@@ -9,20 +9,10 @@ import { ToastOptions, toast } from 'react-toastify';
 import Spinner from '@/components/Spinner';
 import { axiosPublic } from '../../axios';
 import { api_routes } from '@/helper/routes';
-import { ErrorMessage } from '@hookform/error-message';
-import * as yup from "yup";
-import { useForm } from "react-hook-form";
-import { yupResolver } from "@hookform/resolvers/yup";
 import { useSession } from 'next-auth/react';
 import { useRouter } from 'next/router';
 
 const loadingArr = [1, 2, 3, 4]
-
-const schema = yup
-  .object({
-    coupon_code: yup.string().required(),
-  })
-  .required();
 
 const toastConfig:ToastOptions = {
     position: "bottom-center",
@@ -38,69 +28,13 @@ const toastConfig:ToastOptions = {
 
 export default function Checkout() {
   const [loading, setLoading] = useState(false);
+  const [acceptTerms, setAcceptTerms] = useState(true);
+  const [includeGst, setIncludeGst] = useState(false);
   const { cart, getCart, deleteItemCart, cartLoading } = useContext(CartContext);
   const { status, data: session } = useSession();
   const router = useRouter();
   const [selectedBillingAddressData, setSelectedBillingAddressData] = useState<number>(0)
   const [selectedBillingInformationData, setSelectedBillingInformationData] = useState<number>(0)
-  
-  const {
-    handleSubmit,
-    control,
-    setValue,
-    register,
-    getValues,
-    reset,
-    setError,
-    formState: { errors },
-  } = useForm({
-    resolver: yupResolver(schema),
-});
-
-const onSubmit = async (data: any) => {
-    setLoading(true);
-    try {
-      const response = await axiosPublic.post(api_routes.coupon_apply, {...data}, {
-        headers: {"Authorization" : `Bearer ${session?.user.token}`}
-      });
-      toast.success(response.data.message, toastConfig);            
-      reset({
-        coupon_code: "",
-      });
-      getCart();
-    } catch (error: any) {
-      console.log(error);
-      if (error?.response?.data?.message) {
-        toast.error(error?.response?.data?.message, toastConfig);
-      }
-      if (error?.response?.data?.errors?.coupon_code) {
-        setError("coupon_code", {
-          type: "server",
-          message: error?.response?.data?.errors?.coupon_code[0],
-        });
-      }
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  const removeCouponHandler = async (data: any) => {
-    setLoading(true);
-    try {
-      const response = await axiosPublic.delete(api_routes.coupon_remove, {
-        headers: {"Authorization" : `Bearer ${session?.user.token}`}
-      });
-      toast.success(response.data.message, toastConfig);
-      getCart();
-    } catch (error: any) {
-      console.log(error);
-      if (error?.response?.data?.message) {
-        toast.error(error?.response?.data?.message, toastConfig);
-      }
-    } finally {
-      setLoading(false);
-    }
-  };
 
   const getSelectedBillingAddress = (data: number) => {
     setSelectedBillingAddressData(data)
@@ -119,9 +53,13 @@ const onSubmit = async (data: any) => {
       toast.error('please add an billing information', toastConfig);
       return;
     }
+    if(!acceptTerms){
+      toast.error('please accept the terms & condition', toastConfig);
+      return;
+    }
     setLoading(true);
     try {
-      const response = await axiosPublic.post(api_routes.place_order, {billing_address_id: selectedBillingAddressData, billing_information_id: selectedBillingInformationData, mode_of_payment: 'Cash On Delivery'}, {
+      const response = await axiosPublic.post(api_routes.place_order, {billing_address_id: selectedBillingAddressData, billing_information_id: selectedBillingInformationData, mode_of_payment: 'Cash On Delivery', accept_terms: acceptTerms ? 1 : 0, include_gst: includeGst ? 1 : 0}, {
         headers: {"Authorization" : `Bearer ${session?.user.token}`}
       });
       getCart();
@@ -215,50 +153,18 @@ const onSubmit = async (data: any) => {
                           </tbody>
                         </table>
                       </div>
-                      {
-                        cart.coupon_applied===null ? <div className="chekout-coupon">
-                        <form className="coupon-form d-flex" onSubmit={handleSubmit(onSubmit)}>
-                          <input
-                            type="text"
-                            placeholder="Enter your coupon code" {...register('coupon_code')}
-                          /><button type="submit" disabled={loading}>
-                            {
-                              loading ? <Spinner/> : <span>apply</span>
-                            }
-                          </button>
-                        </form>
-                        <ErrorMessage
-                            errors={errors}
-                            name='coupon_code'
-                            as={<div style={{ color: 'red' }} />}
-                          />
-                      </div> : <div className="chekout-coupon">
-                        <div className="coupon-form d-flex">
-                          <div className='w-100 text-left px-3'>
-                            <b>Coupon</b> : {cart.coupon_applied && cart.coupon_applied.code}
-                          </div><button type="button" disabled={loading} onClick={removeCouponHandler}>
-                            {
-                              loading ? <Spinner/> : <span>remove</span>
-                            }
-                          </button>
-                        </div>
-                      </div>
-                      }
                       <div className="checkout-charge">
                         <ul>
                           <li><span>Sub total</span><span>&#8377;{cart.cart_subtotal}</span></li>
-                          {
-                            cart.cart_charges.map((item, i)=><li key={i}><span>{item.charges_name}</span><span><b>+</b> &#8377;{item.charges_in_amount}</span></li>)
-                          }
-                          <li><span>tax ({cart.tax.tax_in_percentage}%)</span><span><b>+</b> &#8377;{cart.total_tax}</span></li>
                           <li><span className="p-relative">
-                            discount
-                            </span><span><b>-</b> &#8377;{cart.discount_price}</span></li>
+                            Delivery Charges
+                            </span><span><b></b> FREE</span></li>
                           <li>
                             <span>Total</span
                             ><span>&#8377;{cart.total_price}</span>
                           </li>
                         </ul>
+                        <p className='text-center'><code>Note :</code> <span>You have realized a minimum savings of 20% - 25% on your standard purchase when compared to retail price.</span></p>
                       </div>
                     </div>
                   </div>
@@ -283,14 +189,21 @@ const onSubmit = async (data: any) => {
                         </div>
                       </div>
                     </div>
-                    <div className="checkout-check">
-                      <input type="checkbox" id="checkout-check" /><label
-                        htmlFor="checkout-check"
-                      >By making this purchase you agree to our&nbsp; 
-                        <Link href="/legal/terms-condition">Terms and Conditions</Link>.</label
-                      >
+                    <div className="checkout-check d-block">
+                      <div>
+                        <input type="checkbox" id="checkout-gst" checked={includeGst} onChange={()=>setIncludeGst(!includeGst)} /><label
+                          htmlFor="checkout-gst"
+                        >Use GST Invoice.</label>
+                      </div>
+                      <div>
+                        <input type="checkbox" id="checkout-check" checked={acceptTerms} onChange={()=>setAcceptTerms(!acceptTerms)} /><label
+                          htmlFor="checkout-check"
+                        >By making this purchase you agree to our&nbsp; 
+                          <Link href="/legal/terms-condition">Terms and Conditions</Link>.</label
+                        >
+                      </div>
                     </div>
-                    <div className="checkout-proced">
+                    <div className="checkout-proced col-lg-2 col-md-3 col-sm-12">
                       <button className="btn btn-inline" disabled={loading} onClick={placeOrderHandler}
                       >
                         { loading ? <Spinner /> : <>

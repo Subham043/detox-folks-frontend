@@ -1,7 +1,7 @@
 import Head from 'next/head'
 import Hero from '@/components/Hero';
 import type { InferGetServerSidePropsType, GetServerSideProps } from 'next'
-import { axiosPublic } from '../../../axios';
+import { axiosPublic } from '../../../../axios';
 import { api_routes } from '@/helper/routes';
 import { CategoryType, SubCategoryType } from '@/helper/types';
 import Pagination from '@/components/Pagination';
@@ -42,40 +42,40 @@ export default function Category({
 }: InferGetServerSidePropsType<typeof getServerSideProps>) {
     const [sort, setSort] = useState('name')
     const [total, setTotal] = useState("12")
-    const [displayFilter, setDisplayFilter] = useState(false)
+    // const [displayFilter, setDisplayFilter] = useState(false)
     const [page, setPage] = useState("1")
-    const [filterSearch, setFilterSearch] = useState("")
-    const [subCategory, setSubCategory] = useState("")
-    const [subCategoryArr, setSubCategoryArr] = useState<string[]>([])
-    const [mainSubCategoryArr, setMainSubCategoryArr] = useState<SubCategoryType[]>(repo.category.sub_categories)
-    const { data, isLoading } = useSWR<ProductResponseType>(api_routes.products + `?total=${total}&page=${page}&sort=${sort}&filter[has_categories]=${repo.category.id}&filter[has_sub_categories]=${subCategory}`);
+    // const [filterSearch, setFilterSearch] = useState("")
+    // const [subCategory, setSubCategory] = useState("")
+    // const [subCategoryArr, setSubCategoryArr] = useState<string[]>([])
+    // const [mainSubCategoryArr, setMainSubCategoryArr] = useState<SubCategoryType[]>(repo.category.sub_categories)
+    const { data, isLoading } = useSWR<ProductResponseType>(api_routes.products + `?total=${total}&page=${page}&sort=${sort}&filter[has_categories]=${repo.category.id}`);
     
-    const filterHandler = (data:EventTarget & HTMLInputElement) => {
-        let arrData = [...subCategoryArr];
-        if(data.checked){
-            arrData = [...arrData, data.value]
-        }else{
-            arrData = arrData.filter(item => item!==data.value)
-        }
-        setSubCategoryArr([...arrData])
-        const subCategoryStr = arrData.join('_');
-        setSubCategory(subCategoryStr)
-    }
+    // const filterHandler = (data:EventTarget & HTMLInputElement) => {
+    //     let arrData = [...subCategoryArr];
+    //     if(data.checked){
+    //         arrData = [...arrData, data.value]
+    //     }else{
+    //         arrData = arrData.filter(item => item!==data.value)
+    //     }
+    //     setSubCategoryArr([...arrData])
+    //     const subCategoryStr = arrData.join('_');
+    //     setSubCategory(subCategoryStr)
+    // }
 
-    const clearFilterHandler = () => {
-        setSubCategoryArr([])
-        setSubCategory('')
-    }
+    // const clearFilterHandler = () => {
+    //     setSubCategoryArr([])
+    //     setSubCategory('')
+    // }
 
-    const filterSearchHandler = (data:string) => {
-        if(data.length>0){
-            const filteredArr = repo.category.sub_categories.filter(item => item.name.toLowerCase().includes(data.toLowerCase()))
-            setMainSubCategoryArr([...filteredArr])
-        }else{
-            setMainSubCategoryArr([...repo.category.sub_categories])
-        }
-        setFilterSearch(data);
-    }
+    // const filterSearchHandler = (data:string) => {
+    //     if(data.length>0){
+    //         const filteredArr = repo.category.sub_categories.filter(item => item.name.toLowerCase().includes(data.toLowerCase()))
+    //         setMainSubCategoryArr([...filteredArr])
+    //     }else{
+    //         setMainSubCategoryArr([...repo.category.sub_categories])
+    //     }
+    //     setFilterSearch(data);
+    // }
 
     return (
         <>
@@ -109,7 +109,7 @@ export default function Category({
             <section className="inner-section shop-part">
                 <div className="container">
                     <div className="row content-reverse">
-                        <div className="col-lg-3 d-none-md d-none-sm">
+                        {/* <div className="col-lg-3 d-none-md d-none-sm">
                             <div className="shop-widget">
                                 <h6 className="shop-widget-title">Filter by Sub-Category</h6>
                                 <div>
@@ -136,8 +136,8 @@ export default function Category({
                                     </button>
                                 </div>
                             </div>
-                        </div>
-                        <div className="col-lg-9">
+                        </div> */}
+                        <div className="col-lg-12">
                             <div className="row">
                                 <div className="col-lg-12">
                                     <div className="top-filter">
@@ -160,7 +160,7 @@ export default function Category({
                                             </select>
                                         </div>
                                     </div>
-                                    {
+                                    {/* {
                                             mainSubCategoryArr.length>0 && <>
                                                 {displayFilter ? <div className="shop-widget mb-4 d-none-lg d-block-md d-block-sm">
                                                     <div className="row justify-content-between align-items-center mb-3 border-1" onClick={()=>setDisplayFilter(false)}>
@@ -197,19 +197,19 @@ export default function Category({
                                                     </div>
                                                 </div>}
                                             </>
-                                    }
+                                    } */}
                                     
                                 </div>
                             </div>
                             <div className="row">
                                 {
-                                    isLoading && loadingArr.map(i => <div className="col-md-6 col-lg-4 col-sm-12 mb-4" key={i}>
+                                    isLoading && loadingArr.map(i => <div className="col-md-6 col-lg-3 col-sm-12 mb-4" key={i}>
                                         <div className="product-img-loading"></div>
                                     </div>)
                                 }
                             </div>
                             <div
-                                className="row row-cols-1 row-cols-md-3 row-cols-lg-3 row-cols-xl-3"
+                                className="row row-cols-1 row-cols-md-3 row-cols-lg-4 row-cols-xl-4 justify-content-center"
                             >
                                 {
                                     data?.data.map((item, i) => <ProductCard key={i} {...item} />)

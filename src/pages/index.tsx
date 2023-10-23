@@ -88,15 +88,27 @@ export default function Home({
                                         <div className="category-media">
                                             <img src={item.image} alt={item.name} />
                                             <div className="category-overlay">
+                                              {
+                                                item.sub_categories.length>0 ? 
                                                 <Link href={`/category/${item.slug}`}>
                                                     <i className="fas fa-link"></i>
+                                                </Link>:
+                                                <Link href={`/category/${item.slug}/product`}>
+                                                    <i className="fas fa-link"></i>
                                                 </Link>
+                                              }
                                             </div>
                                         </div>
                                         <div className="category-meta text-center">
-                                            <Link href={`/category/${item.slug}`}>
-                                                <h4>{item.name}</h4>
-                                            </Link>
+                                            {
+                                              item.sub_categories.length>0 ? 
+                                              <Link href={`/category/${item.slug}`}>
+                                                  <h4>{item.name}</h4>
+                                              </Link>:
+                                              <Link href={`/category/${item.slug}/product`}>
+                                                  <h4>{item.name}</h4>
+                                              </Link>
+                                            }
                                         </div> 
                                     </div> 
                                 </div> 

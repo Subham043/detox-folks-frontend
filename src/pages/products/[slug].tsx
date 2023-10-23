@@ -12,10 +12,10 @@ import useSWR from 'swr'
 import { CategoryResponseType, CategoryType, ProductResponseType } from "@/helper/types";
 import ProductCard from '@/components/ProductCard';
 import { useCallback, useContext, useEffect, useState } from 'react';
-import { WishlistContext } from '@/context/WishlistProvider';
+// import { WishlistContext } from '@/context/WishlistProvider';
 import CartQuantity from '@/components/CartQuantity';
 import { CartContext } from '@/context/CartProvider';
-import Spinner from '@/components/Spinner';
+// import Spinner from '@/components/Spinner';
 
 const loadingArr = [1, 2, 3, 4, 5, 6, 7, 8]
 
@@ -67,7 +67,7 @@ export default function ProductDetail({
     const [page, setPage] = useState("1")
     const [quantity, setQuantity] = useState<number>(0);
     const { data, isLoading } = useSWR<ProductResponseType>(api_routes.products + `?total=12&page=${page}&filter[has_categories]=${getCategoryStr()}&filter[has_sub_categories]=${getSubCategoryStr()}`);
-    const { wishlist, addItemWishlist, deleteItemWishlist, wishlistLoading } = useContext(WishlistContext);
+    // const { wishlist, addItemWishlist, deleteItemWishlist, wishlistLoading } = useContext(WishlistContext);
     const { cart, addItemCart, updateItemCart, deleteItemCart, cartLoading } = useContext(CartContext);
 
     const cart_product_item = useCallback(
@@ -103,6 +103,21 @@ export default function ProductDetail({
                 amount: (quantity + 50) * price.discount_in_price,
             })
         }
+    };
+    
+    const changeQuantity = (value:number) => {
+        const cart_product = cart.cart.filter(item => item.product.id === repo.product.id)
+        const priceArr = [...repo.product.product_prices];
+        const price_des_quantity = priceArr.sort(function(a, b){return b.min_quantity - a.min_quantity});
+        
+        const price = price_des_quantity.filter(item => (value) >= item.min_quantity).length > 0 ? price_des_quantity.filter(item => (value) >= item.min_quantity)[0] : price_des_quantity[price_des_quantity.length - 1];
+        updateItemCart({
+            cartItemId: cart_product[0].id,
+            product_id: repo.product.id,
+            product_price_id: price.id,
+            quantity: value,
+            amount: (value) * price.discount_in_price,
+        })
     };
 
     const decrementQuantity = () => {
@@ -194,19 +209,10 @@ export default function ProductDetail({
                             </div>
                             <Tabs selectedTabClassName="active">
                                 <TabList className="nav nav-tabs">
-                                    <Tab className="tab-link">Description</Tab>
                                     <Tab className="tab-link">Specifications</Tab>
+                                    <Tab className="tab-link">Description</Tab>
                                 </TabList>
 
-                                <TabPanel>
-                                    <div className="row">
-                                        <div className="col-lg-12">
-                                            <div className="product-details-frame">
-                                                <div className="tab-descrip" dangerouslySetInnerHTML={{ __html: repo.product.description }} />
-                                            </div>
-                                        </div>
-                                    </div>
-                                </TabPanel>
                                 <TabPanel>
                                     <div className="row">
                                         <div className="col-lg-12">
@@ -221,6 +227,15 @@ export default function ProductDetail({
                                                         }
                                                     </tbody>
                                                 </table>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </TabPanel>
+                                <TabPanel>
+                                    <div className="row">
+                                        <div className="col-lg-12">
+                                            <div className="product-details-frame">
+                                                <div className="tab-descrip" dangerouslySetInnerHTML={{ __html: repo.product.description }} />
                                             </div>
                                         </div>
                                     </div>
@@ -274,14 +289,13 @@ export default function ProductDetail({
                                     </ul>
                                 </div>
                                 <div className="details-action-group">
-                                    <div className="details-add-group m-0">
-                                        <CartQuantity quantity={quantity} incrementQuantity={incrementQuantity} decrementQuantity={decrementQuantity} loading={cartLoading} />
+                                    <div className="details-add-group m-0 col-md-6 col-sm-12">
+                                        <CartQuantity quantity={quantity} incrementQuantity={incrementQuantity} decrementQuantity={decrementQuantity} changeQuantity={changeQuantity} loading={cartLoading} />
                                     </div>
-                                    <button className={`product-add`} disabled={wishlistLoading} onClick={() => wishlist.wishlist.length > 0 && wishlist.wishlist.filter(item => item.product.id === repo.product.id).length > 0 ? deleteItemWishlist(wishlist.wishlist.filter(item => item.product.id === repo.product.id)[0].id) : addItemWishlist(repo.product.id)}
+                                    {/* <button className={`product-add`} disabled={wishlistLoading} onClick={() => wishlist.wishlist.length > 0 && wishlist.wishlist.filter(item => item.product.id === repo.product.id).length > 0 ? deleteItemWishlist(wishlist.wishlist.filter(item => item.product.id === repo.product.id)[0].id) : addItemWishlist(repo.product.id)}
                                     >{wishlistLoading ? <Spinner /> :<><i className="icofont-heart"></i><span className='mx-1'>
                                         {wishlist.wishlist.length > 0 && wishlist.wishlist.filter(item => item.product.id === repo.product.id).length > 0 ? 'Remove From Wishlist' : 'Add To Wishlist'}
-                                    </span></>}</button
-                                    >
+                                    </span></>}</button> */}
                                 </div>
                             </div>
                         </div>
@@ -297,13 +311,13 @@ export default function ProductDetail({
                     </div>
                     <div className="row">
                         {
-                            isLoading && loadingArr.map(i => <div className="col-md-6 col-lg-4 col-sm-12 mb-4" key={i}>
+                            isLoading && loadingArr.map(i => <div className="col-md-6 col-lg-3 col-sm-12 mb-4" key={i}>
                                 <div className="product-img-loading"></div>
                             </div>)
                         }
                     </div>
                     <div
-                        className="row row-cols-1 row-cols-md-3 row-cols-lg-4 row-cols-xl-3"
+                        className="row row-cols-2 row-cols-md-3 row-cols-lg-4 row-cols-xl-4 justify-content-center"
                     >
                         {
                             data?.data.map((item, i) => <ProductCard key={i} {...item} />)

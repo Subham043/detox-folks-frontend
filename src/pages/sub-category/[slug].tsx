@@ -115,7 +115,7 @@ export default function SubCategory({
                                 }
                             </div>
                             <div
-                                className="row row-cols-1 row-cols-md-3 row-cols-lg-4 row-cols-xl-4"
+                                className="row row-cols-1 row-cols-md-3 row-cols-lg-4 row-cols-xl-4 justify-content-center"
                             >
                                 {
                                     data?.data.map((item, i) => <ProductCard key={i} {...item} />)

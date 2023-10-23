@@ -2,19 +2,46 @@ import Head from 'next/head'
 import Hero from '@/components/Hero';
 import useSWR from 'swr'
 import { api_routes } from "@/helper/routes";
-import { CategoryResponseType } from "@/helper/types";
-import ProductCard from '@/components/ProductCard';
+import { SubCategoryResponseType, CategoryType } from "@/helper/types";
 import Pagination from '@/components/Pagination';
 import { useState } from 'react';
 import Link from 'next/link';
+import { GetServerSideProps, InferGetServerSidePropsType } from 'next';
+import { axiosPublic } from '../../../../axios';
 
 const loadingArr = [1, 2, 3, 4, 5, 6]
 
-export default function Products() {
+type ServerSideProps = {
+    category: CategoryType;
+}
+
+export const getServerSideProps: GetServerSideProps<{
+    repo: ServerSideProps
+}> = async (ctx: any) => {
+    try {
+        const categoryResponse = await axiosPublic.get(api_routes.categories + `/${ctx?.params.slug}`);
+        return {
+            props: {
+                repo: {
+                    category: categoryResponse.data.category,
+                }
+            }
+        }
+    } catch (error) {
+        return {
+            notFound: true,
+        }
+    }
+
+}
+
+export default function Products({
+    repo,
+}: InferGetServerSidePropsType<typeof getServerSideProps>) {
     const [sort, setSort] = useState('name')
     const [total, setTotal] = useState("20")
     const [page, setPage] = useState("1")
-    const { data, isLoading } = useSWR<CategoryResponseType>(api_routes.categories + `?total=${total}&page=${page}&sort=${sort}`);
+    const { data, isLoading } = useSWR<SubCategoryResponseType>(api_routes.sub_categories + `?total=${total}&page=${page}&sort=${sort}&filter[has_categories]=${repo.category.id}`);
 
 
     return (
@@ -70,27 +97,15 @@ export default function Products() {
                                                 <div className="category-media">
                                                     <img src={item.image} alt={item.name} />
                                                     <div className="category-overlay">
-                                                        {
-                                                            item.sub_categories.length>0 ? 
-                                                            <Link href={`/category/${item.slug}`}>
-                                                                <i className="fas fa-link"></i>
-                                                            </Link>:
-                                                            <Link href={`/category/${item.slug}/product`}>
-                                                                <i className="fas fa-link"></i>
-                                                            </Link>
-                                                        }
+                                                        <Link href={`/sub-category/${item.slug}`}>
+                                                            <i className="fas fa-link"></i>
+                                                        </Link>
                                                     </div>
                                                 </div>
                                                 <div className="category-meta text-center">
-                                                    {
-                                                        item.sub_categories.length>0 ?
-                                                        <Link href={`/category/${item.slug}`}>
-                                                            <h4>{item.name}</h4>
-                                                        </Link>:
-                                                        <Link href={`/category/${item.slug}/product`}>
-                                                            <h4>{item.name}</h4>
-                                                        </Link>
-                                                    }
+                                                    <Link href={`/sub-category/${item.slug}`}>
+                                                        <h4>{item.name}</h4>
+                                                    </Link>
                                                 </div> 
                                             </div> 
                                         </div> 

@@ -335,6 +335,7 @@ export interface BillingInformationType<> {
     name: string;
     email: string;
     phone: number;
+    gst: string;
     is_active: boolean;
     created_at: string;
     updated_at: string;

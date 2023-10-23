@@ -1,14 +1,14 @@
-import { WishlistContext } from "@/context/WishlistProvider";
+// import { WishlistContext } from "@/context/WishlistProvider";
 import { ProductType } from "@/helper/types";
 import Link from "next/link";
 import { useCallback, useContext, useEffect, useState } from "react";
 import CartQuantity from "./CartQuantity";
 import { CartContext } from "@/context/CartProvider";
-import Spinner from "./Spinner";
+// import Spinner from "./Spinner";
 
 export default function ProductCard({ id, name, image, slug, product_prices, is_featured, is_new, is_on_sale }: ProductType) {
 
-    const { wishlist, addItemWishlist, deleteItemWishlist, wishlistLoading } = useContext(WishlistContext);
+    // const { wishlist, addItemWishlist, deleteItemWishlist, wishlistLoading } = useContext(WishlistContext);
     const [quantity, setQuantity] = useState<number>(0);
     
     const { cart, addItemCart, updateItemCart, deleteItemCart, cartLoading } = useContext(CartContext);
@@ -45,6 +45,20 @@ export default function ProductCard({ id, name, image, slug, product_prices, is_
                 amount: (quantity+50)*price.discount_in_price,
             })
         }
+    };
+    
+    const changeQuantity = (value:number) => {
+        const cart_product = cart_product_item();
+        const priceArr = [...product_prices];
+        const price_des_quantity = priceArr.sort(function(a, b){return b.min_quantity - a.min_quantity});
+        const price = price_des_quantity.filter(item=>(value)>=item.min_quantity).length>0 ? price_des_quantity.filter(item=>(value)>=item.min_quantity)[0] : price_des_quantity[price_des_quantity.length-1];
+        updateItemCart({
+            cartItemId: cart_product[0].id,
+            product_id: id,
+            product_price_id: price.id,
+            quantity: value,
+            amount: (value)*price.discount_in_price,
+        })
     };
     
     const decrementQuantity = () => {
@@ -137,9 +151,9 @@ export default function ProductCard({ id, name, image, slug, product_prices, is_
                         is_on_sale && <label className="label-text sale">sale</label>
                     }
                 </div>
-                <button disabled={wishlistLoading} className={`product-wish wish ${wishlist.wishlist.length>0 && wishlist.wishlist.filter(item=>item.product.id===id).length>0 ? 'active' : ''}`} onClick={()=> wishlist.wishlist.length>0 && wishlist.wishlist.filter(item=>item.product.id===id).length>0 ? deleteItemWishlist(wishlist.wishlist.filter(item=>item.product.id===id)[0].id) : addItemWishlist(id)}>
+                {/* <button disabled={wishlistLoading} className={`product-wish wish ${wishlist.wishlist.length>0 && wishlist.wishlist.filter(item=>item.product.id===id).length>0 ? 'active' : ''}`} onClick={()=> wishlist.wishlist.length>0 && wishlist.wishlist.filter(item=>item.product.id===id).length>0 ? deleteItemWishlist(wishlist.wishlist.filter(item=>item.product.id===id)[0].id) : addItemWishlist(id)}>
                     {wishlistLoading ? <Spinner />:<i className="fas fa-heart"></i>}
-                </button>
+                </button> */}
                 <Link className="product-image text-center w-100" href={`/products/${slug}`}
                 ><img src={image} alt="product"
                     /></Link>
@@ -149,7 +163,7 @@ export default function ProductCard({ id, name, image, slug, product_prices, is_
                     <Link href={`/products/${slug}`}>{name}</Link>
                 </h6>
                 <PriceFactor />
-                <CartQuantity quantity={quantity} incrementQuantity={incrementQuantity} decrementQuantity={decrementQuantity} loading={cartLoading} />
+                <CartQuantity quantity={quantity} incrementQuantity={incrementQuantity} decrementQuantity={decrementQuantity} changeQuantity={changeQuantity} loading={cartLoading} />
             </div>
         </div>
     </div>

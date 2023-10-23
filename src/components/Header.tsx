@@ -2,7 +2,7 @@ import Link from "next/link";
 import { useContext, useEffect, useState } from "react";
 import Drawer from 'react-modern-drawer'
 import useSWR from 'swr'
-import { api_routes } from "@/helper/routes";
+// import { api_routes } from "@/helper/routes";
 import { CartType, CategoryResponseType } from "@/helper/types";
 import { signOut, useSession } from 'next-auth/react';
 import { useRouter } from "next/router";
@@ -12,7 +12,7 @@ import { CartContext } from "@/context/CartProvider";
 import ProductSearch from "./ProductSearch";
 import { LoginModalContext } from "@/context/LoginModalProvider";
 import { WebsiteContext } from "@/context/WebsiteProvider";
-import Pagination from "./Pagination";
+// import Pagination from "./Pagination";
 import ProductMobileSearch from "./ProductMobileSearch";
 import Spinner from "./Spinner";
 
@@ -74,8 +74,8 @@ export default function Header() {
     }, [router]);
 
 
-    const [page, setPage] = useState("1")
-    const { data, isLoading } = useSWR<CategoryResponseType>(api_routes.categories + `?total=24&page=${page}&sort=name`);
+    // const [page, setPage] = useState("1")
+    // const { data, isLoading } = useSWR<CategoryResponseType>(api_routes.categories + `?total=24&page=${page}&sort=name`);
     const { wishlist } = useContext(WishlistContext);
     const { cart, updateItemCart, deleteItemCart, cartLoading } = useContext(CartContext);
     const { website, websiteLoading } = useContext(WebsiteContext);
@@ -117,7 +117,7 @@ export default function Header() {
                 <div className="row">
                     <div className="col-md-12 col-lg-12">
                         <div className="header-top-welcome text-center">
-                            <p>Welcome to {website.website.website_name} Online Store!</p>
+                            <p>Right now fully operational in Bengaluru!</p>
                         </div>
                     </div>
                 </div>
@@ -152,9 +152,9 @@ export default function Header() {
                                 </li>
                             </ul>
                         }
-                        <Link href="/wishlist" className="header-widget" title="Wishlist"
-                        ><i className="fas fa-heart"></i><sup>{wishlist.wishlist.length}</sup></Link
-                        ><button className="header-widget header-cart" onClick={toggleDrawer} title="Cartlist">
+                        {/* <Link href="/wishlist" className="header-widget" title="Wishlist"
+                        ><i className="fas fa-heart"></i><sup>{wishlist.wishlist.length}</sup></Link> */}
+                        <button className="header-widget header-cart" onClick={toggleDrawer} title="Cartlist">
                             <i className="fas fa-shopping-basket"></i><sup>{cart.cart.length}</sup
                             ><span>total price<small>&#8377;{cart.cart_subtotal}</small></span>
                         </button>
@@ -174,7 +174,7 @@ export default function Header() {
                                 <li className="navbar-item">
                                     <Link className="navbar-link" href="/about">about us</Link>
                                 </li>
-                                <li className="navbar-item dropdown-megamenu">
+                                {/* <li className="navbar-item dropdown-megamenu">
                                     <Link className="navbar-link dropdown-arrow" href="/category">categories</Link>
                                     <div className="megamenu">
                                         <div className="container">
@@ -199,12 +199,12 @@ export default function Header() {
                                                     </div>)
                                                 }
                                             </div>
-                                            {/* <Pagination {...data?.meta} paginationHandler={setPage} /> */}
+                                            <Pagination {...data?.meta} paginationHandler={setPage} />
                                         </div>
                                     </div>
-                                </li>
+                                </li> */}
                                 <li className="navbar-item">
-                                    <Link className="navbar-link" href="/products">products</Link>
+                                    <Link className="navbar-link" href="/category">products</Link>
                                 </li>
                                 <li className="navbar-item">
                                     <Link className="navbar-link" href="/blogs">blogs</Link>
@@ -310,11 +310,11 @@ export default function Header() {
                 <li>
                     <Link className="nav-link" href="/about"><i className="icofont-info-circle"></i>about us</Link>
                 </li>
-                <li>
+                {/* <li>
                     <Link className="nav-link" href="/category"><i className="icofont-listing-box"></i>Categories</Link>
-                </li>
+                </li> */}
                 <li>
-                    <Link className="nav-link" href="/products"><i className="icofont-page"></i>products</Link>
+                    <Link className="nav-link" href="/category"><i className="icofont-page"></i>products</Link>
                 </li>
                 <li>
                     <Link className="nav-link" href="/blogs"><i className="icofont-book-alt"></i>blogs</Link>
@@ -329,9 +329,9 @@ export default function Header() {
                     <li>
                         <Link className="nav-link" href="/profile"><i className="fas fa-user"></i>Profile</Link>
                     </li>
-                    <li>
+                    {/* <li>
                         <Link className="nav-link" href="/wishlist"><i className="fas fa-heart"></i>Wishlist</Link>
-                    </li>
+                    </li> */}
                     <li>
                         <Link className="nav-link" href="/cart"><i className="fas fa-cart-plus"></i>Cart</Link>
                     </li>

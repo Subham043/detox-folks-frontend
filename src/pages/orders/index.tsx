@@ -123,7 +123,7 @@ export default function Products() {
                                                     <h6>Sub Total</h6>
                                                     <p>&#8377;{item.subtotal}</p>
                                                 </li>
-                                                {
+                                                {/* {
                                                     item.charges.map((itm, index)=><li key={index}>
                                                     <h6>{itm.charges_name}</h6>
                                                     <p>&#8377;{itm.charges_in_amount}</p>
@@ -136,6 +136,10 @@ export default function Products() {
                                                 <li>
                                                     <h6>discount</h6>
                                                     <p>&#8377;{item.discount_price}</p>
+                                                </li> */}
+                                                <li>
+                                                    <h6>Delivery Charges</h6>
+                                                    <p>FREE</p>
                                                 </li>
                                                 <li>
                                                     <h6>Total</h6>
