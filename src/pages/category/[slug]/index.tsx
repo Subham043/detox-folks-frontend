@@ -5,7 +5,6 @@ import { api_routes } from "@/helper/routes";
 import { SubCategoryResponseType, CategoryType } from "@/helper/types";
 import Pagination from '@/components/Pagination';
 import { useState } from 'react';
-import Link from 'next/link';
 import { GetServerSideProps, InferGetServerSidePropsType } from 'next';
 import { axiosPublic } from '../../../../axios';
 import SubCategoryCard from '@/components/SubCategoryCard';
@@ -39,7 +38,7 @@ export const getServerSideProps: GetServerSideProps<{
 export default function Products({
     repo,
 }: InferGetServerSidePropsType<typeof getServerSideProps>) {
-    const [sort, setSort] = useState('name')
+    const [sort, setSort] = useState('id')
     const [total, setTotal] = useState("20")
     const [page, setPage] = useState("1")
     const { data, isLoading } = useSWR<SubCategoryResponseType>(api_routes.sub_categories + `?total=${total}&page=${page}&sort=${sort}&filter[has_categories]=${repo.category.id}`);

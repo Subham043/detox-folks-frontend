@@ -14596,6 +14596,10 @@ tbody tr td:last-child {
     transform: scale(1)
 }
 
+.category-wrap {
+    width: 100%;
+}
+
 .category-media {
     position: relative;
     margin-bottom: 15px;
@@ -14637,7 +14641,7 @@ tbody tr td:last-child {
     -o-transition: all linear .3s
 }
 
-.category-overlay a i {
+.category-overlay a i, .category-overlay .category-icon-div i {
     width: 50px;
     height: 50px;
     line-height: 50px;

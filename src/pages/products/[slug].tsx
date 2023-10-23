@@ -9,13 +9,11 @@ import { api_routes } from '@/helper/routes';
 import { ProductType } from '@/helper/types';
 import Pagination from '@/components/Pagination';
 import useSWR from 'swr'
-import { CategoryResponseType, CategoryType, ProductResponseType } from "@/helper/types";
+import { ProductResponseType } from "@/helper/types";
 import ProductCard from '@/components/ProductCard';
 import { useCallback, useContext, useEffect, useState } from 'react';
-// import { WishlistContext } from '@/context/WishlistProvider';
 import CartQuantity from '@/components/CartQuantity';
 import { CartContext } from '@/context/CartProvider';
-// import Spinner from '@/components/Spinner';
 
 const loadingArr = [1, 2, 3, 4, 5, 6, 7, 8]
 
@@ -67,7 +65,6 @@ export default function ProductDetail({
     const [page, setPage] = useState("1")
     const [quantity, setQuantity] = useState<number>(0);
     const { data, isLoading } = useSWR<ProductResponseType>(api_routes.products + `?total=12&page=${page}&filter[has_categories]=${getCategoryStr()}&filter[has_sub_categories]=${getSubCategoryStr()}`);
-    // const { wishlist, addItemWishlist, deleteItemWishlist, wishlistLoading } = useContext(WishlistContext);
     const { cart, addItemCart, updateItemCart, deleteItemCart, cartLoading } = useContext(CartContext);
 
     const cart_product_item = useCallback(
@@ -292,10 +289,6 @@ export default function ProductDetail({
                                     <div className="details-add-group m-0 col-md-6 col-sm-12">
                                         <CartQuantity quantity={quantity} incrementQuantity={incrementQuantity} decrementQuantity={decrementQuantity} changeQuantity={changeQuantity} loading={cartLoading} />
                                     </div>
-                                    {/* <button className={`product-add`} disabled={wishlistLoading} onClick={() => wishlist.wishlist.length > 0 && wishlist.wishlist.filter(item => item.product.id === repo.product.id).length > 0 ? deleteItemWishlist(wishlist.wishlist.filter(item => item.product.id === repo.product.id)[0].id) : addItemWishlist(repo.product.id)}
-                                    >{wishlistLoading ? <Spinner /> :<><i className="icofont-heart"></i><span className='mx-1'>
-                                        {wishlist.wishlist.length > 0 && wishlist.wishlist.filter(item => item.product.id === repo.product.id).length > 0 ? 'Remove From Wishlist' : 'Add To Wishlist'}
-                                    </span></>}</button> */}
                                 </div>
                             </div>
                         </div>

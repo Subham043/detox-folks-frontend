@@ -3,19 +3,14 @@ import Banner from '@/components/Banner';
 import PartnerSlider from '@/components/PartnerSlider';
 import TestimonialSlider from '@/components/TestimonialSlider';
 import BlogSlider from '@/components/BlogSlider';
-import Link from 'next/link';
 import type { InferGetServerSidePropsType, GetServerSideProps } from 'next'
 import { axiosPublic } from '../../axios';
 import { api_routes } from '@/helper/routes';
-import { AboutSectionType, BannerType, CategoryResponseType } from '@/helper/types';
+import { AboutSectionType, BannerType } from '@/helper/types';
 import FeaturedProducts from '@/components/FeaturedProducts';
 import SaleProducts from '@/components/SaleProducts';
 import NewProducts from '@/components/NewProducts';
-import useSWR from 'swr'
-import { useState } from 'react';
-import CategoryCard from '@/components/CategoryCard';
-
-const loadingArr = [1, 2, 3, 4, 5, 6]
+import CategoryMain from '@/components/CategoryMain';
 
 type ServerSideProps = {
   banner: BannerType[];
@@ -48,9 +43,6 @@ export default function Home({
   repo,
 }: InferGetServerSidePropsType<typeof getServerSideProps>) {
 
-  const [page, setPage] = useState("1")
-  const { data, isLoading } = useSWR<CategoryResponseType>(api_routes.categories + `?total=20&page=${page}&sort=id`);
-
   return (
     <>
       <Head>
@@ -59,59 +51,20 @@ export default function Home({
         <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no" />
         <link rel="icon" href="/images/favicon.png" />
       </Head>
-    <Banner banner={repo.banner} />
-    {/* <AboutSection  {...repo.about} /> */}
+      <Banner banner={repo.banner} />
+      {/* <AboutSection  {...repo.about} /> */}
 
-    <section className="inner-section shop-part">
-        <div className="container">
-            <div className="row content-reverse">
-                <div className="col-lg-12">
-                  <div className="row">
-                      <div className="col-lg-12">
-                        <div className="section-heading"><h2>Our Categories</h2></div>
-                      </div>
-                    </div>
-                    <div className="row">
-                        {
-                            isLoading && loadingArr.map(i => <div className="col-md-6 col-lg-2 col-sm-12 mb-4" key={i}>
-                                <div className="product-img-loading" style={{height:'150px'}}></div>
-                            </div>)
-                        }
-                    </div>
-                    <div
-                        className="row row-cols-2 row-cols-md-3 row-cols-lg-4 row-cols-xl-5 justify-content-center mb-4"
-                    >
-                        {
-                            data?.data.map((item, i) => <div className="col mb-4" key={i}>
-                                  <CategoryCard {...item} />
-                              </div> 
-                            )
-                        }
-                    </div>
-                    {/* <Pagination {...data?.meta} paginationHandler={setPage} /> */}
-                    <div className="row">
-                      <div className="col-lg-12">
-                        <div className="section-btn-25">
-                          <Link href="/category" className="btn btn-outline"
-                            ><i className="fas fa-eye"></i><span>show more</span></Link
-                          >
-                        </div>
-                      </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </section>
+      <CategoryMain displayFilter={false} />
 
-    <FeaturedProducts />
+      <FeaturedProducts />
 
-    <NewProducts />
+      <NewProducts />
 
-    <SaleProducts />
-    
-    <PartnerSlider />
-    <TestimonialSlider />
-    <BlogSlider />
+      <SaleProducts />
+      
+      <PartnerSlider />
+      <TestimonialSlider />
+      <BlogSlider />
     </>
   )
 }

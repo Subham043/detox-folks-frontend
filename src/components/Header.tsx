@@ -1,22 +1,16 @@
 import Link from "next/link";
 import { useContext, useEffect, useState } from "react";
 import Drawer from 'react-modern-drawer'
-import useSWR from 'swr'
-// import { api_routes } from "@/helper/routes";
-import { CartType, CategoryResponseType } from "@/helper/types";
+import { CartType } from "@/helper/types";
 import { signOut, useSession } from 'next-auth/react';
 import { useRouter } from "next/router";
 import { ToastOptions, toast } from "react-toastify";
-import { WishlistContext } from "@/context/WishlistProvider";
 import { CartContext } from "@/context/CartProvider";
 import ProductSearch from "./ProductSearch";
 import { LoginModalContext } from "@/context/LoginModalProvider";
 import { WebsiteContext } from "@/context/WebsiteProvider";
-// import Pagination from "./Pagination";
 import ProductMobileSearch from "./ProductMobileSearch";
 import Spinner from "./Spinner";
-
-const loadingArr = [1, 2, 3, 4]
 
 const toastConfig: ToastOptions = {
     position: "bottom-center",
@@ -73,10 +67,6 @@ export default function Header() {
         setIsOpen(false)
     }, [router]);
 
-
-    // const [page, setPage] = useState("1")
-    // const { data, isLoading } = useSWR<CategoryResponseType>(api_routes.categories + `?total=24&page=${page}&sort=name`);
-    const { wishlist } = useContext(WishlistContext);
     const { cart, updateItemCart, deleteItemCart, cartLoading } = useContext(CartContext);
     const { website, websiteLoading } = useContext(WebsiteContext);
 
@@ -152,8 +142,6 @@ export default function Header() {
                                 </li>
                             </ul>
                         }
-                        {/* <Link href="/wishlist" className="header-widget" title="Wishlist"
-                        ><i className="fas fa-heart"></i><sup>{wishlist.wishlist.length}</sup></Link> */}
                         <button className="header-widget header-cart" onClick={toggleDrawer} title="Cartlist">
                             <i className="fas fa-shopping-basket"></i><sup>{cart.cart.length}</sup
                             ><span>total price<small>&#8377;{cart.cart_subtotal}</small></span>
@@ -174,35 +162,6 @@ export default function Header() {
                                 <li className="navbar-item">
                                     <Link className="navbar-link" href="/about">about us</Link>
                                 </li>
-                                {/* <li className="navbar-item dropdown-megamenu">
-                                    <Link className="navbar-link dropdown-arrow" href="/category">categories</Link>
-                                    <div className="megamenu">
-                                        <div className="container">
-                                            <div className="row">
-                                                {
-                                                    isLoading && loadingArr.map(i => <div className="col-sm-12 col-lg-3 mb-2" key={i}>
-                                                        <div className="blog-small-img-loading"></div>
-                                                    </div>)
-                                                }
-                                                {
-                                                    data?.data.map((item, i) => <div className="col-lg-3" key={i}>
-                                                        <div className="megamenu-wrap">
-                                                            <Link href={`/category/${item.slug}`}><h5 className="megamenu-title">{item.name}</h5></Link>
-                                                            <ul className="megamenu-list">
-                                                                {
-                                                                    item.sub_categories.map((itm, index) => <li key={index}>
-                                                                        <Link href={`/sub-category/${itm.slug}`}>{itm.name}</Link>
-                                                                    </li>)
-                                                                }
-                                                            </ul>
-                                                        </div>
-                                                    </div>)
-                                                }
-                                            </div>
-                                            <Pagination {...data?.meta} paginationHandler={setPage} />
-                                        </div>
-                                    </div>
-                                </li> */}
                                 <li className="navbar-item">
                                     <Link className="navbar-link" href="/category">products</Link>
                                 </li>
@@ -290,10 +249,9 @@ export default function Header() {
                     </li>
                 </ul>}
                 {cart.cart.length > 0 && <div className="cart-footer">
-                    <Link className="cart-checkout-btn" href="/checkout"
-                    ><span className="checkout-label">Proceed to Checkout</span
-                    ><span className="checkout-price">&#8377;{cart.cart_subtotal}</span></Link
-                    >
+                    <Link className="cart-checkout-btn" href="/checkout">
+                    <span className="checkout-label">Proceed to Checkout</span>
+                    <span className="checkout-price">&#8377;{cart.cart_subtotal}</span></Link>
                 </div>}
             </aside>
         </Drawer>
@@ -310,9 +268,6 @@ export default function Header() {
                 <li>
                     <Link className="nav-link" href="/about"><i className="icofont-info-circle"></i>about us</Link>
                 </li>
-                {/* <li>
-                    <Link className="nav-link" href="/category"><i className="icofont-listing-box"></i>Categories</Link>
-                </li> */}
                 <li>
                     <Link className="nav-link" href="/category"><i className="icofont-page"></i>products</Link>
                 </li>
@@ -329,9 +284,6 @@ export default function Header() {
                     <li>
                         <Link className="nav-link" href="/profile"><i className="fas fa-user"></i>Profile</Link>
                     </li>
-                    {/* <li>
-                        <Link className="nav-link" href="/wishlist"><i className="fas fa-heart"></i>Wishlist</Link>
-                    </li> */}
                     <li>
                         <Link className="nav-link" href="/cart"><i className="fas fa-cart-plus"></i>Cart</Link>
                     </li>

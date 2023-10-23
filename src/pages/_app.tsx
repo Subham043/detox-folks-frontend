@@ -11,7 +11,7 @@ import {fetcher} from '../../axios';
 import { ToastContainer } from 'react-toastify';
 import Layout from "../components/Layout";
 import { SessionProvider } from "next-auth/react";
-import WishlistProvider from "../context/WishlistProvider";
+// import WishlistProvider from "../context/WishlistProvider";
 import CartProvider from "../context/CartProvider";
 import LoginModalProvider from "../context/LoginModalProvider";
 import WebsiteProvider from "../context/WebsiteProvider";
@@ -34,12 +34,12 @@ export default function App({ Component, pageProps: { session, ...pageProps } }:
       <WebsiteProvider>
         <LoginModalProvider>
           <CartProvider>
-            <WishlistProvider>
+            {/* <WishlistProvider> */}
               <Layout>
                 <Component {...pageProps} />
               </Layout>
               <ToastContainer />
-            </WishlistProvider>
+            {/* </WishlistProvider> */}
           </CartProvider>
         </LoginModalProvider>
       </WebsiteProvider>

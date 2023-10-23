@@ -1,14 +1,11 @@
-// import { WishlistContext } from "@/context/WishlistProvider";
 import { ProductType } from "@/helper/types";
 import Link from "next/link";
 import { useCallback, useContext, useEffect, useState } from "react";
 import CartQuantity from "./CartQuantity";
 import { CartContext } from "@/context/CartProvider";
-// import Spinner from "./Spinner";
 
 export default function ProductCard({ id, name, image, slug, product_prices, is_featured, is_new, is_on_sale }: ProductType) {
 
-    // const { wishlist, addItemWishlist, deleteItemWishlist, wishlistLoading } = useContext(WishlistContext);
     const [quantity, setQuantity] = useState<number>(0);
     
     const { cart, addItemCart, updateItemCart, deleteItemCart, cartLoading } = useContext(CartContext);
@@ -151,9 +148,6 @@ export default function ProductCard({ id, name, image, slug, product_prices, is_
                         is_on_sale && <label className="label-text sale">sale</label>
                     }
                 </div>
-                {/* <button disabled={wishlistLoading} className={`product-wish wish ${wishlist.wishlist.length>0 && wishlist.wishlist.filter(item=>item.product.id===id).length>0 ? 'active' : ''}`} onClick={()=> wishlist.wishlist.length>0 && wishlist.wishlist.filter(item=>item.product.id===id).length>0 ? deleteItemWishlist(wishlist.wishlist.filter(item=>item.product.id===id)[0].id) : addItemWishlist(id)}>
-                    {wishlistLoading ? <Spinner />:<i className="fas fa-heart"></i>}
-                </button> */}
                 <Link className="product-image text-center w-100" href={`/products/${slug}`}
                 ><img src={image} alt="product"
                     /></Link>
