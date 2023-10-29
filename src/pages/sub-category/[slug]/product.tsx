@@ -1,8 +1,7 @@
 import Head from 'next/head'
 import Hero from '@/components/Hero';
-import Link from 'next/link';
 import type { InferGetServerSidePropsType, GetServerSideProps } from 'next'
-import { axiosPublic } from '../../../axios';
+import { axiosPublic } from '../../../../axios';
 import { api_routes } from '@/helper/routes';
 import { CategoryType } from '@/helper/types';
 import Pagination from '@/components/Pagination';

@@ -3,7 +3,7 @@ import Link from "next/link";
 
 export default function SubCategoryCard({ name, image, slug }: SubCategoryType) {
 
-  return <Link href={`/sub-category/${slug}`} className="category-wrap">
+  return <Link href={`/sub-category/${slug}/product`} className="category-wrap">
     <div className="category-media">
       <img src={image} alt={name} />
       <div className="category-overlay">

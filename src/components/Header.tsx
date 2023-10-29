@@ -168,47 +168,55 @@ export default function Header() {
             <CartComponent />
         </Drawer>
         <aside className={`nav-sidebar ${isMobileDrawerOpen && 'active'}`}>
-        <div className="nav-header">
-          <a href="#"><img src={website.website.website_logo} alt="logo" /></a
-          ><button onClick={toggleMobileDrawer} className="nav-close"><i className="icofont-close"></i></button>
+            <div className="nav-header">
+            <a href="#"><img src={website.website.website_logo} alt="logo" /></a
+            ><button onClick={toggleMobileDrawer} className="nav-close"><i className="icofont-close"></i></button>
+            </div>
+            <div className="nav-content">
+            <ul className="nav-list">
+                    <li>
+                        <Link className="nav-link" href="/"><i className="icofont-home"></i>home</Link>
+                    </li>
+                    <li>
+                        <Link className="nav-link" href="/about"><i className="icofont-info-circle"></i>about us</Link>
+                    </li>
+                    <li>
+                        <Link className="nav-link" href="/category"><i className="icofont-page"></i>products</Link>
+                    </li>
+                    <li>
+                        <Link className="nav-link" href="/blogs"><i className="icofont-book-alt"></i>blogs</Link>
+                    </li>
+                    <li>
+                        <Link className="nav-link" href="/contact"><i className="icofont-contacts"></i>contact us</Link>
+                    </li>
+                    {
+                        status === 'unauthenticated' ? <li>
+                        <Link className="nav-link" href="/login"><i className="fas fa-user"></i>Login</Link>
+                    </li> : <>
+                        <li>
+                            <Link className="nav-link" href="/profile"><i className="fas fa-user"></i>Profile</Link>
+                        </li>
+                        <li>
+                            <Link className="nav-link" href="/cart"><i className="fas fa-cart-plus"></i>Cart</Link>
+                        </li>
+                        <li>
+                            <Link className="nav-link" href="/checkout"><i className="icofont-money"></i>Checkout</Link>
+                        </li>
+                        <li>
+                            <Link className="nav-link" href="/orders"><i className="icofont-bag-alt"></i>Order</Link>
+                        </li>
+                        <li><a style={loading ? { pointerEvents: 'none', cursor: 'none' } : { cursor: 'pointer' }} onClick={(event) => onLogout(event)} className="nav-link"><i className="icofont-logout"></i> {loading ? 'Logging Out' : 'Logout'}</a></li>
+                    </>}
+                </ul>
+            </div>
+        </aside>
+        <div className="cart-fixed">
+            <button className="header-widget header-cart header-cart-desktop" onClick={toggleDrawer} title="Cartlist">
+                <i className="fas fa-shopping-basket"></i><sup>{cart.cart.length}</sup>
+            </button>
+            <Link href={`/cart`} className="header-widget header-cart header-cart-mobile" title="Cartlist">
+                <i className="fas fa-shopping-basket"></i><sup>{cart.cart.length}</sup>
+            </Link>
         </div>
-        <div className="nav-content">
-          <ul className="nav-list">
-                <li>
-                    <Link className="nav-link" href="/"><i className="icofont-home"></i>home</Link>
-                </li>
-                <li>
-                    <Link className="nav-link" href="/about"><i className="icofont-info-circle"></i>about us</Link>
-                </li>
-                <li>
-                    <Link className="nav-link" href="/category"><i className="icofont-page"></i>products</Link>
-                </li>
-                <li>
-                    <Link className="nav-link" href="/blogs"><i className="icofont-book-alt"></i>blogs</Link>
-                </li>
-                <li>
-                    <Link className="nav-link" href="/contact"><i className="icofont-contacts"></i>contact us</Link>
-                </li>
-                {
-                    status === 'unauthenticated' ? <li>
-                    <Link className="nav-link" href="/login"><i className="fas fa-user"></i>Login</Link>
-                </li> : <>
-                    <li>
-                        <Link className="nav-link" href="/profile"><i className="fas fa-user"></i>Profile</Link>
-                    </li>
-                    <li>
-                        <Link className="nav-link" href="/cart"><i className="fas fa-cart-plus"></i>Cart</Link>
-                    </li>
-                    <li>
-                        <Link className="nav-link" href="/checkout"><i className="icofont-money"></i>Checkout</Link>
-                    </li>
-                    <li>
-                        <Link className="nav-link" href="/orders"><i className="icofont-bag-alt"></i>Order</Link>
-                    </li>
-                    <li><a style={loading ? { pointerEvents: 'none', cursor: 'none' } : { cursor: 'pointer' }} onClick={(event) => onLogout(event)} className="nav-link"><i className="icofont-logout"></i> {loading ? 'Logging Out' : 'Logout'}</a></li>
-                </>}
-            </ul>
-        </div>
-      </aside>
     </>
 }
