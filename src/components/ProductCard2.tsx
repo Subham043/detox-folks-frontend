@@ -85,8 +85,8 @@ export default function ProductCard2({ id, name, image, slug, product_prices, is
                     product_prices.map((item, i) => <li className='px-2 pb-1' key={i}>
                         {
                             (cart_product_item().length>0 && item.min_quantity===cart_product_item()[0].product_price.min_quantity) ? 
-                            <code><i className='icofont-check'></i> Buy {item.min_quantity} {cart_quantity_specification} or more at &#8377;{item.discount_in_price}/Pcs.</code> : 
-                            <code className='text-dark'><i className='icofont-info-circle'></i> Buy {item.min_quantity} Pcs. or more at &#8377;{item.discount_in_price}/Pcs.</code>
+                            <code><i className='icofont-check'></i> Buy {item.min_quantity} {cart_quantity_specification} or more at &#8377;{item.discount_in_price}/{cart_quantity_specification}</code> : 
+                            <code className='text-dark'><i className='icofont-info-circle'></i> Buy {item.min_quantity} {cart_quantity_specification} or more at &#8377;{item.discount_in_price}/{cart_quantity_specification}</code>
                         }
                     </li>)
                 }
@@ -154,7 +154,7 @@ export default function ProductCard2({ id, name, image, slug, product_prices, is
         {/* <p className="feature-desc">
           {short_description}
         </p> */}
-        <CartQuantity quantity={quantity} incrementQuantity={incrementQuantity} decrementQuantity={decrementQuantity} changeQuantity={changeQuantity} loading={cartLoading} />
+        <CartQuantity quantity={quantity} min_cart_quantity={min_cart_quantity} incrementQuantity={incrementQuantity} decrementQuantity={decrementQuantity} changeQuantity={changeQuantity} loading={cartLoading} />
         {/* <button className="product-add" title="Add to Cart">
           <i className="fas fa-shopping-basket"></i><span>add</span>
         </button>

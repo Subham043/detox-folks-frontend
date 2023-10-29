@@ -35,7 +35,7 @@ const Footer: FC = () => {
                   <h3 className="footer-title">quick Links</h3>
                   <li><Link href="/" target="_blank">Home</Link></li>
                   <li><Link href="/about" target="_blank">About Us</Link></li>
-                  <li><Link href="/products" target="_blank">Products</Link></li>
+                  <li><Link href="/category" target="_blank">Products</Link></li>
                   <li><Link href="/blogs" target="_blank">Blogs</Link></li>
                   <li><Link href="/contact" target="_blank">Contact Us</Link></li>
                 </ul>

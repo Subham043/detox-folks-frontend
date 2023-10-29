@@ -10,7 +10,7 @@ const loadingArr = [1, 2, 3, 4, 5, 6, 7, 8]
 
 export default function SpecialProducts({ title = "On Sale Products", filter = "is_on_sale", displayFilter = false }: { title?: string, filter?: "is_on_sale" | "is_new" | "is_featured", displayFilter?: boolean }) {
   const [sort, setSort] = useState('id')
-  const [total, setTotal] = useState("12")
+  const [total, setTotal] = useState(displayFilter ? "36" : "12")
   const [page, setPage] = useState("1")
   const { data, isLoading } = useSWR<ProductResponseType>(api_routes.products + `?total=${total}&page=${page}&sort=${sort}&filter[${filter}]=true&filter[is_random]=true`);
 
@@ -32,10 +32,10 @@ export default function SpecialProducts({ title = "On Sale Products", filter = "
                     <div className="filter-show">
                         <label className="filter-label">Show :</label
                         ><select className="form-select filter-select" value={total} onChange={(e) => setTotal(e.target.value)}>
-                            <option value="12">12</option>
-                            <option value="20">20</option>
-                            <option value="60">60</option>
-                            <option value="100">100</option>
+                          <option value="12">12</option>
+                          <option value="36">36</option>
+                          <option value="72">72</option>
+                          <option value="108">108</option>
                         </select>
                     </div>
                     <div className="filter-short">
@@ -58,7 +58,7 @@ export default function SpecialProducts({ title = "On Sale Products", filter = "
           </div>)
         }
       </div>}
-      <div className="row row-cols-1 row-cols-md-3 row-cols-lg-4 row-cols-xl-4 justify-content-center">
+      <div className="row row-cols-1 row-cols-md-3 row-cols-lg-4 row-cols-xl-4 justify-content-center product-row">
         {
           !isLoading && data?.data.map((item, i) => <ProductCard key={i} {...item} />)
         }

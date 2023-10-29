@@ -12249,13 +12249,13 @@ button:focus {
 .dropdown-position-list {
     position: absolute;
     top: 100px;
-    left: 0;
+    left: -8px;
     z-index: 2;
     width: 200px;
     height: auto;
     visibility: hidden;
     opacity: 0;
-    padding: 10px;
+    padding: 3px;
     border-radius: 8px;
     background: var(--white);
     border: 1px solid var(--border);
@@ -12266,6 +12266,15 @@ button:focus {
     -moz-transition: all linear .3s;
     -ms-transition: all linear .3s;
     -o-transition: all linear .3s
+}
+
+.product-row .col:nth-child(4n) .dropdown-position-list{
+    left: unset;
+    right: -10px;
+}
+.product-row .col:nth-child(4n) .dropdown-position-list::before{
+    left: unset;
+    right: 12px;
 }
 
 .dropdown-position-list::before {
@@ -18357,6 +18366,15 @@ tbody tr td:last-child {
     .blog-widget {
         margin-left: 0
     }
+
+    .product-row .col:nth-child(3n) .dropdown-position-list{
+        left: unset;
+        right: -10px;
+    }
+    .product-row .col:nth-child(3n) .dropdown-position-list::before{
+        left: unset;
+        right: 12px;
+    }
 }
 
 .shop-filter {
@@ -18686,7 +18704,7 @@ tbody tr td:last-child {
 
 @media (max-width:767px) {
     .single-banner {
-        padding: 60px 0
+        padding: 25px 0
     }
 
     .single-banner h2 {
@@ -19277,5 +19295,29 @@ tbody tr td:last-child {
     .cart-fixed{
         right: 30px;
         bottom: 30px;
+    }
+
+    .product-row .col:nth-child(2n) .dropdown-position-list{
+        left: unset;
+        right: -10px;
+    }
+    .product-row .col:nth-child(2n) .dropdown-position-list::before{
+        left: unset;
+        right: 12px;
+    }
+    .react-tabs .nav-tabs{
+        flex-direction: row;
+    }
+    .details-preview li img {
+        height: 300px !important;
+    }
+
+    .details-preview {
+        margin-bottom: 26px;
+    }
+
+    .p-sticky-product {
+        position: -webkit-static;
+        position: static;
     }
 }

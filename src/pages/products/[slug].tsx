@@ -83,21 +83,21 @@ export default function ProductDetail({
         const priceArr = [...repo.product.product_prices];
         const price_des_quantity = priceArr.sort(function(a, b){return b.min_quantity - a.min_quantity});
         
-        const price = price_des_quantity.filter(item => (quantity + 50) >= item.min_quantity).length > 0 ? price_des_quantity.filter(item => (quantity + 50) >= item.min_quantity)[0] : price_des_quantity[price_des_quantity.length - 1];
+        const price = price_des_quantity.filter(item => (quantity + repo.product.cart_quantity_interval) >= item.min_quantity).length > 0 ? price_des_quantity.filter(item => (quantity + repo.product.cart_quantity_interval) >= item.min_quantity)[0] : price_des_quantity[price_des_quantity.length - 1];
         if (cart_product.length === 0) {
             addItemCart({
                 product_id: repo.product.id,
                 product_price_id: price.id,
-                quantity: quantity + 50,
-                amount: (quantity + 50) * price.discount_in_price,
+                quantity: repo.product.min_cart_quantity,
+                amount: repo.product.min_cart_quantity * price.discount_in_price,
             })
         } else {
             updateItemCart({
                 cartItemId: cart_product[0].id,
                 product_id: repo.product.id,
                 product_price_id: price.id,
-                quantity: quantity + 50,
-                amount: (quantity + 50) * price.discount_in_price,
+                quantity: quantity + repo.product.cart_quantity_interval,
+                amount: (quantity + repo.product.cart_quantity_interval) * price.discount_in_price,
             })
         }
     };
@@ -121,14 +121,14 @@ export default function ProductDetail({
         const cart_product = cart.cart.filter(item => item.product.id === repo.product.id)
         const priceArr = [...repo.product.product_prices];
         const price_des_quantity = priceArr.sort(function(a, b){return b.min_quantity - a.min_quantity});
-        const price = price_des_quantity.filter(item => (Math.max(0, quantity - 50)) >= item.min_quantity).length > 0 ? price_des_quantity.filter(item => (Math.max(0, quantity - 50)) >= item.min_quantity)[0] : price_des_quantity[price_des_quantity.length - 1];
-        if (cart_product.length !== 0 && Math.max(0, quantity - 50) !== 0) {
+        const price = price_des_quantity.filter(item => (Math.max(0, quantity - repo.product.cart_quantity_interval)) >= item.min_quantity).length > 0 ? price_des_quantity.filter(item => (Math.max(0, quantity - repo.product.cart_quantity_interval)) >= item.min_quantity)[0] : price_des_quantity[price_des_quantity.length - 1];
+        if (cart_product.length !== 0 && Math.max(0, quantity - repo.product.cart_quantity_interval) !== 0) {
             updateItemCart({
                 cartItemId: cart_product[0].id,
                 product_id: repo.product.id,
                 product_price_id: price.id,
-                quantity: Math.max(0, quantity - 50),
-                amount: (Math.max(0, quantity - 50)) * price.discount_in_price,
+                quantity: Math.max(0, quantity - repo.product.cart_quantity_interval),
+                amount: (Math.max(0, quantity - repo.product.cart_quantity_interval)) * price.discount_in_price,
             })
         } else {
             deleteItemCart(cart_product[0].id)
@@ -138,14 +138,14 @@ export default function ProductDetail({
     const PriceFactor = () => {
         if(cart_product_item().length>0){
             return (<h3 className="details-price">
-                {cart_product_item()[0].product_price.discount !== 0 && <del>&#8377;{cart_product_item()[0].product_price.price}</del>}<span>&#8377;{cart_product_item()[0].product_price.discount_in_price}<small>/pieces</small></span>
+                {cart_product_item()[0].product_price.discount !== 0 && <del>&#8377;{cart_product_item()[0].product_price.price}</del>}<span>&#8377;{cart_product_item()[0].product_price.discount_in_price}<small>/{repo.product.cart_quantity_specification}</small></span>
             </h3>);
         }
         if(repo.product.product_prices.length > 0){
             const priceArr = [...repo.product.product_prices];
             const price = priceArr.sort(function(a, b){return a.discount_in_price - b.discount_in_price});
             return (<h3 className="details-price">
-                {price[0].discount !== 0 && <del>&#8377;{price[0].price}</del>}<span>&#8377;{price[0].discount_in_price}<small>/pieces</small></span>
+                {price[0].discount !== 0 && <del>&#8377;{price[0].price}</del>}<span>&#8377;{price[0].discount_in_price}<small>/{repo.product.cart_quantity_specification}</small></span>
             </h3>);
         }
         return <></>;
@@ -160,8 +160,8 @@ export default function ProductDetail({
                     repo.product.product_prices.map((item, i) => <li className='px-2 pb-1' key={i}>
                         {
                             (cart_product_item().length>0 && item.min_quantity===cart_product_item()[0].product_price.min_quantity) ? 
-                            <code><i className='icofont-check'></i> Buy {item.min_quantity} Pieces or more at &#8377;{item.discount_in_price}/Pieces</code> : 
-                            <code className='text-dark'><i className='icofont-info-circle'></i> Buy {item.min_quantity} Pieces or more at &#8377;{item.discount_in_price}/Pieces</code>
+                            <code><i className='icofont-check'></i> Buy {item.min_quantity} {repo.product.cart_quantity_specification} or more at &#8377;{item.discount_in_price}/{repo.product.cart_quantity_specification}</code> : 
+                            <code className='text-dark'><i className='icofont-info-circle'></i> Buy {item.min_quantity} {repo.product.cart_quantity_specification} or more at &#8377;{item.discount_in_price}/{repo.product.cart_quantity_specification}</code>
                         }
                     </li>)
                 }
@@ -184,7 +184,7 @@ export default function ProductDetail({
                 <div className="container">
                     <div className="row">
                         <div className="col-lg-6">
-                            <div className="details-gallery mb-5">
+                            <div className="details-gallery p-sticky-product">
                                 <div className="details-label-group">
                                     {
                                         repo.product.is_new && <label className="details-label new">new</label>
@@ -203,6 +203,59 @@ export default function ProductDetail({
                                         }
                                     </Slider>
                                 </ul>
+                            </div>
+                        </div>
+                        <div className="col-lg-6">
+                            <div className="details-content mb-5">
+                                <h3 className="details-name">
+                                    <Link href={`/products/${repo.product.slug}`}>{repo.product.name}</Link>
+                                </h3>
+                                <PriceFactor />
+                                <BulkOfferFactor />
+                                {/* <p className="details-desc">
+                                    {repo.product.brief_description}
+                                </p> */}
+                                {
+                                    repo.product.categories.length > 0 &&
+                                    <div className="details-list-group">
+                                        <label className="details-list-title">Categories:</label>
+                                        <ul className="details-tag-list">
+                                            {
+                                                repo.product.categories.map((item, i) => <li key={i}><Link href={`/category/${item.slug}`}>{item.name}</Link></li>)
+                                            }
+                                        </ul>
+                                    </div>
+                                }
+                                {
+                                    repo.product.sub_categories.length > 0 &&
+                                    <div className="details-list-group">
+                                        <label className="details-list-title">Sub-Categories:</label>
+                                        <ul className="details-tag-list">
+                                            {
+                                                repo.product.sub_categories.map((item, i) => <li key={i}><Link href={`/sub-category/${item.slug}`}>{item.name}</Link></li>)
+                                            }
+                                        </ul>
+                                    </div>
+                                }
+                                <div className="details-list-group">
+                                    <label className="details-list-title">Share:</label>
+                                    <ul className="details-share-list">
+                                        <li>
+                                            <a target='_blank' href={`https://www.facebook.com/share.php?u=https://parcelcounter.in/products/${repo.product.slug}&title=${repo.product.name}`} className="icofont-facebook" title="Facebook"></a>
+                                        </li>
+                                        <li>
+                                            <a target='_blank' href={`https://twitter.com/share?text=${repo.product.name}&url=https://parcelcounter.in/products/${repo.product.slug}`} className="icofont-twitter" title="Twitter"></a>
+                                        </li>
+                                        <li>
+                                            <a target='_blank' href={`https://www.linkedin.com/shareArticle?mini=true&url=https://parcelcounter.in/products/${repo.product.slug}&title=${repo.product.name}&source=${repo.product.name}`} className="icofont-linkedin" title="Linkedin"></a>
+                                        </li>
+                                    </ul>
+                                </div>
+                                <div className="details-action-group">
+                                    <div className="details-add-group m-0 col-md-6 col-sm-12">
+                                        <CartQuantity quantity={quantity} min_cart_quantity={repo.product.min_cart_quantity} incrementQuantity={incrementQuantity} decrementQuantity={decrementQuantity} changeQuantity={changeQuantity} loading={cartLoading} />
+                                    </div>
+                                </div>
                             </div>
                             <Tabs selectedTabClassName="active">
                                 <TabList className="nav nav-tabs">
@@ -239,59 +292,6 @@ export default function ProductDetail({
                                 </TabPanel>
                             </Tabs>
                         </div>
-                        <div className="col-lg-6">
-                            <div className="details-content p-sticky-product">
-                                <h3 className="details-name">
-                                    <Link href={`/products/${repo.product.slug}`}>{repo.product.name}</Link>
-                                </h3>
-                                <PriceFactor />
-                                <BulkOfferFactor />
-                                {/* <p className="details-desc">
-                                    {repo.product.brief_description}
-                                </p> */}
-                                {
-                                    repo.product.categories.length > 0 &&
-                                    <div className="details-list-group">
-                                        <label className="details-list-title">Categories:</label>
-                                        <ul className="details-tag-list">
-                                            {
-                                                repo.product.categories.map((item, i) => <li key={i}><Link href={`/category/${item.slug}`}>{item.name}</Link></li>)
-                                            }
-                                        </ul>
-                                    </div>
-                                }
-                                {
-                                    repo.product.sub_categories.length > 0 &&
-                                    <div className="details-list-group">
-                                        <label className="details-list-title">Sub-Categories:</label>
-                                        <ul className="details-tag-list">
-                                            {
-                                                repo.product.sub_categories.map((item, i) => <li key={i}><Link href={`/sub-category/${item.slug}`}>{item.name}</Link></li>)
-                                            }
-                                        </ul>
-                                    </div>
-                                }
-                                <div className="details-list-group">
-                                    <label className="details-list-title">Share:</label>
-                                    <ul className="details-share-list">
-                                        <li>
-                                            <a target='_blank' href={`https://www.facebook.com/share.php?u=http://localhost:3000/products/${repo.product.slug}&title=${repo.product.name}`} className="icofont-facebook" title="Facebook"></a>
-                                        </li>
-                                        <li>
-                                            <a target='_blank' href={`https://twitter.com/share?text=${repo.product.name}&url=http://localhost:3000/products/${repo.product.slug}`} className="icofont-twitter" title="Twitter"></a>
-                                        </li>
-                                        <li>
-                                            <a target='_blank' href={`https://www.linkedin.com/shareArticle?mini=true&url=http://localhost:3000/products/${repo.product.slug}&title=${repo.product.name}&source=${repo.product.name}`} className="icofont-linkedin" title="Linkedin"></a>
-                                        </li>
-                                    </ul>
-                                </div>
-                                <div className="details-action-group">
-                                    <div className="details-add-group m-0 col-md-6 col-sm-12">
-                                        <CartQuantity quantity={quantity} incrementQuantity={incrementQuantity} decrementQuantity={decrementQuantity} changeQuantity={changeQuantity} loading={cartLoading} />
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
                     </div>
                 </div>
             </section>
@@ -310,7 +310,7 @@ export default function ProductDetail({
                         }
                     </div>
                     <div
-                        className="row row-cols-2 row-cols-md-3 row-cols-lg-4 row-cols-xl-4 justify-content-center"
+                        className="row row-cols-1 row-cols-md-3 row-cols-lg-4 row-cols-xl-4 justify-content-center product-row"
                     >
                         {
                             data?.data.map((item, i) => <ProductCard key={i} {...item} />)

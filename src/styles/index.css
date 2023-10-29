@@ -279,7 +279,10 @@
 
 /* product-detail css */
 
-.details-gallery {
+/* .details-gallery {
+    position: relative
+} */
+.details-preview {
     position: relative
 }
 
@@ -1144,7 +1147,7 @@
   .contact-map iframe {
     width: 100%;
     border: none;
-    height: 474px;
+    height: 350px;
   }
   .contact-social {
     text-align: center;

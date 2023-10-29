@@ -67,9 +67,9 @@ export default function BlogDetail({
                   <div className="blog-details-footer">
                     <ul className="blog-details-share">
                       <li><span>share:</span></li>
-                      <li><a href={`https://www.facebook.com/share.php?u=http://localhost:3000/blogs/${repo.blog.slug}&title=${repo.blog.name}`} target='_blank' className="icofont-facebook"></a></li>
-                      <li><a href={`https://twitter.com/share?text=${repo.blog.name}&url=http://localhost:3000/blogs/${repo.blog.slug}`} target='_blank' className="icofont-twitter"></a></li>
-                      <li><a href={`https://www.linkedin.com/shareArticle?mini=true&url=http://localhost:3000/blogs/${repo.blog.slug}&title=${repo.blog.name}&source=${repo.blog.name}`} target='_blank' className="icofont-linkedin"></a></li>
+                      <li><a href={`https://www.facebook.com/share.php?u=https://parcelcounter.in/blogs/${repo.blog.slug}&title=${repo.blog.name}`} target='_blank' className="icofont-facebook"></a></li>
+                      <li><a href={`https://twitter.com/share?text=${repo.blog.name}&url=https://parcelcounter.in/blogs/${repo.blog.slug}`} target='_blank' className="icofont-twitter"></a></li>
+                      <li><a href={`https://www.linkedin.com/shareArticle?mini=true&url=https://parcelcounter.in/blogs/${repo.blog.slug}&title=${repo.blog.name}&source=${repo.blog.name}`} target='_blank' className="icofont-linkedin"></a></li>
                     </ul>
                   </div>
                 </div>
