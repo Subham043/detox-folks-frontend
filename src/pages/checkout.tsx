@@ -154,6 +154,7 @@ export default function Checkout() {
                         </table>
                       </div>
                       <div className="checkout-charge">
+                        <p className='fs-7-note text-center'>Note: Prices are inclusive of GST.</p>
                         <ul>
                           <li><span>Sub total</span><span>&#8377;{cart.cart_subtotal}</span></li>
                           <li><span className="p-relative">

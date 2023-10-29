@@ -78,7 +78,8 @@ export default function ProductCard({ id, name, image, slug, product_prices, is_
 
     const BulkOfferFactor = () => {
         return product_prices.length > 0 && <div className="orderlist-deliver mb-0 text-left">
-            <h6 className='px-2 pt-1'>Bulk Offer :</h6>
+            <p className='fs-7-note'>Note: Prices are inclusive of GST.</p>
+            <h6 className='px-2'>Bulk Offer :</h6>
             <hr className="my-1" />
             <ul className='pb-2'>
                 {

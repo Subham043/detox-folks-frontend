@@ -153,7 +153,8 @@ export default function ProductDetail({
 
     const BulkOfferFactor = () => {
         return repo.product.product_prices.length > 0 && <div className="orderlist-deliver">
-            <h6 className='px-2 pt-3'>Bulk Offer :</h6>
+            <p className='fs-7-note'>Note: Prices are inclusive of GST.</p>
+            <h6 className='px-2'>Bulk Offer :</h6>
             <hr />
             <ul className='pb-2'>
                 {
