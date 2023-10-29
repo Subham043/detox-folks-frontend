@@ -416,3 +416,16 @@ export interface OrderType<> {
         id: number;
     }
 }
+
+export interface GlobalSearchType<> {
+    id: number;
+    slug: string
+    name: string;
+    search_type: string;
+    image: string;
+}
+
+export interface GlobalSearchResponseType<> {
+    meta: MetaType;
+    data: GlobalSearchType[];
+}

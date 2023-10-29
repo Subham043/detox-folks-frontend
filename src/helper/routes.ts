@@ -3,6 +3,7 @@ type api_routes = {
     logout: string,
     register: string,
     forgot_password: string,
+    global_search: string,
     reset_password: string,
     email_verify: string,
     enquiry: string,
@@ -96,4 +97,5 @@ export const api_routes: api_routes = {
     legal: '/api/v1/legal',
     feature: '/api/v1/feature',
     counter: '/api/v1/counter',
+    global_search: '/api/v1/search',
 }

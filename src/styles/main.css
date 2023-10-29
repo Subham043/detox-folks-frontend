@@ -13797,9 +13797,9 @@ tbody tr td:last-child {
     width: 100%;
     overflow: hidden;
     position: relative;
-    margin-bottom: 5px;
-    padding: 5px 8px;
-    border-radius: 8px;
+    margin-bottom: 8px;
+    padding: 0;
+    border-radius: 0px;
     background: var(--white);
     border: 1px solid var(--white);
     display: -webkit-box;
@@ -13837,7 +13837,7 @@ tbody tr td:last-child {
 .feature-media {
     position: relative;
     border-right: 1px solid var(--border);
-    padding-right: 15px;
+    padding-right: 1px;
 }
 
 .feature-label {
@@ -13909,9 +13909,9 @@ tbody tr td:last-child {
 }
 
 .search-list-holder .feature-image img {
-    object-fit: contain;
+    object-fit: cover;
     width: 120px;
-    height: 100px;
+    height: 75px;
     margin: auto;
 }
 
@@ -14046,9 +14046,10 @@ tbody tr td:last-child {
 }
 
 .feature-desc {
-    font-size: 15px;
-    line-height: 25px;
-    margin-bottom: 15px
+    font-size: 12px;
+    line-height: 5px;
+    margin-bottom: 15px;
+    color: green !important;
 }
 
 @media (max-width:775px) {
@@ -18855,6 +18856,9 @@ tbody tr td:last-child {
 
     .row-cols-1>* {
         width: 50%;
+    }
+    .row-cols-1.search-list-height>* {
+        width: 100%;
     }
 }
 

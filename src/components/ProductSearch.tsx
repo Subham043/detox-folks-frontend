@@ -1,7 +1,7 @@
 import Link from "next/link";
 import useSWR from 'swr'
 import { api_routes } from "@/helper/routes";
-import { ProductResponseType } from "@/helper/types";
+import { GlobalSearchResponseType } from "@/helper/types";
 import { useEffect, useState } from 'react';
 import { useRouter } from "next/router";
 
@@ -11,9 +11,10 @@ export default function ProductSearch() {
     const router = useRouter();
     const [search, setSearch] = useState("")
     const [showList, setShowList] = useState(true)
-    const { data, isLoading } = useSWR<ProductResponseType>(api_routes.products + `?total=100&page=1&sort=-id&filter[search]=${search}`);
+    const { data, isLoading } = useSWR<GlobalSearchResponseType>(api_routes.global_search + `?total=20&page=1&sort=id&filter[search]=${search}`);
     useEffect(() => {
         setShowList(false)
+        setSearch("")
     }, [router]);
 
     return <form className="header-form flex-wrap">
@@ -30,24 +31,20 @@ export default function ProductSearch() {
                         data?.data && data?.data.length>0 && <div className="row row-cols-1 row-cols-md-1 row-cols-lg-1 row-cols-xl-1 search-list-height">
                         {
                             data?.data.map((item, i) => <div className="col" key={i}>
-                                <Link href={`/products/${item.slug}`} className="feature-card">
+                                <Link href={item.search_type=='PRODUCT' ? `/products/${item.slug}` : (item.search_type=='CATEGORY' ? `/category/${item.slug}/product` : `/sub-category/${item.slug}/product`)} className="feature-card">
                                     <div className="feature-media">
-                                        <Link className="feature-image" href={`/products/${item.slug}`}
-                                        ><img src={item.image} alt="product"
-                                            /></Link>
+                                        <div className="feature-image">
+                                            <img src={item.image} alt="product"
+                                                />
+                                        </div>
                                     </div>
                                     <div className="feature-content">
                                         <h6 className="feature-name">
-                                            <Link href={`/products/${item.slug}`}>{item.name}</Link>
+                                            {item.name}
                                         </h6>
-                                        {
-                                        item.product_prices.length>0 && <h6 className="feature-price m-0">
-                                            {item.product_prices[item.product_prices.length-1].discount!==0 && <del>&#8377;{item.product_prices[item.product_prices.length-1].price}</del>}<span>&#8377;{item.product_prices[item.product_prices.length-1].discount_in_price}<small>/pieces</small></span>
-                                            </h6>
-                                        }
-                                        {/* <p className="feature-desc m-0 text-dark">
-                                            {item.short_description}
-                                        </p> */}
+                                        <p className="feature-desc m-0 text-dark">
+                                            {item.search_type}
+                                        </p>
                                     </div>
                                 </Link>
                             </div>)
