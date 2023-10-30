@@ -3,6 +3,7 @@ import "slick-carousel/slick/slick-theme.css";
 import 'react-tabs/style/react-tabs.css';
 import 'react-modern-drawer/dist/index.css'
 import 'react-toastify/dist/ReactToastify.css';
+import "nprogress/nprogress.css";
 import { Rubik } from 'next/font/google'
 import '../styles/index.css'
 import type { AppProps } from 'next/app'
@@ -15,6 +16,7 @@ import { SessionProvider } from "next-auth/react";
 import CartProvider from "../context/CartProvider";
 import LoginModalProvider from "../context/LoginModalProvider";
 import WebsiteProvider from "../context/WebsiteProvider";
+import dynamic from "next/dynamic";
 
 const roboto = Rubik({
   weight: ['300', '400', '500', '600', '700', '800', '900'],
@@ -23,12 +25,21 @@ const roboto = Rubik({
   display: 'swap',
 })
 
+const TopProgressBar = dynamic(
+  () => {
+    return import("@/components/TopProgressBar");
+  },
+  { ssr: false },
+);
+
 export default function App({ Component, pageProps: { session, ...pageProps } }: AppProps) {
+
   return <SWRConfig
   value={{
    fetcher
   }}
  >
+  <TopProgressBar />
   <SessionProvider session={session}>
     <main className={roboto.className}>
       <WebsiteProvider>
