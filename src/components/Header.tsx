@@ -88,7 +88,7 @@ export default function Header() {
                     <div className="header-media-group">
                         <Link href="/"><img src={website.website.website_logo} alt="logo" /></Link
                         >
-                        <button onClick={toggleMobileDrawer}>
+                        <button className="text-dark" onClick={toggleMobileDrawer}>
                             <i className="icofont-navigation-menu" />
                         </button>
                     </div>

@@ -4,6 +4,7 @@ import { CategoryResponseType } from "@/helper/types";
 import Pagination from '@/components/Pagination';
 import { useState } from 'react';
 import CategoryCard from '@/components/CategoryCard';
+import Link from 'next/link';
 
 const loadingArr = [1, 2, 3, 4, 5, 6]
 
@@ -16,7 +17,7 @@ export default function CategoryMain({displayFilter=true}:{displayFilter?:boolea
 
     return <section className="inner-section shop-part">
         <div className="container">
-            <div className="row content-reverse">
+            <div className="row">
                 {!displayFilter && <div className="col-lg-12">
                     <div className="section-heading"><h2>Our Categories</h2></div>
                 </div>}
@@ -65,8 +66,17 @@ export default function CategoryMain({displayFilter=true}:{displayFilter?:boolea
                         }
                     </div>
                     {
-                        displayFilter && 
-                        <Pagination {...data?.meta} paginationHandler={setPage} />
+                        displayFilter ? 
+                        <Pagination {...data?.meta} paginationHandler={setPage} /> : 
+                        <div className="row">
+                            <div className="col-lg-12">
+                                <div className="section-btn-25">
+                                    <Link href={`/category`} className="btn btn-outline"
+                                    ><i className="fas fa-eye"></i><span>show more</span></Link
+                                    >
+                                </div>
+                            </div>
+                        </div>
                     }
                 </div>
             </div>

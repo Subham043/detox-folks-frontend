@@ -174,11 +174,11 @@ export default function ProductDetail({
     return (
         <>
             <Head>
-                <title>DetoxFolks - {repo.product.meta_title}</title>
-                <meta name="description" content={repo.product.meta_description} />
+                <title>DetoxFolks - {repo.product.name}</title>
+                <meta name="description" content="Parcelcounter, headquartered in Bengaluru, is a leading manufacturer and wholesaler specializing in eco-friendly disposable food containers and kitchenware." />
                 <meta name="keywords" content={repo.product.meta_keywords} />
                 <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no" />
-                <link rel="icon" href="/images/favicon.png" />
+                <link rel="icon" href="/images/logo.png" />
             </Head>
             <Hero name={repo.product.name} />
             <section className="inner-section">
@@ -222,7 +222,7 @@ export default function ProductDetail({
                                         <label className="details-list-title">Categories:</label>
                                         <ul className="details-tag-list">
                                             {
-                                                repo.product.categories.map((item, i) => <li key={i}><Link href={`/category/${item.slug}`}>{item.name}</Link></li>)
+                                                repo.product.categories.map((item, i) => <li key={i}><Link href={repo.product.sub_categories.length>0 ? `/category/${item.slug}` : `/category/${item.slug}/product`}>{item.name}</Link></li>)
                                             }
                                         </ul>
                                     </div>
@@ -233,7 +233,7 @@ export default function ProductDetail({
                                         <label className="details-list-title">Sub-Categories:</label>
                                         <ul className="details-tag-list">
                                             {
-                                                repo.product.sub_categories.map((item, i) => <li key={i}><Link href={`/sub-category/${item.slug}`}>{item.name}</Link></li>)
+                                                repo.product.sub_categories.map((item, i) => <li key={i}><Link href={`/sub-category/${item.slug}/product`}>{item.name}</Link></li>)
                                             }
                                         </ul>
                                     </div>

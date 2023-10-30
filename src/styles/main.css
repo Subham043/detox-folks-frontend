@@ -13170,7 +13170,7 @@ tbody tr td:last-child {
 
     .modal-dialog,
     .modal-form {
-        width: 100%;
+        width: 90%;
         max-width: inherit
     }
 }
@@ -15780,10 +15780,10 @@ tbody tr td:last-child {
 
 @media (max-width:767px) {
 
-    .header-top-list,
+    /* .header-top-list,
     .header-top-welcome {
         display: none
-    }
+    } */
 
     .header-top-select {
         width: 270px;
@@ -18854,7 +18854,7 @@ tbody tr td:last-child {
         margin-bottom: 15px
     }
 
-    .row-cols-1>* {
+    .row-cols-1.product-row>* {
         width: 50%;
     }
     .row-cols-1.search-list-height>* {
@@ -19279,7 +19279,7 @@ tbody tr td:last-child {
 
 @media (max-width:767px) {
     .modal-form {
-        width: 400px;
+        width: 360px;
         padding: 5px 18px;
     }
     .modal-form .form-title, .modal-form .form-group{
@@ -19330,7 +19330,8 @@ tbody tr td:last-child {
     }
 
     .p-sticky-product {
-        position: -webkit-static;
-        position: static;
+        position: -webkit-relative;
+        position: relative;
+        top: 0;
     }
 }

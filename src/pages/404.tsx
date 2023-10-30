@@ -12,7 +12,7 @@ export default function Custom404() {
                 <meta name="description" content='404' />
                 <meta name="keywords" content='404' />
                 <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no" />
-                <link rel="icon" href="/images/favicon.png" />
+                <link rel="icon" href="/images/logo.png" />
             </Head>
             <Hero name='404' />
             <section className="error-part mb-5 text-center">

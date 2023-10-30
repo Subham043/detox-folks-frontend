@@ -54,7 +54,7 @@ const CartComponent: FC<{ is_page?: boolean }> = ({ is_page = false }) => {
                     </div>
                     <div className="cart-info-group">
                         <div className="cart-info">
-                            <h6><a href="product-single.html">{item.product.name}</a></h6>
+                            <h6><Link href={`/products/${item.product.slug}`}>{item.product.name}</Link></h6>
                             {
                                 item.product_price && <p>
                                     Unit Price - <span>&#8377;{item.product_price.discount_in_price}<small>/pieces</small></span>

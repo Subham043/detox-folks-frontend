@@ -80,11 +80,11 @@ export default function Category({
     return (
         <>
             <Head>
-                <title>DetoxFolks - {repo.category.meta_title}</title>
-                <meta name="description" content={repo.category.meta_description} />
+                <title>DetoxFolks - {repo.category.name}</title>
+                <meta name="description" content="Parcelcounter, headquartered in Bengaluru, is a leading manufacturer and wholesaler specializing in eco-friendly disposable food containers and kitchenware." />
                 <meta name="keywords" content={repo.category.meta_keywords} />
                 <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no" />
-                <link rel="icon" href="/images/favicon.png" />
+                <link rel="icon" href="/images/logo.png" />
             </Head>
             <Hero name={repo.category.name} />
             {/* <section className="inner-section blog-details-part mb-5">

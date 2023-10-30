@@ -36,11 +36,11 @@ export default function ProductDetail({
     return (
         <>
             <Head>
-                <title>DetoxFolks - {repo.legal.meta_title}</title>
-                <meta name="description" content={repo.legal.meta_description} />
+                <title>DetoxFolks - {repo.legal.heading}</title>
+                <meta name="description" content="Parcelcounter, headquartered in Bengaluru, is a leading manufacturer and wholesaler specializing in eco-friendly disposable food containers and kitchenware." />
                 <meta name="keywords" content={repo.legal.meta_keywords} />
                 <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no" />
-                <link rel="icon" href="/images/favicon.png" />
+                <link rel="icon" href="/images/logo.png" />
             </Head>
             <Hero name={repo.legal.heading} />
             <section className="inner-section privacy-part">
