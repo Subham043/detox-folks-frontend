@@ -11,17 +11,18 @@ export default function ProductSearch() {
     const router = useRouter();
     const [search, setSearch] = useState("")
     const [showList, setShowList] = useState(true)
-    const { data, isLoading } = useSWR<GlobalSearchResponseType>(api_routes.global_search + `?total=20&page=1&sort=id&filter[search]=${search}`);
+    const { data, isLoading } = useSWR<GlobalSearchResponseType>(search.length!==0 ? api_routes.global_search + `?total=20&page=1&sort=id&filter[search]=${search}` : null);
     useEffect(() => {
         setShowList(false)
         setSearch("")
     }, [router]);
 
-    return <form className="header-form flex-wrap">
+    return <form className="header-form flex-wrap" onSubmit={(e)=> e.preventDefault()}>
         <div className="header-form-holder flex-wrap col-12">
-            <input type="text" placeholder="Search anything..." className="col-11" value={search} onChange={(e) => {setSearch(e.target.value);setShowList(true)}} /><button className="col-1">
+            <input type="search" placeholder="Search anything..." className={search.length===0 ? "col-11" : "col-12 px-3"} value={search} onChange={(e) => {setSearch(e.target.value);setShowList(true)}} />
+            {search.length===0 && <button className="col-1">
                 <i className="fas fa-search"></i>
-            </button>
+            </button>}
         </div>
         <div className={`col-12 p-relative search-list-main`}>
             {(search.length!==0 && showList) && <div className={`col-12 p-relative`}>
