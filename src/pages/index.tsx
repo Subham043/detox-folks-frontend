@@ -54,11 +54,11 @@ export default function Home({
 
       <CategoryMain displayFilter={false} />
 
-      <SpecialProducts title='Our Featured Products' filter='is_featured' />
+      <SpecialProducts title='Our Featured Products' filter='is_featured' displayShowMoreBtn={true} />
 
-      <SpecialProducts title='New Products' filter='is_new' />
+      <SpecialProducts title='New Products' filter='is_new' displayShowMoreBtn={true} />
 
-      <SpecialProducts title='On Sale Products' filter='is_on_sale' />
+      <SpecialProducts title='On Sale Products' filter='is_on_sale' displayShowMoreBtn={true} />
       
       <PartnerSlider />
       <TestimonialSlider />

@@ -69,6 +69,6 @@ export default function SpecialProductPage({
                 <link rel="icon" href="/images/logo.png" />
             </Head>
             <Hero name={repo.data.title} />
-            <SpecialProducts title={repo.data.title} filter={repo.data.slug} displayFilter={true} />
+            <SpecialProducts title={repo.data.title} filter={repo.data.slug} displayFilter={true} displayPagination={true} />
         </>;
 }

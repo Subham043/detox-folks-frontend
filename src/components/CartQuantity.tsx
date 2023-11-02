@@ -13,6 +13,7 @@ type CartQuantityType = {
 export default function CartQuantity({quantity, min_cart_quantity, loading, incrementQuantity, decrementQuantity, changeQuantity}: CartQuantityType) {
 
     const [qnt, setQnt] = useState(quantity);
+    const [load, setLoad] = useState(false);
     useEffect(() => {
         setQnt(quantity);
       return () => {}
@@ -49,7 +50,7 @@ export default function CartQuantity({quantity, min_cart_quantity, loading, incr
         </button> :
         <div className={`product-action ${quantity!==0 ? 'd-flex':''}`}>
             <button className="action-minus" title="Quantity Minus" disabled={loading} onClick={()=>decrementQuantity()}>
-                {loading ? <Spinner /> : <i className="icofont-minus"></i>}</button
+                {load ? <Spinner /> : <i className="icofont-minus"></i>}</button
             ><input
                 className="action-input"
                 title="Quantity Number"
