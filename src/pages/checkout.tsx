@@ -130,7 +130,7 @@ export default function Checkout() {
                               <td className="table-price">
                                 {
                                   item.product_price && <h6>
-                                      <span>&#8377;{item.product_price.discount_in_price}<small>/pieces</small></span>
+                                      <span>&#8377;{item.product_price.discount_in_price}<small>/{item.product.cart_quantity_specification}</small></span>
                                   </h6>
                                 }
                               </td>

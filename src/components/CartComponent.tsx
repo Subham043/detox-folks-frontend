@@ -57,7 +57,7 @@ const CartComponent: FC<{ is_page?: boolean }> = ({ is_page = false }) => {
                             <h6><Link href={`/products/${item.product.slug}`}>{item.product.name}</Link></h6>
                             {
                                 item.product_price && <p>
-                                    Unit Price - <span>&#8377;{item.product_price.discount_in_price}<small>/pieces</small></span>
+                                    Unit Price - <span>&#8377;{item.product_price.discount_in_price}<small>/{item.product.cart_quantity_specification}</small></span>
                                 </p>
                             }
                         </div>
