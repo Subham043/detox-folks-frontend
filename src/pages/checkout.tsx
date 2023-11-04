@@ -11,6 +11,7 @@ import { axiosPublic } from '../../axios';
 import { api_routes } from '@/helper/routes';
 import { useSession } from 'next-auth/react';
 import { useRouter } from 'next/router';
+import axios from 'axios';
 
 const loadingArr = [1, 2, 3, 4]
 
@@ -57,22 +58,54 @@ export default function Checkout() {
       toast.error('please accept the terms & condition', toastConfig);
       return;
     }
-    setLoading(true);
-    try {
-      const response = await axiosPublic.post(api_routes.place_order, {billing_address_id: selectedBillingAddressData, billing_information_id: selectedBillingInformationData, mode_of_payment: 'Cash On Delivery', accept_terms: acceptTerms ? 1 : 0, include_gst: includeGst ? 1 : 0}, {
-        headers: {"Authorization" : `Bearer ${session?.user.token}`}
-      });
-      getCart();
-      toast.success(response.data.message, toastConfig);
-      router.push('/orders');
-    } catch (error: any) {
-      console.log(error);
-      if (error?.response?.data?.message) {
-        toast.error(error?.response?.data?.message, toastConfig);
+    const post_pe_data = {
+      "merchantId": "MERCHANTUAT",
+      "merchantTransactionId": "MT7850590068188104",
+      "merchantUserId": "MUID123",
+      "amount": 10000,
+      "redirectUrl": "https://webhook.site/redirect-url",
+      "redirectMode": "REDIRECT",
+      "callbackUrl": "https://webhook.site/callback-url",
+      "mobileNumber": "9999999999",
+      "paymentInstrument": {
+        "type": "PAY_PAGE"
       }
-    } finally {
-      setLoading(false);
-    }
+    };
+    var encoded = btoa(JSON.stringify(post_pe_data))
+    console.log(encoded);
+    
+    var options = {
+      method: 'POST',
+      url: 'https://api-preprod.phonepe.com/apis/pg-sandbox/pg/v1/pay',
+      headers: {
+        Accept: 'application/json',
+        'Content-Type': 'application/json',
+        'Access-Control-Allow-Origin': '*'
+      },
+      data: {request: encoded}
+    };
+    
+    axios.request(options).then(function (response) {
+      console.log(response.data);
+    }).catch(function (error) {
+      console.error(error);
+    });
+    // setLoading(true);
+    // try {
+    //   const response = await axiosPublic.post(api_routes.place_order, {billing_address_id: selectedBillingAddressData, billing_information_id: selectedBillingInformationData, mode_of_payment: 'Cash On Delivery', accept_terms: acceptTerms ? 1 : 0, include_gst: includeGst ? 1 : 0}, {
+    //     headers: {"Authorization" : `Bearer ${session?.user.token}`}
+    //   });
+    //   getCart();
+    //   toast.success(response.data.message, toastConfig);
+    //   router.push('/orders');
+    // } catch (error: any) {
+    //   console.log(error);
+    //   if (error?.response?.data?.message) {
+    //     toast.error(error?.response?.data?.message, toastConfig);
+    //   }
+    // } finally {
+    //   setLoading(false);
+    // }
   };
 
   useEffect(()=>{
