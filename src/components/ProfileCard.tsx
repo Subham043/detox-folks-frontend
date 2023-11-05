@@ -5,10 +5,10 @@ import { yupResolver } from "@hookform/resolvers/yup";
 import { useCallback, useEffect, useState } from 'react';
 import { ErrorMessage } from '@hookform/error-message';
 import { ToastOptions, toast } from 'react-toastify';
-import { axiosPublic } from '../../axios';
 import { api_routes } from '@/helper/routes';
 import { AxiosResponse } from "axios";
 import Spinner from "./Spinner";
+import { useAxiosPrivate } from "@/hook/useAxiosPrivate";
 
 const schema = yup
   .object({
@@ -36,6 +36,7 @@ const toastConfig:ToastOptions = {
 export default function ProfileCard() {
     const [loading, setLoading] = useState(false);
     const { status, data: session, update: sessionUpdate } = useSession();
+    const axiosPrivate = useAxiosPrivate();
 
     const {
         handleSubmit,
@@ -59,9 +60,7 @@ export default function ProfileCard() {
     const getProfileDetails = useCallback(
         async() => {
           try {
-            const response:AxiosResponse = await axiosPublic.get(api_routes.profile, {
-              headers: {"Authorization" : `Bearer ${session?.user.token}`}
-            });
+            const response:AxiosResponse = await axiosPrivate.get(api_routes.profile);
             setValue("name", response.data.user.name)
             setValue("email", response.data.user.email)
             setValue("phone", response.data.user.phone)
@@ -76,9 +75,7 @@ export default function ProfileCard() {
     const onSubmit = async (data: any) => {
         setLoading(true);
         try {
-          const response = await axiosPublic.post(api_routes.profile_update, {...data}, {
-            headers: {"Authorization" : `Bearer ${session?.user.token}`}
-          });
+          const response = await axiosPrivate.post(api_routes.profile_update, {...data});
           toast.success(response.data.message, toastConfig); 
           sessionUpdate({
             profile: {

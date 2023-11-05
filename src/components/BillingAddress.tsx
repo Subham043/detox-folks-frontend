@@ -10,7 +10,9 @@ import { api_routes } from '@/helper/routes';
 import { AxiosResponse } from "axios";
 import Spinner from "./Spinner";
 import Modal from 'react-modal';
-import { BillingAddressType } from "@/helper/types";
+import { BillingAddressResponseType, BillingAddressType } from "@/helper/types";
+import useSWR from 'swr'
+import { useAxiosPrivate } from "@/hook/useAxiosPrivate";
 
 Modal.setAppElement('#body');
 const loadingArr = [1, 2, 3]
@@ -55,7 +57,6 @@ type Props = {
 
 export default function BillingAddress({getSelectedItem}:Props) {
     const [loading, setLoading] = useState(false);
-    const [dataLoading, setDataLoading] = useState(false);
     const [billingAddresses, setBillingAddresses] = useState<BillingAddressType[]>([]);
     const [showModal, setShowModal] = useState<boolean>(false);
     const [isEdit, setIsEdit] = useState<{
@@ -64,6 +65,8 @@ export default function BillingAddress({getSelectedItem}:Props) {
     }>({ status: false, id: null});
     const { status, data: session } = useSession();
     const [selected, setSelected] = useState(0);
+    const axiosPrivate = useAxiosPrivate()
+    const { data, isLoading:dataLoading } = useSWR<BillingAddressResponseType>(status==='authenticated' ? api_routes.billing_address_all : null);
     
 
     const {
@@ -80,39 +83,20 @@ export default function BillingAddress({getSelectedItem}:Props) {
     });
 
     useEffect(() => {
-        getBillingAddress();
-
-        return () => { }
-    }, [status])
-
-    const getBillingAddress = useCallback(
-        async () => {
-            setDataLoading(true)
-            try {
-                const response: AxiosResponse = await axiosPublic.get(api_routes.billing_address_all, {
-                    headers: { "Authorization": `Bearer ${session?.user.token}` }
-                });
-                setBillingAddresses([...response.data.data])
-                if(response.data.data.length>0){
-                    setSelected(response.data.data[0].id)
-                    getSelectedItem && getSelectedItem(response.data.data[0].id)
-                }
-
-            } catch (error) {
-                console.log(error);
-            }finally {
-                setDataLoading(false)
-            }
-        },
-        [status, getSelectedItem],
-    )
+        if(status==='authenticated' && data){
+            setBillingAddresses(data.data);
+            setSelected(data.data.length>0 ? data.data[0].id : 0)
+        }else{
+            setBillingAddresses([]);
+            setSelected(0)
+        }
+        return () => {}
+      }, [status, dataLoading])
 
     const onSubmit = async (data: any) => {
         setLoading(true);
         try {
-            const response = await axiosPublic.post(isEdit.status ? api_routes.billing_address_update+`/${isEdit.id}`: api_routes.billing_address_create, { ...data, is_active:true }, {
-                headers: { "Authorization": `Bearer ${session?.user.token}` }
-            });
+            const response = await axiosPrivate.post(isEdit.status ? api_routes.billing_address_update+`/${isEdit.id}`: api_routes.billing_address_create, { ...data, is_active:true });
             toast.success(response.data.message, toastConfig);
             if(isEdit.status){
                 const updatedBillingAddressIndex = billingAddresses.findIndex(item=>item.id==isEdit.id);
@@ -121,6 +105,7 @@ export default function BillingAddress({getSelectedItem}:Props) {
                 setBillingAddresses([...updatedBillingAddress]);
             }else{
                 setBillingAddresses([response.data.billingAddress, ...billingAddresses]);
+                setSelected(response.data.billingAddress.id)
             }
             hideModal();
         } catch (error: any) {
@@ -166,11 +151,10 @@ export default function BillingAddress({getSelectedItem}:Props) {
     const deleteHandler = async (id: number) => {
         setLoading(true)
         try {
-            const response = await axiosPublic.delete(api_routes.billing_address_delete+`/${id}`, {
-                headers: { "Authorization": `Bearer ${session?.user.token}` }
-            });
+            const response = await axiosPrivate.delete(api_routes.billing_address_delete+`/${id}`);
             const updatedBillingAddress = billingAddresses.filter(item=>item.id!==id);
             setBillingAddresses([...updatedBillingAddress]);
+            setSelected(updatedBillingAddress.length>0 ? updatedBillingAddress[0].id : 0)
             toast.success(response.data.message, toastConfig);
         } catch (error) {
             console.log(error);

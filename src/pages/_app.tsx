@@ -7,16 +7,15 @@ import "nprogress/nprogress.css";
 import { Rubik } from 'next/font/google'
 import '../styles/index.css'
 import type { AppProps } from 'next/app'
-import { SWRConfig } from 'swr';
-import {fetcher} from '../../axios';
 import { ToastContainer } from 'react-toastify';
 import Layout from "../components/Layout";
 import { SessionProvider } from "next-auth/react";
 // import WishlistProvider from "../context/WishlistProvider";
-import CartProvider from "../context/CartProvider";
 import LoginModalProvider from "../context/LoginModalProvider";
 import WebsiteProvider from "../context/WebsiteProvider";
 import dynamic from "next/dynamic";
+import CartProvider from "@/context/CartProvider";
+import SwrLayout from "@/components/SwrLayout";
 
 const roboto = Rubik({
   weight: ['300', '400', '500', '600', '700', '800', '900'],
@@ -34,27 +33,25 @@ const TopProgressBar = dynamic(
 
 export default function App({ Component, pageProps: { session, ...pageProps } }: AppProps) {
 
-  return <SWRConfig
-  value={{
-   fetcher
-  }}
- >
+  return <>
   <TopProgressBar />
   <SessionProvider session={session}>
-    <main className={roboto.className}>
-      <WebsiteProvider>
+    <SwrLayout>
+      <main className={roboto.className}>
         <LoginModalProvider>
           <CartProvider>
-            {/* <WishlistProvider> */}
-              <Layout>
-                <Component {...pageProps} />
-              </Layout>
-              <ToastContainer />
-            {/* </WishlistProvider> */}
+            <WebsiteProvider>
+              {/* <WishlistProvider> */}
+                <Layout>
+                  <Component {...pageProps} />
+                </Layout>
+                <ToastContainer />
+              {/* </WishlistProvider> */}
+              </WebsiteProvider>
           </CartProvider>
         </LoginModalProvider>
-      </WebsiteProvider>
-    </main>
+      </main>
+    </SwrLayout>
   </SessionProvider>
- </SWRConfig>
+ </>
 }

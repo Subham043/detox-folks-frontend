@@ -6,7 +6,7 @@ import { MetaType, OrderType } from "@/helper/types";
 import Pagination from '@/components/Pagination';
 import { useEffect, useState } from 'react';
 import { useSession } from 'next-auth/react';
-import { axiosPublic } from '../../../axios';
+import { useAxiosPrivate } from '@/hook/useAxiosPrivate';
 
 const loadingArr = [1, 2, 3, 4, 5, 6]
 
@@ -16,6 +16,7 @@ export default function Products() {
     const [orders, setOrders] = useState<OrderType[]>([]);
     const [meta, setMeta] = useState<MetaType|null>(null);
     const { status, data: session } = useSession();
+    const axiosPrivate = useAxiosPrivate();
 
     useEffect(() => {
         getOrders()
@@ -28,9 +29,7 @@ export default function Products() {
         if(status==='authenticated'){
             setLoading(true);
             try {
-                const response = await axiosPublic.get(api_routes.place_order_paginate + `?total=8&page=${page}`, {
-                    headers: {"Authorization" : `Bearer ${session?.user.token}`}
-                });
+                const response = await axiosPrivate.get(api_routes.place_order_paginate + `?total=8&page=${page}`);
                 setOrders([...response.data.data])
                 setMeta({...response.data.meta})
                 

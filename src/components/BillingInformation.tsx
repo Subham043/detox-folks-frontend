@@ -10,7 +10,9 @@ import { api_routes } from '@/helper/routes';
 import { AxiosResponse } from "axios";
 import Spinner from "./Spinner";
 import Modal from 'react-modal';
-import { BillingInformationType } from "@/helper/types";
+import { BillingInformationResponseType, BillingInformationType } from "@/helper/types";
+import { useAxiosPrivate } from "@/hook/useAxiosPrivate";
+import useSWR from 'swr'
 
 Modal.setAppElement('#body');
 const loadingArr = [1, 2, 3]
@@ -57,7 +59,6 @@ type Props = {
 
 export default function BillingInformation({getSelectedItem}:Props) {
     const [loading, setLoading] = useState(false);
-    const [dataLoading, setDataLoading] = useState(false);
     const [billingInformations, setBillingInformations] = useState<BillingInformationType[]>([]);
     const [showModal, setShowModal] = useState<boolean>(false);
     const [isEdit, setIsEdit] = useState<{
@@ -66,6 +67,9 @@ export default function BillingInformation({getSelectedItem}:Props) {
     }>({ status: false, id: null});
     const { status, data: session } = useSession();
     const [selected, setSelected] = useState(0);
+    const axiosPrivate = useAxiosPrivate()
+    const { data, isLoading:dataLoading } = useSWR<BillingInformationResponseType>(status==='authenticated' ? api_routes.billing_information_all : null);
+    
 
     const {
         handleSubmit,
@@ -81,40 +85,20 @@ export default function BillingInformation({getSelectedItem}:Props) {
     });
 
     useEffect(() => {
-        getBillingInformation();
-
-        return () => { }
-    }, [status])
-
-    const getBillingInformation = useCallback(
-        async () => {
-            setDataLoading(true)
-            try {
-                const response: AxiosResponse = await axiosPublic.get(api_routes.billing_information_all, {
-                    headers: { "Authorization": `Bearer ${session?.user.token}` }
-                });
-                setBillingInformations([...response.data.data])
-                if(response.data.data.length>0){
-                    setSelected(response.data.data[0].id)
-                    getSelectedItem && getSelectedItem(response.data.data[0].id)
-                    
-                }
-
-            } catch (error) {
-                console.log(error);
-            }finally {
-                setDataLoading(false)
-            }
-        },
-        [status, getSelectedItem],
-    )
+        if(status==='authenticated' && data){
+            setBillingInformations(data.data);
+            setSelected(data.data.length>0 ? data.data[0].id : 0)
+        }else{
+            setBillingInformations([]);
+            setSelected(0)
+        }
+        return () => {}
+      }, [status, dataLoading])
 
     const onSubmit = async (data: any) => {
         setLoading(true);
         try {
-            const response = await axiosPublic.post(isEdit.status ? api_routes.billing_information_update+`/${isEdit.id}`: api_routes.billing_information_create, { ...data, is_active:true }, {
-                headers: { "Authorization": `Bearer ${session?.user.token}` }
-            });
+            const response = await axiosPrivate.post(isEdit.status ? api_routes.billing_information_update+`/${isEdit.id}`: api_routes.billing_information_create, { ...data, is_active:true });
             toast.success(response.data.message, toastConfig);
             if(isEdit.status){
                 const updatedBillingInformationIndex = billingInformations.findIndex(item=>item.id==isEdit.id);
@@ -123,6 +107,7 @@ export default function BillingInformation({getSelectedItem}:Props) {
                 setBillingInformations([...updatedBillingInformation]);
             }else{
                 setBillingInformations([response.data.billingInformation, ...billingInformations]);
+                setSelected(response.data.billingInformation.id)
             }
             hideModal();
         } catch (error: any) {
@@ -162,11 +147,10 @@ export default function BillingInformation({getSelectedItem}:Props) {
     const deleteHandler = async (id: number) => {
         setLoading(true)
         try {
-            const response = await axiosPublic.delete(api_routes.billing_information_delete+`/${id}`, {
-                headers: { "Authorization": `Bearer ${session?.user.token}` }
-            });
+            const response = await axiosPrivate.delete(api_routes.billing_information_delete+`/${id}`);
             const updatedBillingInformation = billingInformations.filter(item=>item.id!==id);
             setBillingInformations([...updatedBillingInformation]);
+            setSelected(updatedBillingInformation.length>0 ? updatedBillingInformation[0].id : 0)
             toast.success(response.data.message, toastConfig);
         } catch (error) {
             console.log(error);
@@ -184,7 +168,7 @@ export default function BillingInformation({getSelectedItem}:Props) {
             })
             setValue("name", item.name)
             setValue("email", item.email)
-            setValue("gst", item.gst)
+            setValue("gst", item.gst===null? '' : item.gst)
             setValue("phone", item.phone.toString())
         }
         setShowModal(true)

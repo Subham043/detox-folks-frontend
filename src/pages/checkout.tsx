@@ -7,11 +7,11 @@ import BillingInformation from '@/components/BillingInformation';
 import BillingAddress from '@/components/BillingAddress';
 import { ToastOptions, toast } from 'react-toastify';
 import Spinner from '@/components/Spinner';
-import { axiosPublic } from '../../axios';
 import { api_routes } from '@/helper/routes';
 import { useSession } from 'next-auth/react';
 import { useRouter } from 'next/router';
-import axios, { AxiosInstance } from 'axios';
+import { useAxiosPrivate } from '@/hook/useAxiosPrivate';
+import CheckoutCartItemComponent from '@/components/CheckoutCartItemComponent';
 
 const loadingArr = [1, 2, 3, 4]
 
@@ -31,11 +31,13 @@ export default function Checkout() {
   const [loading, setLoading] = useState(false);
   const [acceptTerms, setAcceptTerms] = useState(true);
   const [includeGst, setIncludeGst] = useState(false);
-  const { cart, getCart, deleteItemCart, cartLoading } = useContext(CartContext);
+  const [modeOfPayment, setModeOfPayment] = useState('Cash On Delivery');
+  const { cart, fetchCart, cartLoading } = useContext(CartContext);
   const { status, data: session } = useSession();
   const router = useRouter();
   const [selectedBillingAddressData, setSelectedBillingAddressData] = useState<number>(0)
   const [selectedBillingInformationData, setSelectedBillingInformationData] = useState<number>(0)
+  const axiosPrivate = useAxiosPrivate();
 
   const getSelectedBillingAddress = (data: number) => {
     setSelectedBillingAddressData(data)
@@ -58,30 +60,24 @@ export default function Checkout() {
       toast.error('please accept the terms & condition', toastConfig);
       return;
     }
-    // const post_pe_data = {
-    //   "merchantId": "PGTESTPAYUAT",
-    //   "merchantTransactionId": "MT7850590068188104",
-    //   "merchantUserId": "MUID123",
-    //   "amount": 10000,
-    //   "redirectUrl": "https://webhook.site/redirect-url",
-    //   "redirectMode": "REDIRECT",
-    //   "callbackUrl": "https://webhook.site/callback-url",
-    //   "mobileNumber": "9999999999",
-    //   "paymentInstrument": {
-    //     "type": "PAY_PAGE"
-    //   }
-    // };
-    // var encoded = btoa(JSON.stringify(post_pe_data))
-    // console.log(encoded);
     
     setLoading(true);
     try {
-      const response = await axiosPublic.post(api_routes.place_order, {billing_address_id: selectedBillingAddressData, billing_information_id: selectedBillingInformationData, mode_of_payment: 'Cash On Delivery', accept_terms: acceptTerms ? 1 : 0, include_gst: includeGst ? 1 : 0}, {
-        headers: {"Authorization" : `Bearer ${session?.user.token}`}
+      const response = await axiosPrivate.post(api_routes.place_order, {
+        billing_address_id: selectedBillingAddressData, 
+        billing_information_id: selectedBillingInformationData, 
+        order_mode: 'WEBSITE', 
+        mode_of_payment: modeOfPayment, 
+        accept_terms: acceptTerms ? 1 : 0, 
+        include_gst: includeGst ? 1 : 0
       });
-      getCart();
-      toast.success(response.data.message, toastConfig);
-      router.push('/orders');
+      if(modeOfPayment==='Cash On Delivery'){
+        fetchCart();
+        toast.success(response.data.message, toastConfig);
+        router.push('/orders');
+      }else{
+        window.open(response.data?.order?.payment?.phone_pe_payment_link);
+      }
     } catch (error: any) {
       console.log(error);
       if (error?.response?.data?.message) {
@@ -91,10 +87,6 @@ export default function Checkout() {
       setLoading(false);
     }
   };
-
-  useEffect(()=>{
-    getCart();
-  }, [status])
   
 
   return (
@@ -138,34 +130,7 @@ export default function Checkout() {
                           </thead>
                           <tbody>
                             {
-                              cart.cart.map((item, i)=><tr key={i}>
-                              <td className="table-serial"><h6>{i+1}</h6></td>
-                              <td className="table-image">
-                                <img src={item.product.image} alt="product" />
-                              </td>
-                              <td className="table-name"><h6>{item.product.name}</h6></td>
-                              <td className="table-price">
-                                {
-                                  item.product_price && <h6>
-                                      <span>&#8377;{item.product_price.discount_in_price}<small>/{item.product.cart_quantity_specification}</small></span>
-                                  </h6>
-                                }
-                              </td>
-                              <td className="table-quantity"><h6>{item.quantity}</h6></td>
-                              <td className="table-brand"><h6>&#8377;{item.amount}</h6></td>
-                              <td className="table-action">
-                                <Link
-                                  className="view"
-                                  href={`/products/${item.product.slug}`}
-                                  title="Quick View"
-                                  data-bs-toggle="modal"
-                                  data-bs-target="#product-view"
-                                ><i className="fas fa-eye"></i></Link
-                                ><button className="trash" title="Remove Wishlist" disabled={cartLoading} onClick={()=>deleteItemCart(item.id)}
-                                ><i className="icofont-trash"></i
-                                ></button>
-                              </td>
-                            </tr>)
+                              cart.cart.map((item, i)=><CheckoutCartItemComponent {...item} index={i} key={i} />)
                             }
                           </tbody>
                         </table>
@@ -200,9 +165,14 @@ export default function Checkout() {
                     </div>
                     <div className="account-content">
                       <div className="row">
-                        <div className="col-md-6 col-lg-3 alert fade show">
-                          <div className="profile-card address active">
+                        <div className="col-md-6 col-lg-3 alert fade show" onClick={()=>setModeOfPayment('Cash On Delivery')}>
+                          <div className={`profile-card address ${modeOfPayment==='Cash On Delivery' ? 'active' : ''}`}>
                               <h6>Cash On Delivery</h6>
+                          </div>
+                        </div>
+                        <div className="col-md-6 col-lg-3 alert fade show" onClick={()=>setModeOfPayment('Online - Phonepe')}>
+                          <div className={`profile-card address ${modeOfPayment==='Online - Phonepe' ? 'active' : ''}`}>
+                              <h6>Pay Online - Phonepe</h6>
                           </div>
                         </div>
                       </div>

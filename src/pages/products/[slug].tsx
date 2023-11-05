@@ -11,7 +11,6 @@ import useSWR from 'swr'
 import { ProductResponseType } from "@/helper/types";
 import { useCallback, useContext, useEffect, useState } from 'react';
 import CartQuantity from '@/components/CartQuantity';
-import { CartContext } from '@/context/CartProvider';
 import ProductSection from '@/components/ProductSection';
 import PriceFactor2 from '@/components/PriceFactor2';
 import BulkOfferFactor from '@/components/BulkOfferFactor';
@@ -64,7 +63,7 @@ export default function ProductDetail({
 
     const [page, setPage] = useState("1")
     const { data, isLoading } = useSWR<ProductResponseType>(api_routes.products + `?total=12&page=${page}&filter[has_categories]=${getCategoryStr()}&filter[has_sub_categories]=${getSubCategoryStr()}`);
-    const {quantity, cartLoading, cart_product_item, incrementQuantity, changeQuantity, decrementQuantity} = useCart({id: repo.product.id, product_prices: repo.product.product_prices, min_cart_quantity: repo.product.min_cart_quantity, cart_quantity_interval: repo.product.cart_quantity_interval});
+    const {quantity, cartLoading, cartItemLoading, cart_product_item, incrementQuantity, changeQuantity, decrementQuantity} = useCart({id: repo.product.id, product_prices: repo.product.product_prices, min_cart_quantity: repo.product.min_cart_quantity, cart_quantity_interval: repo.product.cart_quantity_interval});
     
     return (
         <>
@@ -146,7 +145,7 @@ export default function ProductDetail({
                                 </div>
                                 <div className="details-action-group">
                                     <div className="details-add-group m-0 col-md-6 col-sm-12">
-                                        <CartQuantity quantity={quantity} min_cart_quantity={repo.product.min_cart_quantity} incrementQuantity={incrementQuantity} decrementQuantity={decrementQuantity} changeQuantity={changeQuantity} loading={cartLoading} />
+                                        <CartQuantity quantity={quantity} min_cart_quantity={repo.product.min_cart_quantity} incrementQuantity={incrementQuantity} decrementQuantity={decrementQuantity} changeQuantity={changeQuantity} loading={cartItemLoading} />
                                     </div>
                                 </div>
                             </div>

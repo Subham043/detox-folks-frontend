@@ -19196,7 +19196,12 @@ tbody tr td:last-child {
     overflow: hidden;
     border-radius: 8px;
     margin-bottom: 30px;
-    background: var(--chalk)
+    background: #f5f5f54a
+}
+
+.table-serial, .table-action{
+    border-right: 1px solid var(--border) !important;
+    border-left: 1px solid var(--border);
 }
 
 @media (max-width: 575px) {

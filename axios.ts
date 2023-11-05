@@ -14,5 +14,3 @@ export const axiosPublic:AxiosInstance = axios.create({
     },
     withCredentials: false,
 })
-
-export const fetcher = (url: string) => axiosPublic.get(url).then((res) => res.data);

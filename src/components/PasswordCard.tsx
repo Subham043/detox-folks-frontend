@@ -5,9 +5,9 @@ import { yupResolver } from "@hookform/resolvers/yup";
 import { useState } from 'react';
 import { ErrorMessage } from '@hookform/error-message';
 import { ToastOptions, toast } from 'react-toastify';
-import { axiosPublic } from '../../axios';
 import { api_routes } from '@/helper/routes';
 import Spinner from "./Spinner";
+import { useAxiosPrivate } from "@/hook/useAxiosPrivate";
 
 const schema = yup
   .object({
@@ -35,6 +35,7 @@ const toastConfig:ToastOptions = {
 export default function PasswordCard() {
     const [loading, setLoading] = useState(false);
     const { status, data: session } = useSession();
+    const axiosPrivate = useAxiosPrivate();
 
     const {
         handleSubmit,
@@ -52,9 +53,7 @@ export default function PasswordCard() {
     const onSubmit = async (data: any) => {
         setLoading(true);
         try {
-          const response = await axiosPublic.post(api_routes.password_update, {...data}, {
-            headers: {"Authorization" : `Bearer ${session?.user.token}`}
-          });
+          const response = await axiosPrivate.post(api_routes.password_update, {...data});
           toast.success(response.data.message, toastConfig); 
           reset({
             old_password: "",

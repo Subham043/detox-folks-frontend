@@ -6,7 +6,7 @@ import {useCart} from "@/hook/useCart";
 
 export default function ProductCard({ id, name, image, slug, product_prices, is_featured, is_new, is_on_sale, min_cart_quantity, cart_quantity_interval, cart_quantity_specification }: ProductType) {
 
-    const {quantity, cartLoading, cart_product_item, incrementQuantity, changeQuantity, decrementQuantity} = useCart({id, product_prices, min_cart_quantity, cart_quantity_interval});
+    const {quantity, cartLoading, cartItemLoading, cart_product_item, incrementQuantity, changeQuantity, decrementQuantity} = useCart({id, product_prices, min_cart_quantity, cart_quantity_interval});
 
     return <div className="col">
         <div className="product-card">
@@ -31,7 +31,7 @@ export default function ProductCard({ id, name, image, slug, product_prices, is_
                     <Link href={`/products/${slug}`}>{name}</Link>
                 </h6>
                 <PriceFactor product_prices={product_prices} cart_quantity_specification={cart_quantity_specification} cart_product_item={cart_product_item} />
-                <CartQuantity quantity={quantity} min_cart_quantity={min_cart_quantity} incrementQuantity={incrementQuantity} decrementQuantity={decrementQuantity} changeQuantity={changeQuantity} loading={cartLoading} />
+                <CartQuantity quantity={quantity} min_cart_quantity={min_cart_quantity} incrementQuantity={incrementQuantity} decrementQuantity={decrementQuantity} changeQuantity={changeQuantity} loading={cartItemLoading} />
             </div>
         </div>
     </div>

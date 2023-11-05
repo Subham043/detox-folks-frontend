@@ -1,6 +1,29 @@
 import { CartContext } from "@/context/CartProvider";
+import { LoginModalContext } from "@/context/LoginModalProvider";
+import { api_routes } from "@/helper/routes";
 import { ProductPriceType } from "@/helper/types";
+import { useSession } from "next-auth/react";
 import { useCallback, useContext, useEffect, useState } from "react";
+import { ToastOptions, toast } from "react-toastify";
+import { useAxiosPrivate } from "./useAxiosPrivate";
+
+const toastConfig:ToastOptions = {
+    position: "top-right",
+    autoClose: 5000,
+    hideProgressBar: false,
+    closeOnClick: true,
+    pauseOnHover: true,
+    draggable: true,
+    progress: undefined,
+    theme: "light",
+}
+
+type CartInput = {
+    product_id: number;
+    product_price_id: number;
+    quantity: number;
+    amount: number;
+}
 
 export function useCart({
     id,
@@ -15,7 +38,11 @@ export function useCart({
 }){
     const [quantity, setQuantity] = useState<number>(0);
     
-    const { cart, addItemCart, updateItemCart, deleteItemCart, cartLoading } = useContext(CartContext);
+    const { cart, cartLoading, updateCart } = useContext(CartContext);
+    const [cartItemLoading, setCartItemLoading] = useState<boolean>(false);
+    const { status, data: session } = useSession();
+    const { displayLogin } = useContext(LoginModalContext);
+    const axiosPrivate = useAxiosPrivate()
 
     const cart_product_item = useCallback(
       () => cart.cart.filter(item=>item.product.id===id),
@@ -83,12 +110,79 @@ export function useCart({
         }
     };
 
+    const addItemCart = async (data: CartInput) => {
+        if(status==='authenticated'){
+            setCartItemLoading(true);
+            try {
+              const response = await axiosPrivate.post(api_routes.cart_create, data);
+              updateCart({cart: [...cart.cart, response.data.cart], cart_charges: [...response.data.cart_charges], coupon_applied: response.data.coupon_applied, tax: response.data.tax, cart_subtotal:response.data.cart_subtotal, discount_price: response.data.discount_price, total_charges: response.data.total_charges, total_price: response.data.total_price, total_tax: response.data.total_tax});
+              toast.success("Item added to cart.", toastConfig);
+            } catch (error: any) {
+              console.log(error);
+              toast.error("Something went wrong. Please try again later!", toastConfig);
+            }finally{
+              setCartItemLoading(false);
+            }
+        }else{
+          loginHandler("Please log in to add the item to cart.");
+        }
+    }
+    
+    const updateItemCart = async ({cartItemId, ...data}: CartInput & {cartItemId:number}) => {
+        if(status==='authenticated'){
+            setCartItemLoading(true);
+            try {
+              const response = await axiosPrivate.post(api_routes.cart_update + `/${cartItemId}`, data);
+              var cartItemIndex = cart.cart.findIndex(function(c) { 
+                return c.id == cartItemId; 
+              });
+              const old_cart = cart.cart;
+              old_cart[cartItemIndex] = response.data.cart;
+              updateCart({cart: [...old_cart], cart_charges: [...response.data.cart_charges], coupon_applied: response.data.coupon_applied, tax: response.data.tax, cart_subtotal:response.data.cart_subtotal, discount_price: response.data.discount_price, total_charges: response.data.total_charges, total_price: response.data.total_price, total_tax: response.data.total_tax});
+              // toast.success("Item quantity updated in cart.", toastConfig);
+            } catch (error: any) {
+              console.log(error);
+              toast.error("Something went wrong. Please try again later!", toastConfig);
+            }finally{
+              setCartItemLoading(false);
+            }
+        }else{
+          loginHandler("Please log in to update the item in cart.");
+        }
+    }
+    
+    const deleteItemCart = async (data: number) => {
+        if(status==='authenticated'){
+            setCartItemLoading(true);
+            try {
+              const response = await axiosPrivate.delete(api_routes.cart_delete + `/${data}`);
+                const removedItemArray = cart.cart.filter(item => item.id !== data);
+                updateCart({cart: [...removedItemArray], cart_charges: [...response.data.cart_charges], coupon_applied: response.data.coupon_applied, tax: response.data.tax, cart_subtotal:response.data.cart_subtotal, discount_price: response.data.discount_price, total_charges: response.data.total_charges, total_price: response.data.total_price, total_tax: response.data.total_tax});
+                toast.success("Item removed from cart.", toastConfig);
+            } catch (error: any) {
+              console.log(error);
+              toast.error("Something went wrong. Please try again later!", toastConfig);
+            }finally{
+              setCartItemLoading(false);
+            }
+        }else{
+          loginHandler("Please log in to remove the item from cart.");
+        }
+    }
+
+    const loginHandler = (msg:string) => {
+        toast.error(msg, toastConfig);
+        displayLogin();
+    }
+
     return {
         quantity,
         cartLoading,
+        cartItemLoading,
         cart_product_item,
         incrementQuantity,
         changeQuantity,
         decrementQuantity,
+        deleteItemCart
     };
 }

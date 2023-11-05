@@ -7,10 +7,9 @@ import BillingInformation from '@/components/BillingInformation';
 import { useSession } from "next-auth/react";
 import { useState } from 'react';
 import { ToastOptions, toast } from 'react-toastify';
-import { axiosPublic } from '../../axios';
 import { api_routes } from '@/helper/routes';
-import { AxiosResponse } from "axios";
 import Spinner from "../components/Spinner";
+import { useAxiosPrivate } from '@/hook/useAxiosPrivate';
 
 const toastConfig:ToastOptions = {
   position: "bottom-center",
@@ -27,13 +26,12 @@ export default function Profile() {
   const { status, data: session, update: sessionUpdate } = useSession();
   const [showVerification, setShowVerification] = useState(true)
   const [loading, setLoading] = useState(false);
+  const axiosPrivate = useAxiosPrivate();
 
-  const resendMail = async (data: any) => {
+  const resendMail = async () => {
     setLoading(true);
     try {
-      const response = await axiosPublic.post(api_routes.email_verify, {}, {
-        headers: {"Authorization" : `Bearer ${session?.user.token}`}
-      });
+      const response = await axiosPrivate.post(api_routes.email_verify, {});
       toast.success(response.data.message, toastConfig); 
     } catch (error: any) {
       console.log(error);

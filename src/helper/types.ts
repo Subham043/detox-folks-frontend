@@ -429,3 +429,18 @@ export interface GlobalSearchResponseType<> {
     meta: MetaType;
     data: GlobalSearchType[];
 }
+
+export interface WebsiteSettingResponseType<> {
+    general: WebsiteSettingType;
+    message: string;
+}
+
+export interface BillingInformationResponseType<> {
+    data: BillingInformationType[];
+    message: string;
+}
+
+export interface BillingAddressResponseType<> {
+    data: BillingAddressType[];
+    message: string;
+}

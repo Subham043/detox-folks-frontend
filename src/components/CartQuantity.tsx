@@ -50,7 +50,7 @@ export default function CartQuantity({quantity, min_cart_quantity, loading, incr
         </button> :
         <div className={`product-action ${quantity!==0 ? 'd-flex':''}`}>
             <button className="action-minus" title="Quantity Minus" disabled={loading} onClick={()=>decrementQuantity()}>
-                {load ? <Spinner /> : <i className="icofont-minus"></i>}</button
+                {loading ? <Spinner /> : <i className="icofont-minus"></i>}</button
             ><input
                 className="action-input"
                 title="Quantity Number"

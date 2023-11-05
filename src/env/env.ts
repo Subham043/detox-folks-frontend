@@ -4,7 +4,7 @@ type ENV = {
 }
 
 export const ENV:ENV = {
-    // API_ENDPOINT : "http://localhost:8000",
+    // API_ENDPOINT : "http://127.0.0.1:8000",
     API_ENDPOINT : "https://server-api.parcelcounter.in",
     CURRENT_ENV : "dev"
 }

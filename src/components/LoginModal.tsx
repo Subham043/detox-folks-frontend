@@ -9,6 +9,7 @@ import { signIn } from "next-auth/react";
 import { useSearchParams, useRouter } from "next/navigation";
 import Spinner from '@/components/Spinner';
 import { LoginModalContext } from '@/context/LoginModalProvider';
+import { CartContext } from '@/context/CartProvider';
 
 
 const schema = yup
@@ -37,6 +38,7 @@ export default function LoginModal() {
     const searchParams = useSearchParams();
     const callbackUrl = searchParams.get("callbackUrl") || "/profile";
     const { showLogin, hideLogin } = useContext(LoginModalContext);
+    const { fetchCart } = useContext(CartContext);
 
 
     const {
@@ -61,6 +63,7 @@ export default function LoginModal() {
                 password: data.password,
             });
             if (!res?.error) {
+                fetchCart()
                 if(showLogin){
                     hideLogin();
                 }else{
