@@ -213,7 +213,7 @@ export default function BillingInformation({getSelectedItem}:Props) {
                         <div className={`profile-card address ${selected===item.id ? 'active' : ''}`} onClick={()=>{setSelected(item.id); getSelectedItem && getSelectedItem(item.id)}}>
                             <h6>{item.name}</h6>
                             <p>
-                                {item.email}, {item.phone}
+                                {item.email},<br/> {item.phone}
                             </p>
                             <ul className="user-action">
                                 <li>

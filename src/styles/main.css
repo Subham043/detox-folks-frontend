@@ -13068,7 +13068,7 @@ tbody tr td:last-child {
     background: var(--white)
 }
 
-.table-action a i {
+.table-action a i,.table-action button i {
     width: 35px;
     height: 35px;
     font-size: 16px;
@@ -16333,7 +16333,7 @@ tbody tr td:last-child {
 
 .nav-header a img {
     width: auto;
-    height: 40px
+    height: 85px
 }
 
 .nav-close {
@@ -17907,9 +17907,16 @@ tbody tr td:last-child {
 
 .footer-logo img {
     width: auto;
-    height: 140px;
+    height: 100px;
     object-fit: contain;
     margin: auto;
+}
+
+.payment-img{
+    margin: auto;
+    margin-top: 15px;
+    object-fit: contain;
+    height: 100px;
 }
 
 .footer-desc {
@@ -19204,6 +19211,19 @@ tbody tr td:last-child {
     border-left: 1px solid var(--border);
 }
 
+.payment-method-img{
+    object-fit: contain;
+    height: 40px;
+    width: 40px;
+}
+
+.payment-method-container{
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 10px;
+}
+
 @media (max-width: 575px) {
     .orderlist-filter {
         -webkit-box-orient: vertical;
@@ -19338,5 +19358,13 @@ tbody tr td:last-child {
         position: -webkit-relative;
         position: relative;
         top: 0;
+    }
+
+    .cart-list{
+        max-height: 100%;
+    }
+
+    .footer-logo img, .payment-img{
+        height: 140px;
     }
 }

@@ -26,6 +26,7 @@ const Footer: FC = () => {
                 <li><a className="icofont-linkedin" target="_blank" href={website.website.linkedin}></a></li>
                 <li><a className="fab fa-youtube" target="_blank" href={website.website.youtube}></a></li>
               </ul>
+              <img src="/images/payments.webp" className="payment-img" />
             </div>
           </div>
           <div className="col-sm-12 col-lg-4 col-xl-4">

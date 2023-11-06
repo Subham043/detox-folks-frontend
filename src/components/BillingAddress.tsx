@@ -219,7 +219,7 @@ export default function BillingAddress({getSelectedItem}:Props) {
                         <div className={`profile-card address ${selected===item.id ? 'active' : ''}`} onClick={()=>{setSelected(item.id); getSelectedItem && getSelectedItem(item.id)}}>
                             <h6>{item.country}</h6>
                             <p>
-                                {item.address}, {item.city}, {item.state} - {item.pin}, {item.country}
+                                {item.address},<br/> {item.city},<br/> {item.state} - {item.pin},<br/> {item.country}
                             </p>
                             <ul className="user-action">
                                 <li>

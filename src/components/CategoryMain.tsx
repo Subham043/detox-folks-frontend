@@ -70,7 +70,7 @@ export default function CategoryMain({displayFilter=true}:{displayFilter?:boolea
                         <Pagination {...data?.meta} paginationHandler={setPage} /> : 
                         <div className="row">
                             <div className="col-lg-12">
-                                <div className="section-btn-25">
+                                <div className="section-btn-25 mt-0">
                                     <Link href={`/category`} className="btn btn-outline"
                                     ><i className="fas fa-eye"></i><span>show more</span></Link
                                     >

@@ -166,24 +166,26 @@ export default function Checkout() {
                     <div className="account-content">
                       <div className="row">
                         <div className="col-md-6 col-lg-3 alert fade show" onClick={()=>setModeOfPayment('Cash On Delivery')}>
-                          <div className={`profile-card address ${modeOfPayment==='Cash On Delivery' ? 'active' : ''}`}>
-                              <h6>Cash On Delivery</h6>
+                          <div className={`profile-card address payment-method-container ${modeOfPayment==='Cash On Delivery' ? 'active' : ''}`}>
+                              <img src='/images/money.webp' className='payment-method-img' />
+                              <h6 className='mb-0'>Cash On Delivery</h6>
                           </div>
                         </div>
                         <div className="col-md-6 col-lg-3 alert fade show" onClick={()=>setModeOfPayment('Online - Phonepe')}>
-                          <div className={`profile-card address ${modeOfPayment==='Online - Phonepe' ? 'active' : ''}`}>
-                              <h6>Pay Online - Phonepe</h6>
+                          <div className={`profile-card address payment-method-container ${modeOfPayment==='Online - Phonepe' ? 'active' : ''}`}>
+                              <img src='/images/phonepe.webp' className='payment-method-img' />
+                              <h6 className='mb-0'>Pay Online - Phonepe</h6>
                           </div>
                         </div>
                       </div>
                     </div>
                     <div className="checkout-check d-block">
-                      <div>
+                      <div className='d-flex mb-2'>
                         <input type="checkbox" id="checkout-gst" checked={includeGst} onChange={()=>setIncludeGst(!includeGst)} /><label
                           htmlFor="checkout-gst"
                         >Use GST Invoice.</label>
                       </div>
-                      <div>
+                      <div className='d-flex'>
                         <input type="checkbox" id="checkout-check" checked={acceptTerms} onChange={()=>setAcceptTerms(!acceptTerms)} /><label
                           htmlFor="checkout-check"
                         >By making this purchase you agree to our&nbsp; 
