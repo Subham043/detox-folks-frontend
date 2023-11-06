@@ -2,13 +2,24 @@ import { useSession } from "next-auth/react";
 import * as yup from "yup";
 import { useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
-import { useCallback, useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { ErrorMessage } from '@hookform/error-message';
 import { api_routes } from '@/helper/routes';
-import { AxiosResponse } from "axios";
 import Spinner from "./Spinner";
 import { useAxiosPrivate } from "@/hook/useAxiosPrivate";
 import { useToast } from "@/hook/useToast";
+import useSWR from 'swr'
+
+type UserType = {
+  user: {
+    email:string;
+    id:number;
+    name:string;
+    phone:string;
+    roles: string[];
+    verified: string;
+  }
+};
 
 const schema = yup
   .object({
@@ -41,35 +52,29 @@ export default function ProfileCard() {
         resolver: yupResolver(schema),
     });
 
+    const { data, mutate } = useSWR<UserType>(status==='authenticated' ? api_routes.profile : null);
+
     useEffect(() => {
-        getProfileDetails();
+      if(status==='authenticated'){
+        setValue("email", data ? data.user.email : '')
+        setValue("phone", data ? data.user.phone : '')
+        setValue("name", data ? data.user.name : '')
+      }
       
         return () => {}
-    }, [status])
+    }, [status, data])
 
-    const getProfileDetails = useCallback(
-        async() => {
-          try {
-            const response:AxiosResponse = await axiosPrivate.get(api_routes.profile);
-            setValue("name", response.data.user.name)
-            setValue("email", response.data.user.email)
-            setValue("phone", response.data.user.phone)
-            
-          } catch (error) {
-            console.log(error);
-          }
-        },
-        [status],
-    )
-
-    const onSubmit = async (data: any) => {
+    const onSubmit = async (form_data: any) => {
         setLoading(true);
         try {
-          const response = await axiosPrivate.post(api_routes.profile_update, {...data});
+          const response = await axiosPrivate.post(api_routes.profile_update, {...form_data});
           toastSuccess(response.data.message); 
+          mutate({...data, user:{
+            ...data?.user, ...form_data
+          }})
           sessionUpdate({
             profile: {
-              ...data
+              ...form_data
             }
           })
         } catch (error: any) {

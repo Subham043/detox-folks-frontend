@@ -77,14 +77,14 @@ export default function Header() {
             <div className="container">
                 <div className="header-content">
                     <div className="header-media-group">
-                        <Link href="/"><img src={website.website.website_logo} alt="logo" /></Link
+                        <Link href="/"><img src={website.website_logo} alt="logo" /></Link
                         >
                         <button className="text-dark" onClick={toggleMobileDrawer}>
                             <i className="icofont-navigation-menu" />
                         </button>
                     </div>
                     <Link href="/" className="header-logo"
-                    ><img src={website.website.website_logo} alt="logo" /></Link
+                    ><img src={website.website_logo} alt="logo" /></Link
                     >
                     <ProductSearch />
                     <div className="header-widget-group">
@@ -135,11 +135,11 @@ export default function Header() {
                             <div className="navbar-info-group">
                                 <div className="navbar-info">
                                     <i className="icofont-ui-touch-phone"></i>
-                                    {websiteLoading ? <div className="blog-heading-loading"></div> : <p><small>call us</small><span>{website.website.phone}</span></p>}
+                                    {websiteLoading ? <div className="blog-heading-loading"></div> : <p><small>call us</small><span>{website.phone}</span></p>}
                                 </div>
                                 <div className="navbar-info">
                                     <i className="icofont-ui-email"></i>
-                                    {websiteLoading ? <div className="blog-heading-loading"></div> : <p><small>email us</small><span>{website.website.email}</span></p>}
+                                    {websiteLoading ? <div className="blog-heading-loading"></div> : <p><small>email us</small><span>{website.email}</span></p>}
                                 </div>
                             </div>
                         </div>
@@ -160,7 +160,7 @@ export default function Header() {
         </Drawer>
         <aside className={`nav-sidebar ${isMobileDrawerOpen && 'active'}`}>
             <div className="nav-header">
-            <a href="#"><img src={website.website.website_logo} alt="logo" /></a
+            <a href="#"><img src={website.website_logo} alt="logo" /></a
             ><button onClick={toggleMobileDrawer} className="nav-close"><i className="icofont-close"></i></button>
             </div>
             <div className="nav-content">

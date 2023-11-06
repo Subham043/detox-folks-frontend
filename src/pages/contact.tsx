@@ -114,13 +114,13 @@ export default function Contact() {
                 </div> :
                 <div className="row">
                     <div className="col-md-6 col-lg-4">
-                        <ContactCard icon='icofont-location-pin' active={false} heading='head office' description={website.website.address} />
+                        <ContactCard icon='icofont-location-pin' active={false} heading='head office' description={website.address} />
                     </div>
                     <div className="col-md-6 col-lg-4">
-                        <ContactCard icon='icofont-phone' active={true} heading='phone number' description={website.website.phone.toString()} />
+                        <ContactCard icon='icofont-phone' active={true} heading='phone number' description={website.phone.toString()} />
                     </div>
                     <div className="col-md-6 col-lg-4">
-                        <ContactCard icon='icofont-email' active={false} heading='Support mail' description={website.website.email} />
+                        <ContactCard icon='icofont-email' active={false} heading='Support mail' description={website.email} />
                     </div>
                 </div>}
                 <div className="row">

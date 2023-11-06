@@ -9,7 +9,7 @@ import { api_routes } from '@/helper/routes';
 import { ProductType } from '@/helper/types';
 import useSWR from 'swr'
 import { ProductResponseType } from "@/helper/types";
-import { useCallback, useContext, useEffect, useState } from 'react';
+import { useState } from 'react';
 import CartQuantity from '@/components/CartQuantity';
 import ProductSection from '@/components/ProductSection';
 import PriceFactor2 from '@/components/PriceFactor2';

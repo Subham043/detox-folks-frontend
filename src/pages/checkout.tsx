@@ -37,11 +37,11 @@ export default function Checkout() {
   
   const placeOrderHandler = async (data: any) => {
     if(selectedBillingAddressData===0){
-      toastError('please add an address');
+      toastError('please select / add an address');
       return;
     }
     if(selectedBillingInformationData===0){
-      toastError('please add an billing information');
+      toastError('please select / add an billing information');
       return;
     }
     if(!acceptTerms){

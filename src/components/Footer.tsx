@@ -21,10 +21,10 @@ const Footer: FC = () => {
               ><img src="/images/logo.png" alt="logo"
                 /></Link>
               <ul className="footer-social text-center">
-                <li><a className="icofont-facebook" target="_blank" href={website.website.facebook}></a></li>
-                <li><a className="icofont-instagram" target="_blank" href={website.website.instagram}></a></li>
-                <li><a className="icofont-linkedin" target="_blank" href={website.website.linkedin}></a></li>
-                <li><a className="fab fa-youtube" target="_blank" href={website.website.youtube}></a></li>
+                <li><a className="icofont-facebook" target="_blank" href={website.facebook}></a></li>
+                <li><a className="icofont-instagram" target="_blank" href={website.instagram}></a></li>
+                <li><a className="icofont-linkedin" target="_blank" href={website.linkedin}></a></li>
+                <li><a className="fab fa-youtube" target="_blank" href={website.youtube}></a></li>
               </ul>
               <img src="/images/payments.webp" className="payment-img" />
             </div>
@@ -63,15 +63,15 @@ const Footer: FC = () => {
               <ul className="footer-contact">
                 <li>
                   <i className="icofont-ui-email"></i>
-                  {websiteLoading ? <div className="blog-heading-loading"></div>: <p><span>{website.website.email}</span></p>}
+                  {websiteLoading ? <div className="blog-heading-loading"></div>: <p><span>{website.email}</span></p>}
                 </li>
                 <li>
                   <i className="icofont-ui-touch-phone"></i>
-                  {websiteLoading ? <div className="blog-heading-loading"></div>: <p><span>{website.website.phone}</span></p>}
+                  {websiteLoading ? <div className="blog-heading-loading"></div>: <p><span>{website.phone}</span></p>}
                 </li>
                 <li>
                   <i className="icofont-location-pin"></i>
-                  {websiteLoading ? <div className="blog-heading-loading"></div>: <p>{website.website.address}</p>}
+                  {websiteLoading ? <div className="blog-heading-loading"></div>: <p>{website.address}</p>}
                 </li>
               </ul>
               <div className="footer-app mt-3">
@@ -86,7 +86,7 @@ const Footer: FC = () => {
           <div className="col-12">
             <div className="footer-bottom justify-content-center">
               <p className="footer-copytext">
-                &copy; All Copyrights Reserved by <Link href="/">{website.website.website_name}</Link>
+                &copy; All Copyrights Reserved by <Link href="/">{website.website_name}</Link>
               </p>
               {/* <div className="footer-card">
                 <a href="#"

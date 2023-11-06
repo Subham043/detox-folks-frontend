@@ -1,4 +1,4 @@
-import React, { createContext, useEffect, useState } from "react";
+import React, { createContext } from "react";
 import { ChildrenType, CartType as CartDataType, CartChargeType, CartTaxType, CartCouponType } from "../helper/types";
 import { api_routes } from "../helper/routes";
 import { useSession } from "next-auth/react";
@@ -50,34 +50,25 @@ const cartDefaultValues: CartContextType = {
 export const CartContext = createContext<CartContextType>(cartDefaultValues);
 
 const CartProvider: React.FC<ChildrenType> = ({children}) => {
-    const [cart, setCartDetails] = useState<CartType>({
-      cart:[], 
-      cart_charges:[], 
-      tax: {
-        id:0,
-        created_at: "",
-        updated_at: "",
-        tax_in_percentage: 0,
-        tax_name: "",
-        tax_slug: "",
-      },
-      coupon_applied: null,
-      cart_subtotal:0, 
-      discount_price: 0, 
-      total_charges: 0, 
-      total_price: 0, 
-      total_tax: 0
-    });
     const { status } = useSession();
     const { mutate } = useSWRConfig()
 
-    const { data, isLoading:cartLoading } = useSWR<CartType>(status==='authenticated' ? api_routes.cart_all : null);
+    const { data, isLoading:cartLoading, mutate:updateData } = useSWR<CartType>(status==='authenticated' ? api_routes.cart_all : null);
+    
 
-    useEffect(() => {
-      if(status==='authenticated' && data){
-        setCartDetails(data);
-      }else{
-        setCartDetails({
+    const updateCart = async (cartData: CartType) => {
+      if(status==='authenticated'){
+        updateData(cartData);
+      }
+    }
+    
+    const fetchCart = async () => {
+      mutate(api_routes.cart_all)
+    }
+
+    return (
+      <CartContext.Provider value={{
+        cart: data ? data : {
           cart:[], 
           cart_charges:[], 
           tax: {
@@ -94,24 +85,11 @@ const CartProvider: React.FC<ChildrenType> = ({children}) => {
           total_charges: 0, 
           total_price: 0, 
           total_tax: 0
-        });
-      }
-      return () => {}
-    }, [status, cartLoading])
-    
-
-    const updateCart = async (cartData: CartType) => {
-      if(status==='authenticated'){
-          setCartDetails(cartData);
-      }
-    }
-    
-    const fetchCart = async () => {
-      mutate(api_routes.cart_all)
-    }
-
-    return (
-      <CartContext.Provider value={{cart, updateCart, fetchCart, cartLoading}}>
+        }, 
+        updateCart, 
+        fetchCart, 
+        cartLoading
+      }}>
           {children}
       </CartContext.Provider>
     );

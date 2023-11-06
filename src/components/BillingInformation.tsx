@@ -2,7 +2,7 @@ import { useSession } from "next-auth/react";
 import * as yup from "yup";
 import { useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import { ErrorMessage } from '@hookform/error-message';
 import { api_routes } from '@/helper/routes';
 import Spinner from "./Spinner";
@@ -45,18 +45,17 @@ type Props = {
 }
 
 export default function BillingInformation({getSelectedItem}:Props) {
+    const { status, data: session } = useSession();
+    const { data, isLoading:dataLoading, mutate } = useSWR<BillingInformationResponseType>(status==='authenticated' ? api_routes.billing_information_all : null);
     const [loading, setLoading] = useState(false);
-    const [billingInformations, setBillingInformations] = useState<BillingInformationType[]>([]);
     const [showModal, setShowModal] = useState<boolean>(false);
     const [isEdit, setIsEdit] = useState<{
         status: boolean,
         id: number|null
     }>({ status: false, id: null});
-    const { status, data: session } = useSession();
-    const [selected, setSelected] = useState(0);
+    const [selected, setSelected] = useState(data && data.data.length>0 ? data.data[0].id : 0);
     const axiosPrivate = useAxiosPrivate();
     const { toastSuccess, toastError } = useToast();
-    const { data, isLoading:dataLoading } = useSWR<BillingInformationResponseType>(status==='authenticated' ? api_routes.billing_information_all : null);
     
 
     const {
@@ -72,30 +71,21 @@ export default function BillingInformation({getSelectedItem}:Props) {
         resolver: yupResolver(schema),
     });
 
-    useEffect(() => {
-        if(status==='authenticated' && data){
-            setBillingInformations(data.data);
-            setSelected(data.data.length>0 ? data.data[0].id : 0)
-        }else{
-            setBillingInformations([]);
-            setSelected(0)
-        }
-        return () => {}
-      }, [status, dataLoading])
-
-    const onSubmit = async (data: any) => {
+    const onSubmit = async (form_data: any) => {
         setLoading(true);
         try {
-            const response = await axiosPrivate.post(isEdit.status ? api_routes.billing_information_update+`/${isEdit.id}`: api_routes.billing_information_create, { ...data, is_active:true });
+            const response = await axiosPrivate.post(isEdit.status ? api_routes.billing_information_update+`/${isEdit.id}`: api_routes.billing_information_create, { ...form_data, is_active:true });
             toastSuccess(response.data.message);
             if(isEdit.status){
-                const updatedBillingInformationIndex = billingInformations.findIndex(item=>item.id==isEdit.id);
-                const updatedBillingInformation = [...billingInformations];
+                const updatedBillingInformationIndex = data ? data?.data.findIndex(item=>item.id==isEdit.id) : 0;
+                const updatedBillingInformation = data ? [...data?.data] : [];
                 updatedBillingInformation[updatedBillingInformationIndex] = response.data.billingInformation;
-                setBillingInformations([...updatedBillingInformation]);
+                mutate({...data, data:[...updatedBillingInformation]})
             }else{
-                setBillingInformations([response.data.billingInformation, ...billingInformations]);
+                const updatedBillingInformation = data ? [...data?.data] : [];
+                mutate({...data, data: [response.data.billingInformation, ...updatedBillingInformation]});
                 setSelected(response.data.billingInformation.id)
+                getSelectedItem && getSelectedItem(response.data.billingInformation.id)
             }
             hideModal();
         } catch (error: any) {
@@ -136,9 +126,10 @@ export default function BillingInformation({getSelectedItem}:Props) {
         setLoading(true)
         try {
             const response = await axiosPrivate.delete(api_routes.billing_information_delete+`/${id}`);
-            const updatedBillingInformation = billingInformations.filter(item=>item.id!==id);
-            setBillingInformations([...updatedBillingInformation]);
+            const updatedBillingInformation = data ? data?.data.filter(item=>item.id!==id) : [];
+            mutate({...data, data:[...updatedBillingInformation]});
             setSelected(updatedBillingInformation.length>0 ? updatedBillingInformation[0].id : 0)
+            getSelectedItem && getSelectedItem(updatedBillingInformation.length>0 ? updatedBillingInformation[0].id : 0)
             toastSuccess(response.data.message);
         } catch (error) {
             console.log(error);
@@ -187,7 +178,7 @@ export default function BillingInformation({getSelectedItem}:Props) {
             <div className="account-content">
                 <div className="row">
                     {
-                        (!dataLoading && billingInformations.length===0) && <div className="col-12 text-center">
+                        (!dataLoading && data?.data.length===0) && <div className="col-12 text-center">
                             <p>Oops. No information available. Please add one!</p>
                         </div>
                     }
@@ -197,7 +188,7 @@ export default function BillingInformation({getSelectedItem}:Props) {
                         </div>)
                     }
                     {
-                        billingInformations.map((item, i)=><div className="col-md-6 col-lg-4 alert fade show" key={i}>
+                        data?.data.map((item, i)=><div className="col-md-6 col-lg-4 alert fade show" key={i}>
                         <div className={`profile-card address ${selected===item.id ? 'active' : ''}`} onClick={()=>{setSelected(item.id); getSelectedItem && getSelectedItem(item.id)}}>
                             <h6>{item.name}</h6>
                             <p>
