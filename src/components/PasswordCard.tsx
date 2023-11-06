@@ -1,13 +1,12 @@
-import { useSession } from "next-auth/react";
 import * as yup from "yup";
 import { useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { useState } from 'react';
 import { ErrorMessage } from '@hookform/error-message';
-import { ToastOptions, toast } from 'react-toastify';
 import { api_routes } from '@/helper/routes';
 import Spinner from "./Spinner";
 import { useAxiosPrivate } from "@/hook/useAxiosPrivate";
+import { useToast } from "@/hook/useToast";
 
 const schema = yup
   .object({
@@ -21,21 +20,10 @@ const schema = yup
   })
   .required();
 
-const toastConfig:ToastOptions = {
-    position: "bottom-center",
-    autoClose: 5000,
-    hideProgressBar: false,
-    closeOnClick: true,
-    pauseOnHover: true,
-    draggable: true,
-    progress: undefined,
-    theme: "light",
-}
-
 export default function PasswordCard() {
     const [loading, setLoading] = useState(false);
-    const { status, data: session } = useSession();
     const axiosPrivate = useAxiosPrivate();
+    const { toastSuccess, toastError } = useToast();
 
     const {
         handleSubmit,
@@ -54,7 +42,7 @@ export default function PasswordCard() {
         setLoading(true);
         try {
           const response = await axiosPrivate.post(api_routes.password_update, {...data});
-          toast.success(response.data.message, toastConfig); 
+          toastSuccess(response.data.message); 
           reset({
             old_password: "",
             password: "",
@@ -63,7 +51,7 @@ export default function PasswordCard() {
         } catch (error: any) {
           console.log(error);
           if (error?.response?.data?.message) {
-            toast.error(error?.response?.data?.message, toastConfig);
+            toastError(error?.response?.data?.message);
           }
           if (error?.response?.data?.errors?.old_password) {
             setError("old_password", {

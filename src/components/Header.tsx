@@ -3,30 +3,21 @@ import { useContext, useEffect, useState } from "react";
 import Drawer from 'react-modern-drawer'
 import { signOut, useSession } from 'next-auth/react';
 import { useRouter } from "next/router";
-import { ToastOptions, toast } from "react-toastify";
 import { CartContext } from "@/context/CartProvider";
 import ProductSearch from "./ProductSearch";
 import { LoginModalContext } from "@/context/LoginModalProvider";
 import { WebsiteContext } from "@/context/WebsiteProvider";
 import ProductMobileSearch from "./ProductMobileSearch";
 import CartComponent from "./CartComponent";
+import { useToast } from "@/hook/useToast";
 
-const toastConfig: ToastOptions = {
-    position: "bottom-center",
-    autoClose: 5000,
-    hideProgressBar: false,
-    closeOnClick: true,
-    pauseOnHover: true,
-    draggable: true,
-    progress: undefined,
-    theme: "light",
-}
 export default function Header() {
     const { status, data: session } = useSession();
     const { displayLogin } = useContext(LoginModalContext);
     const [isOpen, setIsOpen] = useState(false)
     const [isMobileDrawerOpen, setIsMobileDrawerOpen] = useState(false)
     const [loading, setLoading] = useState(false);
+    const { toastSuccess, toastError } = useToast();
     const router = useRouter();
     const callbackUrl = "/";
     const toggleDrawer = () => {
@@ -34,7 +25,7 @@ export default function Header() {
             setIsOpen((prevState) => !prevState)
         } else {
             displayLogin()
-            toast.error("Please log in to view cart.", toastConfig);
+            toastError("Please log in to view cart.");
         }
     }
     const toggleMobileDrawer = () => {
@@ -54,7 +45,7 @@ export default function Header() {
                 callbackUrl
             });
             router.push(callbackUrl);
-            toast.success("Logged Out Successfully.", toastConfig);
+            toastSuccess("Logged Out Successfully.");
         } catch (error: any) {
             console.log(error);
         } finally {

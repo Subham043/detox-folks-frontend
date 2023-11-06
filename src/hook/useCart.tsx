@@ -4,19 +4,8 @@ import { api_routes } from "@/helper/routes";
 import { ProductPriceType } from "@/helper/types";
 import { useSession } from "next-auth/react";
 import { useCallback, useContext, useEffect, useState } from "react";
-import { ToastOptions, toast } from "react-toastify";
 import { useAxiosPrivate } from "./useAxiosPrivate";
-
-const toastConfig:ToastOptions = {
-    position: "top-right",
-    autoClose: 5000,
-    hideProgressBar: false,
-    closeOnClick: true,
-    pauseOnHover: true,
-    draggable: true,
-    progress: undefined,
-    theme: "light",
-}
+import { useToast } from "./useToast";
 
 type CartInput = {
     product_id: number;
@@ -42,7 +31,8 @@ export function useCart({
     const [cartItemLoading, setCartItemLoading] = useState<boolean>(false);
     const { status, data: session } = useSession();
     const { displayLogin } = useContext(LoginModalContext);
-    const axiosPrivate = useAxiosPrivate()
+    const axiosPrivate = useAxiosPrivate();
+    const { toastSuccess, toastError } = useToast();
 
     const cart_product_item = useCallback(
       () => cart.cart.filter(item=>item.product.id===id),
@@ -116,10 +106,10 @@ export function useCart({
             try {
               const response = await axiosPrivate.post(api_routes.cart_create, data);
               updateCart({cart: [...cart.cart, response.data.cart], cart_charges: [...response.data.cart_charges], coupon_applied: response.data.coupon_applied, tax: response.data.tax, cart_subtotal:response.data.cart_subtotal, discount_price: response.data.discount_price, total_charges: response.data.total_charges, total_price: response.data.total_price, total_tax: response.data.total_tax});
-              toast.success("Item added to cart.", toastConfig);
+              toastSuccess("Item added to cart.");
             } catch (error: any) {
               console.log(error);
-              toast.error("Something went wrong. Please try again later!", toastConfig);
+              toastError("Something went wrong. Please try again later!");
             }finally{
               setCartItemLoading(false);
             }
@@ -139,10 +129,10 @@ export function useCart({
               const old_cart = cart.cart;
               old_cart[cartItemIndex] = response.data.cart;
               updateCart({cart: [...old_cart], cart_charges: [...response.data.cart_charges], coupon_applied: response.data.coupon_applied, tax: response.data.tax, cart_subtotal:response.data.cart_subtotal, discount_price: response.data.discount_price, total_charges: response.data.total_charges, total_price: response.data.total_price, total_tax: response.data.total_tax});
-              // toast.success("Item quantity updated in cart.", toastConfig);
+              // toastSuccess("Item quantity updated in cart.");
             } catch (error: any) {
               console.log(error);
-              toast.error("Something went wrong. Please try again later!", toastConfig);
+              toastError("Something went wrong. Please try again later!");
             }finally{
               setCartItemLoading(false);
             }
@@ -158,10 +148,10 @@ export function useCart({
               const response = await axiosPrivate.delete(api_routes.cart_delete + `/${data}`);
                 const removedItemArray = cart.cart.filter(item => item.id !== data);
                 updateCart({cart: [...removedItemArray], cart_charges: [...response.data.cart_charges], coupon_applied: response.data.coupon_applied, tax: response.data.tax, cart_subtotal:response.data.cart_subtotal, discount_price: response.data.discount_price, total_charges: response.data.total_charges, total_price: response.data.total_price, total_tax: response.data.total_tax});
-                toast.success("Item removed from cart.", toastConfig);
+                toastSuccess("Item removed from cart.");
             } catch (error: any) {
               console.log(error);
-              toast.error("Something went wrong. Please try again later!", toastConfig);
+              toastError("Something went wrong. Please try again later!");
             }finally{
               setCartItemLoading(false);
             }
@@ -171,7 +161,7 @@ export function useCart({
     }
 
     const loginHandler = (msg:string) => {
-        toast.error(msg, toastConfig);
+        toastError(msg);
         displayLogin();
     }
 

@@ -2,17 +2,15 @@ import { useSession } from "next-auth/react";
 import * as yup from "yup";
 import { useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
-import { useCallback, useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { ErrorMessage } from '@hookform/error-message';
-import { ToastOptions, toast } from 'react-toastify';
-import { axiosPublic } from '../../axios';
 import { api_routes } from '@/helper/routes';
-import { AxiosResponse } from "axios";
 import Spinner from "./Spinner";
 import Modal from 'react-modal';
 import { BillingAddressResponseType, BillingAddressType } from "@/helper/types";
 import useSWR from 'swr'
 import { useAxiosPrivate } from "@/hook/useAxiosPrivate";
+import { useToast } from "@/hook/useToast";
 
 Modal.setAppElement('#body');
 const loadingArr = [1, 2, 3]
@@ -40,17 +38,6 @@ const schema = yup
     })
     .required();
 
-const toastConfig: ToastOptions = {
-    position: "bottom-center",
-    autoClose: 5000,
-    hideProgressBar: false,
-    closeOnClick: true,
-    pauseOnHover: true,
-    draggable: true,
-    progress: undefined,
-    theme: "light",
-}
-
 type Props = {
     getSelectedItem?: (data:number)=>void;
 }
@@ -63,9 +50,10 @@ export default function BillingAddress({getSelectedItem}:Props) {
         status: boolean,
         id: number|null
     }>({ status: false, id: null});
-    const { status, data: session } = useSession();
+    const { status } = useSession();
     const [selected, setSelected] = useState(0);
     const axiosPrivate = useAxiosPrivate()
+    const { toastSuccess, toastError } = useToast();
     const { data, isLoading:dataLoading } = useSWR<BillingAddressResponseType>(status==='authenticated' ? api_routes.billing_address_all : null);
     
 
@@ -97,7 +85,7 @@ export default function BillingAddress({getSelectedItem}:Props) {
         setLoading(true);
         try {
             const response = await axiosPrivate.post(isEdit.status ? api_routes.billing_address_update+`/${isEdit.id}`: api_routes.billing_address_create, { ...data, is_active:true });
-            toast.success(response.data.message, toastConfig);
+            toastSuccess(response.data.message);
             if(isEdit.status){
                 const updatedBillingAddressIndex = billingAddresses.findIndex(item=>item.id==isEdit.id);
                 const updatedBillingAddress = [...billingAddresses];
@@ -111,7 +99,7 @@ export default function BillingAddress({getSelectedItem}:Props) {
         } catch (error: any) {
             console.log(error);
             if (error?.response?.data?.message) {
-                toast.error(error?.response?.data?.message, toastConfig);
+                toastError(error?.response?.data?.message);
             }
             if (error?.response?.data?.errors?.country) {
                 setError("country", {
@@ -155,10 +143,10 @@ export default function BillingAddress({getSelectedItem}:Props) {
             const updatedBillingAddress = billingAddresses.filter(item=>item.id!==id);
             setBillingAddresses([...updatedBillingAddress]);
             setSelected(updatedBillingAddress.length>0 ? updatedBillingAddress[0].id : 0)
-            toast.success(response.data.message, toastConfig);
+            toastSuccess(response.data.message);
         } catch (error) {
             console.log(error);
-            toast.error('Oops. something went wrong! please try again later.', toastConfig);
+            toastError('Oops. something went wrong! please try again later.');
         }finally {
             setLoading(false)
         }

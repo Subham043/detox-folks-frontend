@@ -7,11 +7,11 @@ import { useState } from 'react';
 import { axiosPublic } from '../../../axios';
 import { api_routes } from '@/helper/routes';
 import { ErrorMessage } from '@hookform/error-message';
-import { ToastOptions, toast } from 'react-toastify';
 import Spinner from '@/components/Spinner';
 import { GetServerSideProps, InferGetServerSidePropsType } from 'next';
 import { useRouter } from 'next/navigation';
 import { getSession } from "next-auth/react"
+import { useToast } from '@/hook/useToast';
 
 type ServerSideProps = {
     user_token: string;
@@ -50,21 +50,11 @@ const schema = yup
   })
   .required();
 
-const toastConfig:ToastOptions = {
-    position: "bottom-center",
-    autoClose: 5000,
-    hideProgressBar: false,
-    closeOnClick: true,
-    pauseOnHover: true,
-    draggable: true,
-    progress: undefined,
-    theme: "light",
-}
-
 export default function ResetPassword({
     repo,
 }: InferGetServerSidePropsType<typeof getServerSideProps>) {
     const [loading, setLoading] = useState(false);
+    const { toastSuccess, toastError } = useToast();
 
     const router = useRouter();
 
@@ -85,7 +75,7 @@ export default function ResetPassword({
         setLoading(true);
         try {
           const response = await axiosPublic.post(api_routes.reset_password+`/${repo.user_token}`, {...data});
-          toast.success(response.data.message, toastConfig);            
+          toastSuccess(response.data.message);            
           reset({
             email: "",
             password: "",
@@ -95,7 +85,7 @@ export default function ResetPassword({
         } catch (error: any) {
           console.log(error);
           if (error?.response?.data?.message) {
-            toast.error(error?.response?.data?.message, toastConfig);
+            toastError(error?.response?.data?.message);
           }
           if (error?.response?.data?.errors?.email) {
             setError("email", {

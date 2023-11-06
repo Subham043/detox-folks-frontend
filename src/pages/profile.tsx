@@ -6,37 +6,26 @@ import BillingAddress from '@/components/BillingAddress';
 import BillingInformation from '@/components/BillingInformation';
 import { useSession } from "next-auth/react";
 import { useState } from 'react';
-import { ToastOptions, toast } from 'react-toastify';
 import { api_routes } from '@/helper/routes';
-import Spinner from "../components/Spinner";
 import { useAxiosPrivate } from '@/hook/useAxiosPrivate';
-
-const toastConfig:ToastOptions = {
-  position: "bottom-center",
-  autoClose: 5000,
-  hideProgressBar: false,
-  closeOnClick: true,
-  pauseOnHover: true,
-  draggable: true,
-  progress: undefined,
-  theme: "light",
-}
+import { useToast } from '@/hook/useToast';
 
 export default function Profile() {
   const { status, data: session, update: sessionUpdate } = useSession();
   const [showVerification, setShowVerification] = useState(true)
   const [loading, setLoading] = useState(false);
   const axiosPrivate = useAxiosPrivate();
+  const { toastSuccess, toastError } = useToast();
 
   const resendMail = async () => {
     setLoading(true);
     try {
       const response = await axiosPrivate.post(api_routes.email_verify, {});
-      toast.success(response.data.message, toastConfig); 
+      toastSuccess(response.data.message); 
     } catch (error: any) {
       console.log(error);
       if (error?.response?.data?.message) {
-        toast.error(error?.response?.data?.message, toastConfig);
+        toastError(error?.response?.data?.message);
       }
     } finally {
       setLoading(false);
@@ -59,7 +48,7 @@ export default function Profile() {
       <section className="inner-section profile-part">
         <div className="container">
           <div className="row">
-            {
+            {/* {
               (status==='authenticated' && session.user?.verified==="VERIFICATION PENDING" && showVerification) && 
               <div className="col-lg-12 mb-3">
                 <div className="alert alert-warning mb-0 py-2" role="alert">
@@ -78,7 +67,7 @@ export default function Profile() {
                     </button>
                 </div>
               </div>
-            }
+            } */}
             <div className="col-lg-12">
               <ProfileCard />
             </div>

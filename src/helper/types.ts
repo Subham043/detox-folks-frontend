@@ -429,6 +429,10 @@ export interface GlobalSearchResponseType<> {
     meta: MetaType;
     data: GlobalSearchType[];
 }
+export interface OrderResponseType<> {
+    meta: MetaType;
+    data: OrderType[];
+}
 
 export interface WebsiteSettingResponseType<> {
     general: WebsiteSettingType;

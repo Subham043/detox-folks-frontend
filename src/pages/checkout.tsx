@@ -1,30 +1,18 @@
 import Head from 'next/head'
 import Hero from '@/components/Hero';
-import { useContext, useEffect, useState } from 'react';
+import { useContext, useState } from 'react';
 import { CartContext } from '@/context/CartProvider';
 import Link from 'next/link';
 import BillingInformation from '@/components/BillingInformation';
 import BillingAddress from '@/components/BillingAddress';
-import { ToastOptions, toast } from 'react-toastify';
 import Spinner from '@/components/Spinner';
 import { api_routes } from '@/helper/routes';
-import { useSession } from 'next-auth/react';
 import { useRouter } from 'next/router';
 import { useAxiosPrivate } from '@/hook/useAxiosPrivate';
 import CheckoutCartItemComponent from '@/components/CheckoutCartItemComponent';
+import { useToast } from '@/hook/useToast';
 
 const loadingArr = [1, 2, 3, 4]
-
-const toastConfig:ToastOptions = {
-    position: "bottom-center",
-    autoClose: 5000,
-    hideProgressBar: false,
-    closeOnClick: true,
-    pauseOnHover: true,
-    draggable: true,
-    progress: undefined,
-    theme: "light",
-}
 
 
 export default function Checkout() {
@@ -33,11 +21,11 @@ export default function Checkout() {
   const [includeGst, setIncludeGst] = useState(false);
   const [modeOfPayment, setModeOfPayment] = useState('Cash On Delivery');
   const { cart, fetchCart, cartLoading } = useContext(CartContext);
-  const { status, data: session } = useSession();
   const router = useRouter();
   const [selectedBillingAddressData, setSelectedBillingAddressData] = useState<number>(0)
   const [selectedBillingInformationData, setSelectedBillingInformationData] = useState<number>(0)
   const axiosPrivate = useAxiosPrivate();
+  const { toastSuccess, toastError } = useToast();
 
   const getSelectedBillingAddress = (data: number) => {
     setSelectedBillingAddressData(data)
@@ -49,15 +37,15 @@ export default function Checkout() {
   
   const placeOrderHandler = async (data: any) => {
     if(selectedBillingAddressData===0){
-      toast.error('please add an address', toastConfig);
+      toastError('please add an address');
       return;
     }
     if(selectedBillingInformationData===0){
-      toast.error('please add an billing information', toastConfig);
+      toastError('please add an billing information');
       return;
     }
     if(!acceptTerms){
-      toast.error('please accept the terms & condition', toastConfig);
+      toastError('please accept the terms & condition');
       return;
     }
     
@@ -73,7 +61,7 @@ export default function Checkout() {
       });
       if(modeOfPayment==='Cash On Delivery'){
         fetchCart();
-        toast.success(response.data.message, toastConfig);
+        toastSuccess(response.data.message);
         router.push('/orders');
       }else{
         window.open(response.data?.order?.payment?.phone_pe_payment_link);
@@ -81,7 +69,7 @@ export default function Checkout() {
     } catch (error: any) {
       console.log(error);
       if (error?.response?.data?.message) {
-        toast.error(error?.response?.data?.message, toastConfig);
+        toastError(error?.response?.data?.message);
       }
     } finally {
       setLoading(false);

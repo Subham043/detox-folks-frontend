@@ -7,9 +7,9 @@ import { useState } from 'react';
 import { axiosPublic } from '../../axios';
 import { api_routes } from '@/helper/routes';
 import { ErrorMessage } from '@hookform/error-message';
-import { ToastOptions, toast } from 'react-toastify';
 import Spinner from '@/components/Spinner';
 import { getSession } from "next-auth/react"
+import { useToast } from '@/hook/useToast';
 
 export const getServerSideProps = async (ctx: any) => {
   const data = await getSession(ctx)
@@ -33,19 +33,9 @@ const schema = yup
   })
   .required();
 
-const toastConfig:ToastOptions = {
-    position: "bottom-center",
-    autoClose: 5000,
-    hideProgressBar: false,
-    closeOnClick: true,
-    pauseOnHover: true,
-    draggable: true,
-    progress: undefined,
-    theme: "light",
-}
-
 export default function ForgotPassword() {
     const [loading, setLoading] = useState(false);
+    const { toastSuccess, toastError } = useToast();
 
     const {
         handleSubmit,
@@ -64,14 +54,14 @@ export default function ForgotPassword() {
         setLoading(true);
         try {
           const response = await axiosPublic.post(api_routes.forgot_password, {...data});
-          toast.success(response.data.message, toastConfig);            
+          toastSuccess(response.data.message);            
           reset({
             email: "",
           });
         } catch (error: any) {
           console.log(error);
           if (error?.response?.data?.message) {
-            toast.error(error?.response?.data?.message, toastConfig);
+            toastError(error?.response?.data?.message);
           }
           if (error?.response?.data?.errors?.email) {
             setError("email", {

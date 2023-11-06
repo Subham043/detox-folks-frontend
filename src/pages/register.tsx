@@ -5,13 +5,13 @@ import { useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { useState } from 'react';
 import { ErrorMessage } from '@hookform/error-message';
-import { ToastOptions, toast } from 'react-toastify';
 import { signIn } from "next-auth/react";
 import { axiosPublic } from '../../axios';
 import { api_routes } from '@/helper/routes';
 import { useRouter, useSearchParams } from 'next/navigation';
 import Spinner from '@/components/Spinner';
 import { getSession } from "next-auth/react"
+import { useToast } from '@/hook/useToast';
 
 export const getServerSideProps = async (ctx: any) => {
   const data = await getSession(ctx)
@@ -46,22 +46,12 @@ const schema = yup
   })
   .required();
 
-const toastConfig:ToastOptions = {
-    position: "bottom-center",
-    autoClose: 5000,
-    hideProgressBar: false,
-    closeOnClick: true,
-    pauseOnHover: true,
-    draggable: true,
-    progress: undefined,
-    theme: "light",
-}
-
 export default function Register() {
   const [loading, setLoading] = useState(false);
   const router = useRouter();
   const searchParams = useSearchParams();
   const callbackUrl = searchParams.get("callbackUrl") || "/profile";
+  const { toastSuccess, toastError, toastInfo } = useToast();
 
     const {
         handleSubmit,
@@ -80,7 +70,8 @@ export default function Register() {
         setLoading(true);
         try {
           const response = await axiosPublic.post(api_routes.register, {...data});
-          toast.info(response.data.message, toastConfig); 
+          // toastInfo(response.data.message); 
+          toastSuccess("Registration completed successfully."); 
           const res = await signIn('credentials', {
             redirect: false,
             email: data.email,
@@ -96,12 +87,12 @@ export default function Register() {
               phone: "",
             });
           } else {
-            toast.error("Invalid Credentials", toastConfig);
+            toastError("Invalid Credentials");
           }                 
         } catch (error: any) {
           console.log(error);
           if (error?.response?.data?.message) {
-            toast.error(error?.response?.data?.message, toastConfig);
+            toastError(error?.response?.data?.message);
           }
           if (error?.response?.data?.errors?.name) {
             setError("name", {

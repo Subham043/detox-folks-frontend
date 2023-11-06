@@ -4,11 +4,11 @@ import { useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { useCallback, useEffect, useState } from 'react';
 import { ErrorMessage } from '@hookform/error-message';
-import { ToastOptions, toast } from 'react-toastify';
 import { api_routes } from '@/helper/routes';
 import { AxiosResponse } from "axios";
 import Spinner from "./Spinner";
 import { useAxiosPrivate } from "@/hook/useAxiosPrivate";
+import { useToast } from "@/hook/useToast";
 
 const schema = yup
   .object({
@@ -22,21 +22,11 @@ const schema = yup
   })
   .required();
 
-const toastConfig:ToastOptions = {
-    position: "bottom-center",
-    autoClose: 5000,
-    hideProgressBar: false,
-    closeOnClick: true,
-    pauseOnHover: true,
-    draggable: true,
-    progress: undefined,
-    theme: "light",
-}
-
 export default function ProfileCard() {
     const [loading, setLoading] = useState(false);
     const { status, data: session, update: sessionUpdate } = useSession();
     const axiosPrivate = useAxiosPrivate();
+    const { toastSuccess, toastError } = useToast();
 
     const {
         handleSubmit,
@@ -76,7 +66,7 @@ export default function ProfileCard() {
         setLoading(true);
         try {
           const response = await axiosPrivate.post(api_routes.profile_update, {...data});
-          toast.success(response.data.message, toastConfig); 
+          toastSuccess(response.data.message); 
           sessionUpdate({
             profile: {
               ...data
@@ -85,7 +75,7 @@ export default function ProfileCard() {
         } catch (error: any) {
           console.log(error);
           if (error?.response?.data?.message) {
-            toast.error(error?.response?.data?.message, toastConfig);
+            toastError(error?.response?.data?.message);
           }
           if (error?.response?.data?.errors?.name) {
             setError("name", {

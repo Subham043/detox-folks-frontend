@@ -2,44 +2,30 @@ import Head from 'next/head'
 import Hero from '@/components/Hero';
 import useSWR from 'swr'
 import { api_routes } from "@/helper/routes";
-import { MetaType, OrderType } from "@/helper/types";
+import { OrderResponseType } from "@/helper/types";
 import Pagination from '@/components/Pagination';
 import { useEffect, useState } from 'react';
 import { useSession } from 'next-auth/react';
-import { useAxiosPrivate } from '@/hook/useAxiosPrivate';
+import { useRouter } from 'next/router';
+import { useToast } from '@/hook/useToast';
 
 const loadingArr = [1, 2, 3, 4, 5, 6]
 
 export default function Products() {
     const [page, setPage] = useState("1")
-    const [loading, setLoading] = useState<boolean>(false);
-    const [orders, setOrders] = useState<OrderType[]>([]);
-    const [meta, setMeta] = useState<MetaType|null>(null);
     const { status, data: session } = useSession();
-    const axiosPrivate = useAxiosPrivate();
+    const router = useRouter();
+    const { toastSuccess } = useToast();
+    let is_order_placed = router.query.order_placed;
+    const { data:orders, isLoading:loading } = useSWR<OrderResponseType>(status==='authenticated' ? api_routes.place_order_paginate + `?total=8&page=${page}` : null);
 
     useEffect(() => {
-        getOrders()
+      if(is_order_placed!==undefined && is_order_placed==='true'){
+        toastSuccess("Order placed successfully.");
+      }
     
       return () => {}
-    }, [status, page])
-    
-
-    const getOrders = async () => {
-        if(status==='authenticated'){
-            setLoading(true);
-            try {
-                const response = await axiosPrivate.get(api_routes.place_order_paginate + `?total=8&page=${page}`);
-                setOrders([...response.data.data])
-                setMeta({...response.data.meta})
-                
-            } catch (error: any) {
-              console.log(error);
-            }finally{
-              setLoading(false);
-            }
-        }
-    }
+    }, [is_order_placed])
 
     return (
         <>
@@ -63,7 +49,7 @@ export default function Products() {
                     <div className="row">
                         <div className="col-lg-12">
                             {
-                                !loading && orders.map((item, i)=><div className="orderlist" key={i}>
+                                !loading && orders?.data.map((item, i)=><div className="orderlist" key={i}>
                                 <div className="orderlist-head">
                                     <h5>order#{item.id}</h5>
                                     <h5>{item.statuses[item.statuses.length-1].status}</h5>
@@ -197,7 +183,7 @@ export default function Products() {
                             }
                         </div>
                     </div>
-                    {meta && <Pagination {...meta} paginationHandler={setPage} />}
+                    {orders?.meta && <Pagination {...orders?.meta} paginationHandler={setPage} />}
                 </div>
             </section>
 

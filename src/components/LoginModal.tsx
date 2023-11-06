@@ -4,12 +4,12 @@ import { useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { useContext, useState } from 'react';
 import { ErrorMessage } from '@hookform/error-message';
-import { ToastOptions, toast } from 'react-toastify';
 import { signIn } from "next-auth/react";
 import { useSearchParams, useRouter } from "next/navigation";
 import Spinner from '@/components/Spinner';
 import { LoginModalContext } from '@/context/LoginModalProvider';
 import { CartContext } from '@/context/CartProvider';
+import { useToast } from '@/hook/useToast';
 
 
 const schema = yup
@@ -18,17 +18,6 @@ const schema = yup
         password: yup.string().required(),
     })
     .required();
-
-const toastConfig: ToastOptions = {
-    position: "bottom-center",
-    autoClose: 5000,
-    hideProgressBar: false,
-    closeOnClick: true,
-    pauseOnHover: true,
-    draggable: true,
-    progress: undefined,
-    theme: "light",
-}
 
 
 export default function LoginModal() {
@@ -39,6 +28,7 @@ export default function LoginModal() {
     const callbackUrl = searchParams.get("callbackUrl") || "/profile";
     const { showLogin, hideLogin } = useContext(LoginModalContext);
     const { fetchCart } = useContext(CartContext);
+    const { toastError } = useToast();
 
 
     const {
@@ -74,7 +64,7 @@ export default function LoginModal() {
                     password: "",
                 });
             } else {
-                toast.error("Invalid Credentials", toastConfig);
+                toastError("Invalid Credentials");
             }
         } catch (error: any) {
             console.log(error);

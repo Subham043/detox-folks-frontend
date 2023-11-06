@@ -3,19 +3,8 @@ import { ChildrenType, WishlistType as WishlistDataType } from "../helper/types"
 import { axiosPublic } from "../../axios";
 import { api_routes } from "../helper/routes";
 import { useSession } from "next-auth/react";
-import { ToastOptions, toast } from 'react-toastify';
 import { LoginModalContext } from "./LoginModalProvider";
-
-const toastConfig:ToastOptions = {
-    position: "bottom-center",
-    autoClose: 5000,
-    hideProgressBar: false,
-    closeOnClick: true,
-    pauseOnHover: true,
-    draggable: true,
-    progress: undefined,
-    theme: "light",
-}
+import { useToast } from "@/hook/useToast";
 
 export type WishlistType = {
     wishlist: WishlistDataType[];
@@ -42,6 +31,7 @@ const WishlistProvider: React.FC<ChildrenType> = ({children}) => {
     const [wishlistLoading, setWishlistLoading] = useState<boolean>(false);
     const { status, data: session } = useSession();
     const { displayLogin } = useContext(LoginModalContext);
+    const { toastSuccess, toastError } = useToast();
   
     useEffect(() => {
       getWishlist()
@@ -57,10 +47,10 @@ const WishlistProvider: React.FC<ChildrenType> = ({children}) => {
                 headers: {"Authorization" : `Bearer ${session?.user.token}`}
               });
               setWishlistDetails({wishlist: [...wishlist.wishlist, response.data.wishlist]});
-              toast.success("Item added to wishlist.", toastConfig);
+              toastSuccess("Item added to wishlist.");
             } catch (error: any) {
               console.log(error);
-              toast.error("Something went wrong. Please try again later!", toastConfig);
+              toastError("Something went wrong. Please try again later!");
             }finally{
               setWishlistLoading(false);
             }
@@ -78,10 +68,10 @@ const WishlistProvider: React.FC<ChildrenType> = ({children}) => {
               });
                 const removedItemArray = wishlist.wishlist.filter(item => item.id !== data);
                 setWishlistDetails({wishlist: [...removedItemArray]});
-                toast.success("Item removed from wishlist.", toastConfig);
+                toastSuccess("Item removed from wishlist.");
             } catch (error: any) {
               console.log(error);
-              toast.error("Something went wrong. Please try again later!", toastConfig);
+              toastError("Something went wrong. Please try again later!");
             }finally{
               setWishlistLoading(false);
             }
@@ -106,7 +96,7 @@ const WishlistProvider: React.FC<ChildrenType> = ({children}) => {
         }
     }
     const loginHandler = (msg: string) => {
-        toast.error(msg, toastConfig);
+        toastError(msg);
         displayLogin();
     }
 
