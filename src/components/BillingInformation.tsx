@@ -58,7 +58,7 @@ export default function BillingInformation({getSelectedItem}:Props) {
     const { toastSuccess, toastError } = useToast();
 
     useEffect(() => {
-      if(status==='authenticated' && data!==undefined){
+      if(status==='authenticated' && data!==undefined && data.data.length>0){
         console.log('called');
         
         getSelectedItem && getSelectedItem(data && data.data.length>0 ? data.data[0].id : 0)
