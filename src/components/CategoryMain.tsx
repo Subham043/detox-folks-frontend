@@ -5,10 +5,12 @@ import Pagination from '@/components/Pagination';
 import { useState } from 'react';
 import CategoryCard from '@/components/CategoryCard';
 import Link from 'next/link';
+import { useRouter } from "next/navigation";
 
 const loadingArr = [1, 2, 3, 4, 5, 6]
 
 export default function CategoryMain({displayFilter=true}:{displayFilter?:boolean}) {
+    const router = useRouter();
     const [sort, setSort] = useState('id')
     const [total, setTotal] = useState("20")
     const [page, setPage] = useState("1")
@@ -25,6 +27,9 @@ export default function CategoryMain({displayFilter=true}:{displayFilter?:boolea
                     {
                         displayFilter &&
                         <div className="row">
+                            <div className="col-12 mb-3">
+                                <button className='btn btn-sm btn-warning' onClick={() => router.back()}>Go Back</button>
+                            </div>
                             <div className="col-lg-12">
                                 <div className="top-filter">
                                     <div className="filter-show">

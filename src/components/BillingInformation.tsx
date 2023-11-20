@@ -2,7 +2,7 @@ import { useSession } from "next-auth/react";
 import * as yup from "yup";
 import { useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { ErrorMessage } from '@hookform/error-message';
 import { api_routes } from '@/helper/routes';
 import Spinner from "./Spinner";
@@ -56,6 +56,15 @@ export default function BillingInformation({getSelectedItem}:Props) {
     const [selected, setSelected] = useState(data && data.data.length>0 ? data.data[0].id : 0);
     const axiosPrivate = useAxiosPrivate();
     const { toastSuccess, toastError } = useToast();
+
+    useEffect(() => {
+      if(status==='authenticated' && data!==undefined){
+        getSelectedItem && getSelectedItem(data && data.data.length>0 ? data.data[0].id : 0)
+      }
+    
+      return () => {}
+    }, [status, data])
+    
     
 
     const {

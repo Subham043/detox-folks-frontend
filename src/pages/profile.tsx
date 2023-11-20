@@ -9,6 +9,7 @@ import { useState } from 'react';
 import { api_routes } from '@/helper/routes';
 import { useAxiosPrivate } from '@/hook/useAxiosPrivate';
 import { useToast } from '@/hook/useToast';
+import Link from 'next/link';
 
 export default function Profile() {
   const { status, data: session, update: sessionUpdate } = useSession();
@@ -48,6 +49,9 @@ export default function Profile() {
       <section className="inner-section profile-part">
         <div className="container">
           <div className="row">
+            <div className="col-12 mb-3">
+              <Link className='btn btn-sm btn-warning' href='/'>Go Back</Link>
+            </div>
             {/* {
               (status==='authenticated' && session.user?.verified==="VERIFICATION PENDING" && showVerification) && 
               <div className="col-lg-12 mb-3">

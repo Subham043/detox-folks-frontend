@@ -89,6 +89,9 @@ export default function Checkout() {
 
       <section className="inner-section checkout-part">
         <div className="container">
+            <div className="col-12 mb-3">
+              <button className='btn btn-sm btn-warning' onClick={() => router.back()}>Go Back</button>
+            </div>
           {cartLoading && <div className="row">
             {
                 loadingArr.map( i => <div className="col-12 mb-2" key={i}>

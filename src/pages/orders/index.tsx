@@ -8,6 +8,7 @@ import { useEffect, useState } from 'react';
 import { useSession } from 'next-auth/react';
 import { useRouter } from 'next/router';
 import { useToast } from '@/hook/useToast';
+import Link from 'next/link';
 
 const loadingArr = [1, 2, 3, 4, 5, 6]
 
@@ -39,6 +40,9 @@ export default function Products() {
 
             <section className="inner-section orderlist-part">
                 <div className="container">
+                    <div className="col-12 mb-3">
+                        <Link className='btn btn-sm btn-warning' href='/'>Go Back</Link>
+                    </div>
                     {loading && <div className="row">
                         {
                             loadingArr.map( i => <div className="col-12 mb-2" key={i}>

@@ -3,6 +3,7 @@ import ProductCard from "./ProductCard";
 import Pagination from "./Pagination";
 import Link from "next/link";
 import { Dispatch, SetStateAction } from "react";
+import { useRouter } from "next/navigation";
 
 const loadingArr = [1, 2, 3, 4, 5, 6, 7, 8]
 
@@ -39,6 +40,8 @@ export default function ProductSection(
         setSort?:Dispatch<SetStateAction<string>>,
         setPage?:Dispatch<SetStateAction<string>>
     }){
+      const router = useRouter();
+
     return <section className="section feature-part">
     <div className="container">
       {
@@ -52,6 +55,9 @@ export default function ProductSection(
       {
         displayFilter &&
         <div className="row">
+            <div className="col-12 mb-3">
+              <button className='btn btn-sm btn-warning' onClick={() => router.back()}>Go Back</button>
+            </div>
             <div className="col-lg-12">
                 <div className="top-filter">
                     <div className="filter-show">

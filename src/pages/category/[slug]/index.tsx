@@ -8,6 +8,7 @@ import { useState } from 'react';
 import { GetServerSideProps, InferGetServerSidePropsType } from 'next';
 import { axiosPublic } from '../../../../axios';
 import SubCategoryCard from '@/components/SubCategoryCard';
+import { useRouter } from "next/navigation";
 
 const loadingArr = [1, 2, 3, 4, 5, 6]
 
@@ -38,6 +39,7 @@ export const getServerSideProps: GetServerSideProps<{
 export default function Products({
     repo,
 }: InferGetServerSidePropsType<typeof getServerSideProps>) {
+    const router = useRouter();
     const [sort, setSort] = useState('id')
     const [total, setTotal] = useState("20")
     const [page, setPage] = useState("1")
@@ -56,6 +58,9 @@ export default function Products({
 
             <section className="inner-section shop-part">
                 <div className="container">
+                    <div className="col-12 mb-3">
+                        <button className='btn btn-sm btn-warning' onClick={() => router.back()}>Go Back</button>
+                    </div>
                     <div className="row content-reverse">
                         <div className="col-lg-12">
                             <div className="row">
