@@ -28,7 +28,6 @@ export default function Checkout() {
   const { toastSuccess, toastError } = useToast();
 
   const getSelectedBillingAddress = (data: number) => {
-    console.log(data)
     setSelectedBillingAddressData(data)
   }
   

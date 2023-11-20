@@ -59,6 +59,7 @@ export default function BillingInformation({getSelectedItem}:Props) {
 
     useEffect(() => {
       if(status==='authenticated' && data!==undefined && data.data.length>0){
+        setSelected(data && data.data.length>0 ? data.data[0].id : 0)
         getSelectedItem && getSelectedItem(data && data.data.length>0 ? data.data[0].id : 0)
       }
     
