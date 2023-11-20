@@ -59,6 +59,8 @@ export default function BillingInformation({getSelectedItem}:Props) {
 
     useEffect(() => {
       if(status==='authenticated' && data!==undefined){
+        console.log('called');
+        
         getSelectedItem && getSelectedItem(data && data.data.length>0 ? data.data[0].id : 0)
       }
     
