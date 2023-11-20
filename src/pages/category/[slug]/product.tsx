@@ -37,7 +37,7 @@ export const getServerSideProps: GetServerSideProps<{
 export default function Category({
     repo,
 }: InferGetServerSidePropsType<typeof getServerSideProps>) {
-    const [sort, setSort] = useState('name')
+    const [sort, setSort] = useState('id')
     const [total, setTotal] = useState("12")
     // const [displayFilter, setDisplayFilter] = useState(false)
     const [page, setPage] = useState("1")
